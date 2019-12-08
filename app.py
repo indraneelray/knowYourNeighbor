@@ -1,9 +1,9 @@
 from flask import Flask, render_template, request, jsonify, session, redirect, escape, url_for
 import MySQLdb
 import lib.Users as Users
+import logging
 
 app = Flask(__name__)
-app.debug = True
 
 class ServerError(Exception):pass
 
@@ -41,6 +41,8 @@ if __name__ == '__main__':
 	#app.secret_key = config['app_key']
 	db = DB()
 	notifications = None
+	logging.basicConfig(filename=config['logfile'], level=logging.INFO)
+	
 
 #Routes
 @app.route('/')
@@ -97,6 +99,7 @@ def delUser(user):
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+	logging.info('Started login')
 	message = None
 	global notifications
 	if notifications:

@@ -3,8 +3,8 @@ import bcrypt
 import logging
 class ServerError(Exception):pass
 
-
 def loginForm(db, form):
+	logging.info('Users login')
 	error = None
 	try:
 		username = form['Username']
@@ -25,29 +25,6 @@ def loginForm(db, form):
 	except ServerError as e:
 		error = str(e)
 		return error
-
-# def registerUser(db, form, ROUNDS):
-# 	error = None
-# 	try:
-# 		username = form['username']
-# 		password = form['password']
-# 		email    = form['email']
-
-# 		if not username or not password or not email:
-# 			raise ServerError('Fill in all fields')
-
-# 		password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt(ROUNDS))
-
-# 		cur = db.query("SELECT COUNT(*) FROM users WHERE user = %s",[username])
-# 		c = cur.fetchone()
-# 		if c[0] == 0:
-# 			cur = db.query("INSERT INTO users (`user`, `email`, `pass`) VALUES (%s,%s,%s)", [username, email, password])
-# 			return None
-# 		else:
-# 			return "User exists"
-# 	except ServerError as e:
-# 		error = str(e)
-# 		return error
 
 def signupUser(db, form, ROUNDS):
 	error = None
@@ -75,9 +52,6 @@ def signupUser(db, form, ROUNDS):
 		# 	raise ServerError('Fill in all fields')
 
 		newpassword = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt(ROUNDS))
-		#newpassword = sha256_crypt.encrypt(password.encode('utf-8'))
-
-		#print("new pass", newpassword)
 
 		cur = db.query("SELECT COUNT(*) FROM SignUp_Details WHERE username = %s",[username])
 		c = cur.fetchone()
