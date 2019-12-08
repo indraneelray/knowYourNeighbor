@@ -3,6 +3,7 @@ import MySQLdb
 import lib.Users as Users
 
 app = Flask(__name__)
+app.debug = True
 
 class ServerError(Exception):pass
 
@@ -103,13 +104,13 @@ def login():
 		notifications = None
 	if 'username' in session:
 		return redirect(url_for('index'))
-
+	print ("Inside login")
 	if request.method == 'POST':
 		result = Users.loginForm(db, request.form)
 		print(result)
 		if not result:
 			notifications = {'message': 'Logged in', 'type': 'success'}
-			#return redirect(url_for('index'))
+			return redirect(url_for('profile'))
 		else:
 			message = {'message': 'Failed to log in', 'type': 'error'}
 			return render_template('login.html', message=message)
@@ -150,34 +151,11 @@ def signup():
 		else:
 			return redirect(url_for('login'))
 
-# @app.route('/register', methods=['GET','POST'])
-# def register():
-# 	message = None
-# 	global notifications
-# 	if notifications:
-# 		message = notifications
-# 		notifications = None
-# 	if request.method == 'POST':
-# 		result = Users.registerUser(db, request.form, config['pw_rounds'])
-# 		if not result:
-# 			notifications = {'message': 'Registration successful', 'type': 'success'}
-# 			if session['username'] == 'admin':
-# 				return redirect(url_for('register'))
-# 			else:
-# 				return redirect(url_for('login'))
-# 		else:
-# 			message = {'message': 'Something went wrong: '+result, 'type': 'error'}
-# 			return render_template('register.html', message=message)
-# 	if 'username' in session and session['username'] == 'admin':
-# 		return render_template('register.html', message=message)
-# 	if config['registration_enabled']:
-# 		return render_template('register.html', message=message)
-# 	else:
-# 		notifications = {'message': 'User registration is disabled by the admin', 'type': 'warning'}
-# 		if 'username' in session:
-# 			return redirect(url_for('index'))
-# 		else:
-# 			return redirect(url_for('login'))
+@app.route('/profile')
+def profile():
+	return render_template('show_profile.html')
+
+
 
 #Run app
 if __name__ == '__main__':
