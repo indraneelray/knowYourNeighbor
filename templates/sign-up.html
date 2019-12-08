@@ -1,0 +1,111 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Welcome to Neighbourhood</title>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+        <!-- jQuery library -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+        <!-- Latest compiled JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>
+            .img-class{
+                background-image: url("background-photo.jpg");
+                background-position: center;
+                background-repeat: no-repeat;
+                background-size: cover;
+                background-size: 100% 100%;
+                
+                overflow: auto;
+                position: relative;
+            }
+            * {
+                box-sizing: border-box;
+            }
+
+            input[type=text], input[type=password], input[type=email]{
+                background:rgba(156, 140, 140, 0.9);
+            }
+            
+            .sign_up {
+                opacity: 0.5;
+            }
+            .sign_up:hover {
+                opacity : 1.0;
+            }
+        </style>
+    </head>
+    <body class="img-class">
+        <!-- <div class="img-class"> -->
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-3 col-sm-2 col-xs-2"></div>
+                <div class="col-lg-6 col-md-6 col-sm-8 col-xs-8" style="background-color: rgba(255, 255, 255, 0.8);">
+                    <form action="" target="_blank">
+                        <h1 class="text-center">Sign Up</h1>
+                        <div class="form-group">
+                            <label class="control-label" for="fname"><b>First Name</b></label>
+                            <input type="text" name="fname" class="form-control" required/>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="iname"><b>Last Name</b></label>
+                            <input type="text" name="lname" class="form-control" required/>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="email"><b>Email Address</b></label>
+                            <input type="email" name="email" class="form-control" required/>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="password"><b>Password</b></label>
+                            <input type="password" name="password" class="form-control" required/>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="confirm_password"><b>Confirm Password</b></label>
+                            <input type="password" name="confirm_password" class="form-control" required/>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="gender"><b>Gender</b></label><br/>
+                            <input type="radio" class="radio-first" name="gender" value="male">Male<br/>
+                            <input type="radio" class="radio-last" name="gender" value="female">Female<br/>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="addressLine1"><b>Street Address</b></label>
+                            <input type="text" name="addressLine1" class="form-control" required/>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="addressLine2"><b>Address Line 2</b></label>
+                            <input type="text" name="addressLine2" class="form-control" required/>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="city"><b>City</b></label>
+                            <input type="text" name="city" class="form-control" required/>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="state"><b>State</b></label>
+                            <input type="text" name="state" class="form-control" required/>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="zipcode"><b>Zip</b></label>
+                            <input type="text" name="xipcode" class="form-control" required/>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="email_pref"><b>Do you want notifications on email?</b></label><br/>
+                            <input type="radio" class="radio-first" name="email_pref" value="yes">Yes<br/>
+                            <input type="radio" class="radio-last" name="email_pref" value="no">No<br/>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-success btn-lg btn-block sign_up">Sign Up</button>
+                        </div>
+                        <!-- <input class="sign_up" type="submit" value="Sign Up"/> -->
+                    </div>
+                </form>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-2 col-xs-2"></div>
+        </div>
+    </div>
+    </body>
+</html>
