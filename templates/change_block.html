@@ -1,0 +1,120 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Welcome to Neighbourhood</title>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+        <!-- jQuery library -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+        <!-- Latest compiled JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>
+            .img-class{
+                background-image: url("background-photo.jpg");
+                background-position: center;
+                background-repeat: no-repeat;
+                background-size: cover;
+                background-size: 100% 250%;
+                
+                overflow: auto;
+                position: relative;
+            }
+            * {
+                box-sizing: border-box;
+            }
+
+            input[type=password]{
+                background:rgba(156, 140, 140, 0.9);
+            }
+            
+            .change_password {
+                opacity: 0.5;
+            }
+            .change_password:hover {
+                opacity : 1.0;
+            }
+            .avatar-upload {
+                position: relative;
+                max-width: 205px;
+                margin: 50px auto;
+            }
+            .avatar-edit {
+                position: absolute;
+                right: 12px;
+                z-index: 1;
+            }
+            .avatar-preview {
+                width: 192px;
+                height: 192px;
+                position: relative;
+                border-radius: 100%;
+                border: 6px solid #F8F8F8;
+                box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.1);
+            }
+            #imagePreview {
+                width: 100%;
+                height: 100%;
+                border-radius: 100%;
+                background-size: cover;
+                background-repeat: no-repeat;
+                background-position: center;
+            }
+
+        </style>
+    </head>
+    <body class="img-class">
+        <!-- <div class="img-class"> -->
+        <div class="wrapper">
+            <header class="main-header">
+                <nav class="navbar navbar-inverse">
+                    <div class="container-fluid">
+                        <div class="navbar-header">
+                            <a class="navbar-brand" href="#">knowYourNeighborhood</a>
+                        </div>
+                        <ul class="nav navbar-nav navbar-right">
+                            <li><button id="logoutBtn" class="btn btn-danger navbar-btn"><span class="glyphicon glyphicon-log-out"></span>Logout  </button></li>
+                        </ul>
+                      <ul class="nav navbar-nav navbar-right">
+                            <li><button id="profileBtn" class="btn btn-danger navbar-btn"><span class="glyphicon glyphicon-log-out"></span>Your Profile</button></li>
+                        </ul>
+                    </div>
+                </nav>
+            </header>
+        <div class="content-wrapper">
+        <div class="container">
+            <div class="row" style="margin-top:15%;">
+                <div class="col-lg-3 col-md-3 col-sm-2 col-xs-2"></div>
+                <div class="col-lg-6 col-md-6 col-sm-8 col-xs-8" style="background-color: rgba(255, 255, 255, 0.8);">
+                    <form action=" " action="" method="POST">
+                        <h1 class="text-center">Change Block</h1>
+                        </br>
+                        </br>
+                        <div class="form-group">
+                            <label> Select Hood </label>
+                            <select id = "myHood">
+                                <option value="HoodId1">HoodVivek</option>
+                                <option value="HoodId2">HoodNeel</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label> Select Block </label>
+                            <select id = "myBlock">
+                                <option value="BlockId1">BlockName1</option>
+                                <option value="BlockId2">BlockName2</option>
+                            </select>
+                        </div>  
+                        <div class="form-group">
+                        <button type="submit" class="btn btn-success btn-lg btn-block sign_up" onclick="window.location.href = 'feed.html'"> Update Block</button>
+                        </div>
+                        </div>
+                    </form>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-2 col-xs-2"></div>
+        </div>
+    </div>
+    </body>
+</html>
