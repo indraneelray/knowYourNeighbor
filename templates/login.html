@@ -12,6 +12,9 @@
         <!-- Latest compiled JavaScript -->
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
         <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <script src="//cdn.jsdelivr.net/alertifyjs/1.10.0/alertify.min.js"></script>
+
         <style>
             .img-class{
                 background-image: url("background-photo.jpg");
@@ -59,7 +62,7 @@
                         <div class="row" style="margin-top: 20%;margin-bottom: 20%;">
                             <div class="col-lg-3 col-md-3 col-sm-2 col-xs-2"></div>
                             <div class="col-lg-6 col-md-6 col-sm-8 col-xs-8" style="background-color: rgba(255, 255, 255, 0.8);">
-                                <form id="loginForm" method="" action="" target="_blank">
+                                <form id="loginForm" method="POST" action="" target="_blank">
                                     <h1 class="text-center">Log In</h1>
                                     <div class="form-group">
                                         <label class="control-label" for="email">Username</label>
@@ -79,5 +82,11 @@
                     </div>
                 </div>
             </div>
+        </div>
+        {% if message %}
+        <script>
+        alertify.{{message.type}}("{{ message.message }}");
+        </script>
+        {% endif %}
     </body>
 </html>

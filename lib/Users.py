@@ -1,73 +1,70 @@
 from flask import Flask, render_template, request, jsonify, session, redirect, escape, url_for
 import bcrypt
+import logging
 class ServerError(Exception):pass
 
 def loginForm(db, form):
+	logging.info('Users login')
 	error = None
 	try:
-		username = form['username']
-		cur = db.query("SELECT COUNT(1) FROM users WHERE user = %s", [username])
-		print ("CUR", cur)
+		username = form['Username']
+		cur = db.query("SELECT COUNT(1) FROM SignUp_Details WHERE username = %s", [username])
 		if not cur.fetchone()[0]:
 			raise ServerError('Incorrect username / password')
 
-		password = form['password']
-		cur = db.query("SELECT pass FROM users WHERE user = %s;", [username])
+		cur2 = db.query("SELECT * from SignUp_Details WHERE username = %s", [username])
+		#r = [dict((cur.description[i][0], value) \
+		#for i, value in enumerate(row)) for row in ]
+		query_row = cur2.fetchall()[0]
+		uid = query_row[0]
+		logging.info(uid)
 
+		password = form['password']
+		cur = db.query("SELECT pwd FROM SignUp_Details WHERE username = %s;", [username])
 		for row in cur.fetchall():
+			print(row)
 			if bcrypt.hashpw(password.encode('utf-8'), row[0]) == row[0]:
-				session['username'] = form['username']
-				return error
+				session['uid'] = uid
+				print("password match")
+				return None
 
 		raise ServerError('Incorrect username / password')
 	except ServerError as e:
 		error = str(e)
 		return error
 
-# def registerUser(db, form, ROUNDS):
-# 	error = None
-# 	try:
-# 		username = form['username']
-# 		password = form['password']
-# 		email    = form['email']
-
-# 		if not username or not password or not email:
-# 			raise ServerError('Fill in all fields')
-
-# 		password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt(ROUNDS))
-
-# 		cur = db.query("SELECT COUNT(*) FROM users WHERE user = %s",[username])
-# 		c = cur.fetchone()
-# 		if c[0] == 0:
-# 			cur = db.query("INSERT INTO users (`user`, `email`, `pass`) VALUES (%s,%s,%s)", [username, email, password])
-# 			return None
-# 		else:
-# 			return "User exists"
-# 	except ServerError as e:
-# 		error = str(e)
-# 		return error
-
 def signupUser(db, form, ROUNDS):
 	error = None
 	try:
+		logging.info('This is an info message')
+		print("Inside signupuser")
 		username = form['fname']
 		password = form['password']
 		email    = form['email']
-		print("old pass", password)
+		lname = form["lname"]
+		addressLine1 = form["addressLine1"]
+		addressLine2 = form["addressLine2"]
+		city = form["city"]
+		state = form["state"]
+		xipcode = form["xipcode"]
+		gender = form["gender"]
+		email_pref = form["email_pref"]
+		if email_pref == "yes":
+			email_pref = 1
+		else:
+			email_pref = 0
 
 		# if not username or not password or not email:
 		# 	raise ServerError('Fill in all fields')
 
 		newpassword = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt(ROUNDS))
-		#newpassword = sha256_crypt.encrypt(password.encode('utf-8'))
-
-		#print("new pass", newpassword)
 
 		cur = db.query("SELECT COUNT(*) FROM SignUp_Details WHERE username = %s",[username])
-		print("jere")
 		c = cur.fetchone()
 		if c[0] == 0:
-			cur = db.query("INSERT INTO SignUp_Details (`username`, `pwd`, `signuptime`) VALUES (%s,%s,NOW())", [username, newpassword])
+			# Referred this to prevent SQLI https://realpython.com/prevent-python-sql-injection/
+			cur = db.query("""INSERT INTO SignUp_Details(`username`, `pwd`, `signuptime`) VALUES (%s,%s,NOW())""", (username, newpassword,))
+			#cur = db.query("INSERT INTO User_Info ('Fname', 'Lname', 'email', 'phone_number', 'apt_num', 'street', 'city', 'state', 'zip_code', )VALUES ")
 			return None
 		else:
 			return "User exists"
