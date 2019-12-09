@@ -1,0 +1,60 @@
+<!DOCTYPE HTML>
+<html ng-app="myApp">
+    <head>
+        <meta charset="UTF-8">
+        <title>Welcome to Neighbourhood</title>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+        <!-- jQuery library -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+        <!-- Latest compiled JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular-route.min.js"></script>
+        <script src="app.js"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>
+            .body-background {
+                background-color:lightblue;
+            }
+            .bg-image {
+                background-image: url("background-photo.jpg");
+
+                /* Full height */
+                height: auto;
+
+                /* Center and scale the image nicely */
+                background-position: center;
+                background-repeat: no-repeat;
+                background-size: cover;
+            }
+        </style>
+    </head>
+    <body class="body-background">
+            <div class="wrapper">
+                    <header class="main-header">
+                        <nav class="navbar navbar-inverse">
+                            <div class="container-fluid">
+                                <div class="navbar-header">
+                                    <a class="navbar-brand" href="#">knowYourNeighborhood</a>
+                                </div>
+                                <ul class="nav navbar-nav navbar-right">
+                                    <li><button class="btn btn-danger navbar-btn"><span class="glyphicon glyphicon-log-out"></span>Logout</button></li>
+                                </ul>
+                            </div>
+                        </nav>
+                    </header>
+                    <div class="content-wrapper">
+                            {% block body %}{% endblock %}
+                    </div>
+                    <footer class="main-footer">
+                            <div class="pull-right hidden-xs">
+                                <b>Version</b> 0.1.0
+                            </div>
+                            <strong>By Madpilot</strong>
+                    </footer>
+            </div>
+    </body>
+</html>
