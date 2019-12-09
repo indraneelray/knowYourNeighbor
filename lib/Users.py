@@ -33,42 +33,69 @@ def loginForm(db, form):
 		error = str(e)
 		return error
 
-def signupUser(db, form, ROUNDS):
+def signupUser(conn, form, ROUNDS):
 	error = None
 	try:
-		logging.info('This is an info message')
 		print("Inside signupuser")
 		username = form['fname']
 		password = form['password']
 		email    = form['email']
+		fname = "fname"
 		lname = form["lname"]
+		phone_number = "12345678"
 		addressLine1 = form["addressLine1"]
 		addressLine2 = form["addressLine2"]
 		city = form["city"]
 		state = form["state"]
 		xipcode = form["xipcode"]
 		gender = form["gender"]
+		intro = "I am a good guy"
 		email_pref = form["email_pref"]
 		if email_pref == "yes":
 			email_pref = 1
 		else:
 			email_pref = 0
+		logging.info(conn)
+		cursor = conn.cursor()
+		logging.info(xipcode)
+		logging.info(email_pref)
+		
 
 		# if not username or not password or not email:
 		# 	raise ServerError('Fill in all fields')
 
 		newpassword = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt(ROUNDS))
 
-		cur = db.query("SELECT COUNT(*) FROM SignUp_Details WHERE username = %s",[username])
-		c = cur.fetchone()
+		cursor.execute("""SELECT COUNT(*) FROM SignUp_Details WHERE username = %s""",[username])
+		c = cursor.fetchone()
+		logging.info(c)
 		if c[0] == 0:
-			# Referred this to prevent SQLI https://realpython.com/prevent-python-sql-injection/
-			cur = db.query("""INSERT INTO SignUp_Details(`username`, `pwd`, `signuptime`) VALUES (%s,%s,NOW())""", (username, newpassword,))
-			#cur = db.query("INSERT INTO User_Info ('Fname', 'Lname', 'email', 'phone_number', 'apt_num', 'street', 'city', 'state', 'zip_code', )VALUES ")
+			try:
+				conn.autocommit(False)
+				# Referred this to prevent SQLI https://realpython.com/prevent-python-sql-injection/
+				cursor.execute("""INSERT INTO SignUp_Details(`username`, `pwd`, `signuptime`) VALUES (%s,%s,NOW())""", (username, newpassword,))
+				logging.info("Inserted in signup_details")
+				cursor.execute("SELECT uid from SignUp_Details where username = %s",[username])
+				logging.info("selected uid")
+				d = cursor.fetchone()
+				uid=d[0]
+				logging.info(uid)
+				cur = cursor.execute("""INSERT INTO user_info (`uid`,`fname`,`lname`,`email`, `phone_number`, `apt_num`, `street`,`city`,`state`,`zip_code`,`intro`,`email_preference`) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""", \
+				[int(uid),fname,lname,email,phone_number,addressLine1,addressLine2,city,state,int(xipcode),intro, int(email_pref)])
+				logging.info("inserted")
+				conn.commit()
+			except:
+				print("in rollback")
+				logging.info("Error in insertion")
+				conn.rollback()
+				error ="Error"
+				return error
 			return None
 		else:
+			logging.info("user exists")
 			return "User exists"
 	except ServerError as e:
+		logging.info("Error in fetching user data")
 		error = str(e)
 		return error
 

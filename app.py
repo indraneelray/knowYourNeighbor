@@ -42,6 +42,7 @@ if __name__ == '__main__':
 	exec(open("config.conf").read(), config)
 	app.secret_key = config['app_key']
 	db = DB()
+	db.connect()
 	notifications = None
 	logging.basicConfig(filename=config['logfile'], level=logging.INFO)
 	with open(config['logfile'], 'w'):
@@ -126,6 +127,7 @@ def login():
 
 @app.route('/logout')
 def logout():
+	logging.info('logout pressed')
 	global notifications
 	if 'uid' not in session:
 		return redirect(url_for('login'))
@@ -141,7 +143,8 @@ def signup():
 		message = notifications
 		notifications = None
 	if request.method == 'POST':
-		result = Users.signupUser(db, request.form, config['pw_rounds'])
+		logging.info("sign up")
+		result = Users.signupUser(db.conn, request.form, config['pw_rounds'])
 		if not result:
 			notifications = {'message': 'Registration successful', 'type': 'success'}
 			return redirect(url_for('login'))
