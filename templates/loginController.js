@@ -1,6 +1,6 @@
 
     $().ready(function() {
-	document.getElementById('logoutBtn').style.visibility='hidden';
+        document.getElementById('logoutBtn').style.visibility='hidden';
         $('#loginForm').validate({
             rules: {
                 email: {

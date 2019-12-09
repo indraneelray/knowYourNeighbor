@@ -59,10 +59,6 @@ def signupUser(conn, form, ROUNDS):
 		cursor = conn.cursor()
 		logging.info(xipcode)
 		logging.info(email_pref)
-		
-
-		# if not username or not password or not email:
-		# 	raise ServerError('Fill in all fields')
 
 		newpassword = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt(ROUNDS))
 
@@ -84,6 +80,7 @@ def signupUser(conn, form, ROUNDS):
 				[int(uid),fname,lname,email,phone_number,addressLine1,addressLine2,city,state,int(xipcode),intro, int(email_pref)])
 				logging.info("inserted")
 				conn.commit()
+				conn.autocommit(True)
 			except:
 				print("in rollback")
 				logging.info("Error in insertion")

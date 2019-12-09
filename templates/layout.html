@@ -33,6 +33,10 @@
         </style>
     </head>
     <body class="body-background">
+            <!--{% if session.username %}
+                 Logged in only content like navigation bar and the logout button
+                <a href="/logout"><button class="btn btn-danger">Logout</button></a>
+            {% endif %} -->
             <div class="wrapper">
                     <header class="main-header">
                         <nav class="navbar navbar-inverse">
@@ -41,7 +45,7 @@
                                     <a class="navbar-brand" href="#">knowYourNeighborhood</a>
                                 </div>
                                 <ul class="nav navbar-nav navbar-right">
-                                    <li><button class="btn btn-danger navbar-btn"><span class="glyphicon glyphicon-log-out"></span>Logout</button></li>
+                                    <li><a href="/logout"><button id = "logoutBtn" name = "logoutBtn" class="btn btn-danger navbar-btn"><span class="glyphicon glyphicon-log-out"></span>Logout</button></a></li>
                                 </ul>
                             </div>
                         </nav>
@@ -49,12 +53,6 @@
                     <div class="content-wrapper">
                             {% block body %}{% endblock %}
                     </div>
-                    <footer class="main-footer">
-                            <div class="pull-right hidden-xs">
-                                <b>Version</b> 0.1.0
-                            </div>
-                            <strong>By Madpilot</strong>
-                    </footer>
             </div>
     </body>
 </html>

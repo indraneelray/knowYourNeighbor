@@ -57,50 +57,10 @@ def index():
 	if notifications:
 		message = notifications
 		notifications = None
-	if 'username' not in session:
-		message = {'message': 'Please log in', 'type': 'warning'}
-		return redirect(url_for('login'))
+	# if 'username' not in session:
+	# 	message = {'message': 'Please log in', 'type': 'warning'}
+	# 	return redirect(url_for('login'))
 	return render_template('index.html',session=session,message=message)
-
-# @app.route('/users')
-# def users():
-# 	message = None
-# 	global notifications
-# 	if notifications:
-# 		message = notifications
-# 		notifications = None
-# 	if 'username' not in session:
-# 		notifications = {'message': 'Please log in', 'type': 'warning'}
-# 		return redirect(url_for('login'))
-# 	if session['username'] != 'admin':
-# 		return redirect(url_for('index', message="Admin only page"))
-
-# 	users = Users.getUsers(db)
-# 	if not users:
-# 		notifications = {'message': 'Failed to retrieve users', 'type': 'error'}
-# 		return render_template('users.html', message=message)
-# 	return render_template('users.html', users=users, message=message)
-
-# @app.route('/users/edit/<user>')
-# def editUser(user):
-# 	return "ToDo"
-
-# @app.route('/users/delete/<user>')
-# def delUser(user):
-# 	global notifications
-# 	if 'username' not in session:
-# 		notifications = {'message': 'Please log in', 'type': 'warning'}
-# 		return redirect(url_for('login'))
-# 	if session['username'] != 'admin':
-# 		notifications = {'message': 'Admin only page', 'type': 'error'}
-# 		return redirect(url_for('index'))
-
-# 	result = Users.deleteUser(db,user)
-# 	if not result:
-# 		notifications = {'message': 'User deleted successfully', 'type': 'success'}
-# 		return redirect(url_for('users', message="User deleted successfully"))
-# 	notifications = {'message': 'Something went wrong: '+result, 'type': 'error'}
-# 	return redirect(url_for('users', message="Something went wrong: "+result))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -112,28 +72,30 @@ def login():
 		notifications = None
 	if 'uid' in session:
 		logging.info(session)
-		return redirect(url_for('profile'))
+		return redirect(url_for('show_feed'))
 	print ("Inside login")
 	if request.method == 'POST':
 		result = Users.loginForm(db, request.form)
 		print(result)
 		if not result:
 			notifications = {'message': 'Logged in', 'type': 'success'}
-			return redirect(url_for('profile'))
+			return redirect(url_for('show_feed'))
 		else:
 			message = {'message': 'Failed to log in', 'type': 'error'}
 			return render_template('login.html', message=message)
 	return render_template('login.html',message=message)
+
 
 @app.route('/logout')
 def logout():
 	logging.info('logout pressed')
 	global notifications
 	if 'uid' not in session:
-		return redirect(url_for('login'))
+		return redirect(url_for('index'))
 	session.pop('uid', None)
 	notifications = {'message': 'Logged out', 'type': 'success'}
-	return redirect(url_for('login'))
+	return redirect(url_for('index'))
+
 
 @app.route('/sign-up', methods=['GET','POST'])
 def signup():
@@ -160,10 +122,18 @@ def signup():
 		if 'uid' in session:
 			return redirect(url_for('index'))
 		else:
-			return redirect(url_for('login'))
+			return redirect(url_for('join_block'))
+
+
+@app.route('/join_block')
+def join_block():
+	return render_template('join_block.html')
 
 @app.route('/profile')
 def profile():
+	if 'uid' not in session:
+		logging.info(session)
+		return redirect(url_for('login'))
 	return render_template('show_profile.html')
 
 @app.route('/threads')
@@ -174,8 +144,17 @@ def show_message():
 	db = DB()
 	allInfo = message_boards.getUserThreads(db)
 	logging.info(allInfo)
-	return render_template('show-threads.html', allInfo = allInfo)
+	return render_template('user-feed.html', allInfo = allInfo)
 
+@app.route('/feed')
+def show_feed():
+	if 'uid' not in session:
+		logging.info(session)
+		return redirect(url_for('login'))
+	db = DB()
+	#allInfo = message_boards.getUserThreads(db)
+	#logging.info(allInfo)
+	return render_template('user-feed.html')
 
 
 #Run app
