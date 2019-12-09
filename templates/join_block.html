@@ -1,0 +1,95 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Welcome to Neighbourhood</title>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+        <!-- jQuery library -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+        <!-- Latest compiled JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300" rel="stylesheet">	
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>
+            .img-class{
+                background-image: url("/static/img/background-photo.jpg");
+                background-position: center;
+                background-repeat: no-repeat;
+                background-size: cover;
+                background-size: 100% 200%;
+                
+                overflow: auto;
+                position: relative;
+            }
+            * {
+                box-sizing: border-box;
+            }
+
+            input[type=text], input[type=password], input[type=email]{
+                background:rgba(156, 140, 140, 0.9);
+            }
+            
+            .edit_profile {
+                opacity: 0.5;
+            }
+            .edit_profile:hover {
+                opacity : 1.0;
+            }
+        </style>
+    <script src="signupController.js"></script>
+    </head>
+    <body class="img-class">
+          <div class="wrapper">	
+            <header class="main-header">	
+                <nav class="navbar navbar-inverse">	
+                    <div class="container-fluid">	
+                        <div class="navbar-header">	
+                            <a class="navbar-brand" href="#">knowYourNeighborhood</a>	
+                        </div>	
+                        <ul class="nav navbar-nav navbar-right">	
+                        <a href="/logout"><li><button id="logoutBtn" class="btn btn-danger navbar-btn"><span class="glyphicon glyphicon-log-out"></span>Logout</button></li></a>
+                        </ul>	
+                    </div>	
+                </nav>	
+            </header>	
+            <div class="content-wrapper">
+        <!-- <div class="img-class"> -->
+        <div class="wrapper">		
+            <div class="content-wrapper">
+        <div class="container">
+            <div class="row" style="margin-top:20%;">
+                <div class="col-lg-3 col-md-3 col-sm-2 col-xs-2"></div>
+                <div class="col-lg-6 col-md-6 col-sm-8 col-xs-8" style="background-color: rgba(255, 255, 255, 0.8);">
+                    <form action=" " action="" method="POST">
+                        <h1 class="text-center">Join a block</h1>
+                        </br>
+                        </br>
+                        <div class="form-group">
+                            <label> Select Hood </label>
+                            <select id = "myHood">
+                                <option value="HoodId1">HoodVivek</option>
+                                <option value="HoodId2">HoodNeel</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label> Select Block </label>
+                            <select id = "myBlock">
+                                <option value="BlockId1">BlockName1</option>
+                                <option value="BlockId2">BlockName2</option>
+                            </select>
+                        </div>  
+                        <div class="form-group">
+                            <input type="submit" value="Submit" class="btn btn-success btn-lg btn-block sign_up"/>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-2 col-xs-2"></div>
+        </div>
+    </div>
+    </body>
+</html>
