@@ -9,15 +9,22 @@ def loginForm(db, form):
 	try:
 		username = form['Username']
 		cur = db.query("SELECT COUNT(1) FROM SignUp_Details WHERE username = %s", [username])
-		print(cur)
 		if not cur.fetchone()[0]:
 			raise ServerError('Incorrect username / password')
+
+		cur2 = db.query("SELECT * from SignUp_Details WHERE username = %s", [username])
+		#r = [dict((cur.description[i][0], value) \
+		#for i, value in enumerate(row)) for row in ]
+		query_row = cur2.fetchall()[0]
+		uid = query_row[0]
+		logging.info(uid)
 
 		password = form['password']
 		cur = db.query("SELECT pwd FROM SignUp_Details WHERE username = %s;", [username])
 		for row in cur.fetchall():
+			print(row)
 			if bcrypt.hashpw(password.encode('utf-8'), row[0]) == row[0]:
-				#session['username'] = form['username']
+				session['uid'] = uid
 				print("password match")
 				return None
 
@@ -40,13 +47,6 @@ def signupUser(db, form, ROUNDS):
 		city = form["city"]
 		state = form["state"]
 		xipcode = form["xipcode"]
-		print (username, password, email)
-		print(lname) 
-		print(addressLine1)
-		print(addressLine2)  
-		print(city)
-		print(state) 
-		print(xipcode)
 
 		# if not username or not password or not email:
 		# 	raise ServerError('Fill in all fields')
@@ -57,6 +57,7 @@ def signupUser(db, form, ROUNDS):
 		c = cur.fetchone()
 		if c[0] == 0:
 			cur = db.query("INSERT INTO SignUp_Details (`username`, `pwd`, `signuptime`) VALUES (%s,%s,NOW())", [username, newpassword])
+			#cur = db.query("INSERT INTO User_Info ('Fname', 'Lname', 'email', 'phone_number', 'apt_num', 'street', 'city', 'state', 'zip_code', )VALUES ")
 			return None
 		else:
 			return "User exists"

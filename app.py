@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, jsonify, session, redirect, escape, url_for
 import MySQLdb
 import lib.Users as Users
+import lib.message_boards as message_boards
+#from flask_login import current_user, login_user
 import logging
 
 app = Flask(__name__)
@@ -38,10 +40,12 @@ if __name__ == '__main__':
 	config = {}
 	#execfile("config.conf",config)
 	exec(open("config.conf").read(), config)
-	#app.secret_key = config['app_key']
+	app.secret_key = config['app_key']
 	db = DB()
 	notifications = None
 	logging.basicConfig(filename=config['logfile'], level=logging.INFO)
+	with open(config['logfile'], 'w'):
+		pass
 	
 
 #Routes
@@ -57,45 +61,45 @@ def index():
 		return redirect(url_for('login'))
 	return render_template('index.html',session=session,message=message)
 
-@app.route('/users')
-def users():
-	message = None
-	global notifications
-	if notifications:
-		message = notifications
-		notifications = None
-	if 'username' not in session:
-		notifications = {'message': 'Please log in', 'type': 'warning'}
-		return redirect(url_for('login'))
-	if session['username'] != 'admin':
-		return redirect(url_for('index', message="Admin only page"))
+# @app.route('/users')
+# def users():
+# 	message = None
+# 	global notifications
+# 	if notifications:
+# 		message = notifications
+# 		notifications = None
+# 	if 'username' not in session:
+# 		notifications = {'message': 'Please log in', 'type': 'warning'}
+# 		return redirect(url_for('login'))
+# 	if session['username'] != 'admin':
+# 		return redirect(url_for('index', message="Admin only page"))
 
-	users = Users.getUsers(db)
-	if not users:
-		notifications = {'message': 'Failed to retrieve users', 'type': 'error'}
-		return render_template('users.html', message=message)
-	return render_template('users.html', users=users, message=message)
+# 	users = Users.getUsers(db)
+# 	if not users:
+# 		notifications = {'message': 'Failed to retrieve users', 'type': 'error'}
+# 		return render_template('users.html', message=message)
+# 	return render_template('users.html', users=users, message=message)
 
-@app.route('/users/edit/<user>')
-def editUser(user):
-	return "ToDo"
+# @app.route('/users/edit/<user>')
+# def editUser(user):
+# 	return "ToDo"
 
-@app.route('/users/delete/<user>')
-def delUser(user):
-	global notifications
-	if 'username' not in session:
-		notifications = {'message': 'Please log in', 'type': 'warning'}
-		return redirect(url_for('login'))
-	if session['username'] != 'admin':
-		notifications = {'message': 'Admin only page', 'type': 'error'}
-		return redirect(url_for('index'))
+# @app.route('/users/delete/<user>')
+# def delUser(user):
+# 	global notifications
+# 	if 'username' not in session:
+# 		notifications = {'message': 'Please log in', 'type': 'warning'}
+# 		return redirect(url_for('login'))
+# 	if session['username'] != 'admin':
+# 		notifications = {'message': 'Admin only page', 'type': 'error'}
+# 		return redirect(url_for('index'))
 
-	result = Users.deleteUser(db,user)
-	if not result:
-		notifications = {'message': 'User deleted successfully', 'type': 'success'}
-		return redirect(url_for('users', message="User deleted successfully"))
-	notifications = {'message': 'Something went wrong: '+result, 'type': 'error'}
-	return redirect(url_for('users', message="Something went wrong: "+result))
+# 	result = Users.deleteUser(db,user)
+# 	if not result:
+# 		notifications = {'message': 'User deleted successfully', 'type': 'success'}
+# 		return redirect(url_for('users', message="User deleted successfully"))
+# 	notifications = {'message': 'Something went wrong: '+result, 'type': 'error'}
+# 	return redirect(url_for('users', message="Something went wrong: "+result))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -105,8 +109,9 @@ def login():
 	if notifications:
 		message = notifications
 		notifications = None
-	if 'username' in session:
-		return redirect(url_for('index'))
+	if 'uid' in session:
+		logging.info(session)
+		return redirect(url_for('profile'))
 	print ("Inside login")
 	if request.method == 'POST':
 		result = Users.loginForm(db, request.form)
@@ -122,9 +127,9 @@ def login():
 @app.route('/logout')
 def logout():
 	global notifications
-	if 'username' not in session:
+	if 'uid' not in session:
 		return redirect(url_for('login'))
-	session.pop('username', None)
+	session.pop('uid', None)
 	notifications = {'message': 'Logged out', 'type': 'success'}
 	return redirect(url_for('login'))
 
@@ -143,13 +148,13 @@ def signup():
 		else:
 			message = {'message': 'Something went wrong: '+result, 'type': 'error'}
 			return render_template('sign-up.html', message=message)
-	if 'username' in session and session['username'] == 'admin':
+	if 'uid' in session and session['uid'] == 1:
 		return render_template('sign-up.html', message=message)
 	if config['registration_enabled']:
 		return render_template('sign-up.html', message=message)
 	else:
 		notifications = {'message': 'User registration is disabled by the admin', 'type': 'warning'}
-		if 'username' in session:
+		if 'uid' in session:
 			return redirect(url_for('index'))
 		else:
 			return redirect(url_for('login'))
@@ -157,6 +162,16 @@ def signup():
 @app.route('/profile')
 def profile():
 	return render_template('show_profile.html')
+
+@app.route('/threads')
+def show_message():
+	db = DB()
+	message_boards.getUserThreads(db)
+	cursor.execute('select name,email,message from users left join emails on users.user_id = emails.user_id order by users.user_id desc limit 10 ')
+	allInfo= [dict(name = row[0],email = row[1] ,text = row[2]) for row in cursor.fetchall()]
+	cursor.close()
+	db.close()
+	return render_template('show_message.html', allInfo = allInfo)
 
 
 
