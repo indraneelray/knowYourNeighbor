@@ -165,13 +165,13 @@ def profile():
 
 @app.route('/threads')
 def show_message():
+	if 'uid' not in session:
+		logging.info(session)
+		return redirect(url_for('login'))
 	db = DB()
-	message_boards.getUserThreads(db)
-	cursor.execute('select name,email,message from users left join emails on users.user_id = emails.user_id order by users.user_id desc limit 10 ')
-	allInfo= [dict(name = row[0],email = row[1] ,text = row[2]) for row in cursor.fetchall()]
-	cursor.close()
-	db.close()
-	return render_template('show_message.html', allInfo = allInfo)
+	allInfo = message_boards.getUserThreads(db)
+	logging.info(allInfo)
+	return render_template('show-threads.html', allInfo = allInfo)
 
 
 

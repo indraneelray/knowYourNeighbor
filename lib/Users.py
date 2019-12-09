@@ -47,6 +47,12 @@ def signupUser(db, form, ROUNDS):
 		city = form["city"]
 		state = form["state"]
 		xipcode = form["xipcode"]
+		gender = form["gender"]
+		email_pref = form["email_pref"]
+		if email_pref == "yes":
+			email_pref = 1
+		else:
+			email_pref = 0
 
 		# if not username or not password or not email:
 		# 	raise ServerError('Fill in all fields')
@@ -56,7 +62,8 @@ def signupUser(db, form, ROUNDS):
 		cur = db.query("SELECT COUNT(*) FROM SignUp_Details WHERE username = %s",[username])
 		c = cur.fetchone()
 		if c[0] == 0:
-			cur = db.query("INSERT INTO SignUp_Details (`username`, `pwd`, `signuptime`) VALUES (%s,%s,NOW())", [username, newpassword])
+			# Referred this to prevent SQLI https://realpython.com/prevent-python-sql-injection/
+			cur = db.query("""INSERT INTO SignUp_Details(`username`, `pwd`, `signuptime`) VALUES (%s,%s,NOW())""", (username, newpassword,))
 			#cur = db.query("INSERT INTO User_Info ('Fname', 'Lname', 'email', 'phone_number', 'apt_num', 'street', 'city', 'state', 'zip_code', )VALUES ")
 			return None
 		else:
