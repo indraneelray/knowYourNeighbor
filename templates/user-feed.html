@@ -13,6 +13,9 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular-route.min.js"></script>
+        <script src="//cdn.jsdelivr.net/alertifyjs/1.10.0/alertify.min.js"></script>
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/alertifyjs/1.10.0/css/alertify.min.css" />
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/alertifyjs/1.10.0/css/themes/bootstrap.min.css" />
         <script src="app.js"></script>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <style>
@@ -38,11 +41,13 @@
                         <nav class="navbar navbar-inverse">
                             <div class="container">
                                 <div class="navbar-header">
-                                    <a class="navbar-brand" href="#">knowYourNeighborhood</a>
+                                    <a class="navbar-brand" href="/">knowYourNeighborhood</a>
                                 </div>
                                 <ul class="nav navbar-nav navbar-right">
-                                     <li><a href="show-profile.html"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
-                                     <a href="/logout"><li><button id="logoutBtn" class="btn btn-danger navbar-btn"><span class="glyphicon glyphicon-log-out"></span> Logout</button></li></a>
+                                     <!--<li><a href="/profile"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
+                                     <li><a href="/logout" id="logoutBtn" class="btn btn-danger navbar-btn"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>-->
+                                     <li><a href="/profile"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
+                                     <li><a href="/logout" id="logoutBtn" class="btn btn-danger navbar-btn"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
                                 </ul>
                             </div>
                         </nav>
@@ -91,7 +96,7 @@
                                                     <h4 class="modal-title">Create New Thread</h4>
                                                 </div>
                                                 <div class="modal-body">
-                                                    <form id="createThreadForm">
+                                                    <form id="createThreadForm" method="POST">
                                                         <div class="form-group">
                                                             <label for="title" class="control-label">Thread title</label>
                                                             <input type="text" class="form-control" name="title" required/>
@@ -103,16 +108,18 @@
                                                         <div class="form-group">
                                                             <label for="privacy" class="control-label"><span class="glyphicon glyphicon-lock"></span> Sharing with: </label>
                                                             <select class="form-control" id="privacy">
-                                                                <option value="My Block">My Block</option>
-                                                                <option value="My friends" selected>My Friends</option>
-                                                                <option value="My Neighborhood">My Neighborhood</option>
+                                                                <option value="b">My Block</option>
+                                                                <option value="f" selected>My Friends</option>
+                                                                <option value="h">My Neighborhood</option>
                                                             </select>
                                                         </div>
+                                                        <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                                <form action="" method="POST">
+                                                                    <input type="submit" name="submit_btn" value="Submit" class="btn btn-primary">
+                                                                </form>
+                                                        </div>
                                                     </form>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                    <button type="button" class="btn btn-primary">Save changes</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -123,5 +130,10 @@
                         </div>
                     </div>
             </div>
+            {% if message %}
+            <script>
+            alertify.{{message.type}}("{{ message.message }}");
+            </script>
+            {% endif %}
     </body>
 </html>
