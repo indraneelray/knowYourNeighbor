@@ -37,10 +37,10 @@ def signupUser(conn, form, ROUNDS):
 	error = None
 	try:
 		print("Inside signupuser")
-		username = form['fname']
+		username = form['username']
 		password = form['password']
 		email    = form['email']
-		fname = "fname"
+		fname = form["fname"]
 		lname = form["lname"]
 		phone_number = "12345678"
 		addressLine1 = form["addressLine1"]
@@ -96,22 +96,33 @@ def signupUser(conn, form, ROUNDS):
 		error = str(e)
 		return error
 
-def getUsers(db):
+def logout(db):
 	error = None
 	try:
-		userlist = []
-		cur = db.query("SELECT user, email FROM users")
-		for row in cur.fetchall():
-			userlist.append({'name': row[0], 'email': row[1]})
-		return userlist
+		uid = session['uid']
+		db.query("UPDATE user_info set logout_time = NOW() where uid = %s", [uid])
+		return None
 	except:
+		logging.error("Not updated logout time in DB")
 		error = "Failed"
 		return error
 
-def deleteUser(db, user):
+def requestBlock(db, form):
 	error = None
 	try:
-		cur = db.query("DELETE FROM users WHERE user = %s",[user])
-		return None
+		logging.info("Inside request block")
+		uid = session['uid']
+		#bname = form['bname']
+		logging.info(uid)
+		bname = "7600-7698 3rd Ave"
+		logging.info(bname)
+		cur = db.query("""SELECT bid from Block_Details where bname = %s""", [bname])
+		query_result = cur.fetchone()
+		bid=query_result[0]
+		logging.info(bid)
+		cur = db.query("""INSERT INTO Locality_Access_Request (`uid`, `bid`) VALUES (%s, %s)""",[int(uid), int(bid)])
+		logging.info("Successfully Requested")
 	except:
-		return "Failed"
+		logging.error("Failed to request block")
+		error = "error in requesting block"
+		return error

@@ -116,6 +116,7 @@
                 <div class="col-lg-3 col-md-3 col-sm-2 col-xs-2"></div>
                 <div class="col-lg-6 col-md-6 col-sm-8 col-xs-8" style="background-color: rgba(255, 255, 255, 0.8);">
                     <form id="signUpForm" action="" method="POST">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                         <h1 class="text-center">Sign Up</h1>
                         <div class="form-group">
                             <label class="control-label" for="fname"><b>First Name</b></label>

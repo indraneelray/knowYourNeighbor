@@ -1,11 +1,13 @@
-from flask import Flask, render_template, request, jsonify, session, redirect, escape, url_for
+from flask import Flask, render_template, request, jsonify, session, redirect, escape, url_for, make_response
 import MySQLdb
 import lib.Users as Users
 import lib.message_boards as message_boards
-#from flask_login import current_user, login_user
+from flask_wtf.csrf import CSRFProtect
 import logging
 
 app = Flask(__name__)
+# CSRF Protect
+csrf = CSRFProtect(app)
 
 class ServerError(Exception):pass
 
@@ -60,6 +62,9 @@ def index():
 	# if 'username' not in session:
 	# 	message = {'message': 'Please log in', 'type': 'warning'}
 	# 	return redirect(url_for('login'))
+	if 'uid' in session:
+		logging.info(session)
+		return redirect(url_for('show_feed'))
 	return render_template('index.html',session=session,message=message)
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -79,11 +84,17 @@ def login():
 		print(result)
 		if not result:
 			notifications = {'message': 'Logged in', 'type': 'success'}
-			return redirect(url_for('show_feed'))
+			#XSS Protection
+			response = make_response(render_template('user-feed.html',message=message))
+			response.headers['X-XSS-Protection'] = '1; mode=block'
+			return response
 		else:
 			message = {'message': 'Failed to log in', 'type': 'error'}
 			return render_template('login.html', message=message)
-	return render_template('login.html',message=message)
+	response = make_response(render_template('login.html',message=message))
+	response.headers['X-XSS-Protection'] = '1; mode=block'
+	return response
+	#return render_template('login.html',message=message)
 
 
 @app.route('/logout')
@@ -92,10 +103,16 @@ def logout():
 	global notifications
 	if 'uid' not in session:
 		return redirect(url_for('index'))
-	session.pop('uid', None)
-	notifications = {'message': 'Logged out', 'type': 'success'}
-	return redirect(url_for('index'))
-
+	result = Users.logout(db)
+	if not result:
+		session.pop('uid', None)
+		notifications = {'message': 'Logged out', 'type': 'success'}
+		#XSS Protection
+		response = make_response(render_template('index.html'))
+		response.headers['X-XSS-Protection'] = '1; mode=block'
+		return response
+	else:
+		notifications = {'message': 'Log out Failed', 'type': 'error'}
 
 @app.route('/sign-up', methods=['GET','POST'])
 def signup():
@@ -109,7 +126,10 @@ def signup():
 		result = Users.signupUser(db.conn, request.form, config['pw_rounds'])
 		if not result:
 			notifications = {'message': 'Registration successful', 'type': 'success'}
-			return redirect(url_for('login'))
+			#XSS Protection
+			response = make_response(render_template('index.html'))
+			response.headers['X-XSS-Protection'] = '1; mode=block'
+			return response
 		else:
 			message = {'message': 'Something went wrong: '+result, 'type': 'error'}
 			return render_template('sign-up.html', message=message)
@@ -125,8 +145,23 @@ def signup():
 			return redirect(url_for('join_block'))
 
 
-@app.route('/join_block')
+@app.route('/join_block', methods=['GET','POST'])
 def join_block():
+	if 'uid' not in session:
+		logging.info(session)
+		return redirect(url_for('index'))
+	if request.method == 'POST':
+		logging.info("/join_block")
+		result = Users.requestBlock(db, request.form)
+		if not result:
+			message = {'message': 'Registration successful', 'type': 'success'}
+			return render_template("join_block.html", message=message)
+		else:
+			message = {'message': 'Something went wrong: '+result, 'type': 'error'}
+			return render_template("join_block.html", message=message)
+	if request.method == 'GET':
+		logging.info('/populate available blocks')
+		#blocks = 
 	return render_template('join_block.html')
 
 @app.route('/profile')
@@ -135,6 +170,13 @@ def profile():
 		logging.info(session)
 		return redirect(url_for('login'))
 	return render_template('show_profile.html')
+
+@app.route('/editProfile')
+def editProfile():
+	if 'uid' not in session:
+		logging.info(session)
+		return redirect(url_for('login'))
+	return render_template('edit_profile.html')
 
 @app.route('/threads')
 def show_message():
@@ -146,14 +188,22 @@ def show_message():
 	logging.info(allInfo)
 	return render_template('user-feed.html', allInfo = allInfo)
 
-@app.route('/feed')
+@app.route('/feed', methods=['GET','POST'])
 def show_feed():
+	logging.info("Show feed")
 	if 'uid' not in session:
 		logging.info(session)
 		return redirect(url_for('login'))
 	db = DB()
 	#allInfo = message_boards.getUserThreads(db)
 	#logging.info(allInfo)
+	logging.info(request)
+	if request.method == 'POST':
+		logging.info("POST feed")
+		if request.form['submit_btn'] == 'Submit':
+			logging.info("POSTED from create thread")
+			result = message_boards.postNewThread(db, request.form)
+			logging.info(result)
 	return render_template('user-feed.html')
 
 
