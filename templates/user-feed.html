@@ -68,14 +68,23 @@
                                         <h2>Recently active Threads by Friends</h2>
                                         <div class="row-fluid">
                                                 <ul>
-                                                {% for info in allInfo %}
-                                                <li><p>{{ info.Title }}</p><p class="text-info">{{ info.Description_Msg }}</p><p class="text-success">{{ info.CreatedAt }}</p>
+                                                {% for info in friendFeedInfo %}
+                                                <li><p>{{ info.Title }}</p><p class="text-info">{{ info.Description_Msg }}</p></li>
                                                 {% else %}
                                                 <li><em>Unbelievable.  No messages here so far</em>
                                                 {% endfor %}
                                                 </ul>
                                         </div>
                                         <h2>Recently active Threads by Neighbors</h2>
+                                        <div class="row-fluid">
+                                                <ul>
+                                                {% for info in neighborFeedInfo %}
+                                                <li><p>{{ info.Title }}</p><p class="text-info">{{ info.Description_Msg }}</p></li>
+                                                {% else %}
+                                                <li><em>Unbelievable.  No messages here so far</em>
+                                                {% endfor %}
+                                                </ul>
+                                        </div>
                                         <h2>Recently active Threads in your Neighborhood</h2>
                                         <h2>Recently active Threads in your Block</h2>
                                     </div>
