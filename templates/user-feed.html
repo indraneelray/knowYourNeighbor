@@ -11,8 +11,6 @@
 
         <!-- Latest compiled JavaScript -->
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular-route.min.js"></script>
         <script src="//cdn.jsdelivr.net/alertifyjs/1.10.0/alertify.min.js"></script>
         <link rel="stylesheet" href="//cdn.jsdelivr.net/alertifyjs/1.10.0/css/alertify.min.css" />
         <link rel="stylesheet" href="//cdn.jsdelivr.net/alertifyjs/1.10.0/css/themes/bootstrap.min.css" />
@@ -44,8 +42,18 @@
                                     <a class="navbar-brand" href="/">knowYourNeighborhood</a>
                                 </div>
                                 <ul class="nav navbar-nav navbar-right">
-                                     <li><a href="/profile"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
-                                     <a href="/logout"><li><button id="logoutBtn" class="btn btn-danger navbar-btn"><span class="glyphicon glyphicon-log-out"></span> Logout</button></li></a>
+                                    <li class="dropdown">
+                                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Feed
+                                            <span class="caret"></span></a>
+                                            <ul class="dropdown-menu">
+                                                <li><a href="block_feed.html">Block Feed</a></li>
+                                                <li><a href="hood_feed.html">Hood Feed</a></li>
+                                                <li><a href="friend_feed.html">Friend Feed</a></li>
+                                                <li><a href="neighbor_feed.html">Neighbor Feed</a></li>
+                                            </ul>
+                                    </li>
+                                    <li><a href="/profile"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
+                                    <li><a href="/logout" class="btn-danger navbar-right">Logout</a></li>
                                 </ul>
                             </div>
                         </nav>
@@ -57,32 +65,27 @@
                                 <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8" style="background-color: rgba(255, 255, 255, 0.5);">
                                     <p><h2><span class="glyphicon glyphicon-th-list"></span> Activity Feed</h2></p>
                                     <div class="media">
-                                        <div class="media-left">
-                                            <img src="../static/img/user_icon.png" class="media-object" style="width:45px;"/>
+                                        <h2>Recently active Threads by Friends</h2>
+                                        <div class="row-fluid">
+                                                <ul>
+                                                {% for info in allInfo %}
+                                                <li><p>{{ info.Title }}</p><p class="text-info">{{ info.Description_Msg }}</p><p class="text-success">{{ info.CreatedAt }}</p>
+                                                {% else %}
+                                                <li><em>Unbelievable.  No messages here so far</em>
+                                                {% endfor %}
+                                                </ul>
                                         </div>
-                                        <div class="media-body">
-                                            <h4 class="media-heading">User 1 <small><i> Posted today</i></small></h4>
-                                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-
-                                            <div class="media">
-                                                <div class="media-left">
-                                                    <img src="../static/img/user_icon.png" class="media-object" style="width:45px;"/>
-                                                </div>
-                                                <div class="media-body">
-                                                    <h4 class="media-heading">User 2<small><i> Posted yesterday</i></small></h4>
-                                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-                                                </div>
-
-                                            </div>
-                                        </div>
+                                        <h2>Recently active Threads by Neighbors</h2>
+                                        <h2>Recently active Threads in your Neighborhood</h2>
+                                        <h2>Recently active Threads in your Block</h2>
                                     </div>
                                 </div>
                                 <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1"></div>
                                 <div class="col-lg-2 col-md-2 col-sm-1 col-xs-1" style="background-color: rgba(255, 255, 255, 0.5);">
                                     <ul class="list-group btn-group-vertical" style="margin-top: 10px;">
                                         <li class="list-group-item"><button class="btn btn-info" data-toggle="modal" data-target="#createThreadModal">Create New Thread</button></li>
-                                        <li class="list-group-item"><button class="btn btn-info ">See Approval Requests</button></li>
-                                        <li class="list-group-item"><button class="btn btn-info">Search threads</button></li>
+                                        <li class="list-group-item"><button class="btn btn-info">See Approval Requests</button></li>
+                                        <li class="list-group-item"><a href="search-threads.html" class="btn btn-info">Search threads</a></li>
                                         <li class="list-group-item"><button class="btn btn-info">Search people</button></li>
                                     </ul>
                                     <!--Create thread modal-->
@@ -94,7 +97,7 @@
                                                     <h4 class="modal-title">Create New Thread</h4>
                                                 </div>
                                                 <div class="modal-body">
-                                                    <form id="createThreadForm" method="POST">
+                                                    <form id="createThreadForm">
                                                         <div class="form-group">
                                                             <label for="title" class="control-label">Thread title</label>
                                                             <input type="text" class="form-control" name="title" required/>
@@ -106,18 +109,16 @@
                                                         <div class="form-group">
                                                             <label for="privacy" class="control-label"><span class="glyphicon glyphicon-lock"></span> Sharing with: </label>
                                                             <select class="form-control" id="privacy">
-                                                                <option value="b">My Block</option>
-                                                                <option value="f" selected>My Friends</option>
-                                                                <option value="h">My Neighborhood</option>
+                                                                <option value="My Block">My Block</option>
+                                                                <option value="My friends" selected>My Friends</option>
+                                                                <option value="My Neighborhood">My Neighborhood</option>
                                                             </select>
                                                         </div>
-                                                        <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                                <form action="" method="POST">
-                                                                    <input type="submit" name="submit_btn" value="Submit" class="btn btn-primary">
-                                                                </form>
-                                                        </div>
                                                     </form>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                    <button type="button" class="btn btn-primary">Save changes</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -128,10 +129,5 @@
                         </div>
                     </div>
             </div>
-            {% if message %}
-            <script>
-            alertify.{{message.type}}("{{ message.message }}");
-            </script>
-            {% endif %}
     </body>
 </html>
