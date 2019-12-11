@@ -21,7 +21,7 @@
                 background-color:lightblue;
             }
             .bg-image {
-                background-image: url("../static/img/background-photo.jpg");
+                background-image: url("https://images.unsplash.com/photo-1534430480872-3498386e7856?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1650&q=80");
 
                 /* Full height */
                 height: 100%;
@@ -52,6 +52,16 @@
                                                 <li><a href="neighbor_feed.html">Neighbor Feed</a></li>
                                             </ul>
                                     </li>
+                                    <li class="dropdown">
+                                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Map View
+                                            <span class="caret"></span></a>
+                                            <ul class="dropdown-menu">
+                                                <li><a href="map_threads.html">Threads</a></li>
+                                                <li><a href="map_friends.html">Friends</a></li>
+                                                <li><a href="map_neighbors.html">Neighbors</a></li>
+                                            </ul>
+                                    </li>
+
                                     <li><a href="/profile"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
                                     <li><a href="/logout" class="btn-danger navbar-right">Logout</a></li>
                                 </ul>
@@ -69,7 +79,7 @@
                                         <div class="row-fluid">
                                                 <ul>
                                                 {% for info in friendFeedInfo %}
-                                                <li><p>{{ info.Title }}</p><p class="text-info">{{ info.Description_Msg }}</p></li>
+                                                    <li><a href="show-threads.html"><p>{{ info.Title }}</p></a><p class="text-info">{{ info.Description_Msg }}</p></li>
                                                 {% else %}
                                                 <li><em>Unbelievable.  No messages here so far</em>
                                                 {% endfor %}
@@ -79,7 +89,7 @@
                                         <div class="row-fluid">
                                                 <ul>
                                                 {% for info in neighborFeedInfo %}
-                                                <li><p>{{ info.Title }}</p><p class="text-info">{{ info.Description_Msg }}</p></li>
+                                                    <li><a href="show-threads.html"><p>{{ info.Title }}</p></a><p class="text-info">{{ info.Description_Msg }}</p></li>
                                                 {% else %}
                                                 <li><em>Unbelievable.  No messages here so far</em>
                                                 {% endfor %}
@@ -92,10 +102,11 @@
                                 <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1"></div>
                                 <div class="col-lg-2 col-md-2 col-sm-1 col-xs-1" style="background-color: rgba(255, 255, 255, 0.5);">
                                     <ul class="list-group btn-group-vertical" style="margin-top: 10px;">
-                                        <li class="list-group-item"><button class="btn btn-info" data-toggle="modal" data-target="#createThreadModal">Create New Thread</button></li>
-                                        <li class="list-group-item"><button class="btn btn-info">See Approval Requests</button></li>
-                                        <li class="list-group-item"><a href="search-threads.html" class="btn btn-info">Search threads</a></li>
                                         <li class="list-group-item"><button class="btn btn-info">Search people</button></li>
+                                        <li class="list-group-item"><a href="search_messages.html" class="btn btn-info">Search Messages</a></li>
+                                        <li class="list-group-item"><button class="btn btn-info" data-toggle="modal" data-target="#createThreadModal">Create New Thread</button></li>
+                                        <li class="list-group-item"><button class="btn btn-info">See Approval Requests</button></li> 
+                                        
                                     </ul>
                                     <!--Create thread modal-->
                                     <div class="modal fade" id="createThreadModal" role="dialog">
@@ -118,9 +129,10 @@
                                                         <div class="form-group">
                                                             <label for="privacy" class="control-label"><span class="glyphicon glyphicon-lock"></span> Sharing with: </label>
                                                             <select class="form-control" id="privacy">
-                                                                <option value="My Block">My Block</option>
-                                                                <option value="My friends" selected>My Friends</option>
-                                                                <option value="My Neighborhood">My Neighborhood</option>
+                                                                <option value="b">My Block</option>
+                                                                <option value="f" selected>My Friends</option>
+                                                                <option value="h">My Hood</option>
+                                                                <option value="n">My Neighbors</option>
                                                             </select>
                                                         </div>
                                                     </form>
