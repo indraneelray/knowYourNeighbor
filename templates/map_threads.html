@@ -1,0 +1,99 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Welcome to Neighbourhood</title>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+        <!-- jQuery library -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+        <!-- Latest compiled JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC8SaNs99HdtzGjoVDasS2Dqbg9bpMYQ6w&callback=initMap" async defer></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>
+            .body-background {
+                background-color:lightblue;
+            }
+            .bg-image {
+                background-image: url("../static/img/background-photo.jpg");
+                /* Full height */
+                height: auto;
+                /* Center and scale the image nicely */
+                background-position: center;
+                background-repeat: no-repeat;
+                background-size: cover;
+            }
+            #messagesMap {
+                height: 400px;
+                width: 730px;
+                margin-top: 5%;
+                /* margin-left: 20%; */
+            }
+        </style>
+        <script type="text/javascript">
+                var map;
+                function initMap() {
+                  map = new google.maps.Map(document.getElementById('messagesMap'), {
+                    center: {lat: 40.633374, lng: -74.024944},
+                    zoom: 15
+                  });
+                  var marker=new google.maps.Marker({
+                      position : {lat: 40.633374, lng: -74.024944},
+                      map : map
+                  })
+                }
+        </script>
+    </head>
+    <body class="bg-image">
+            <div class="wrapper">
+                <header class="main-header">
+                    <nav class="navbar navbar-inverse">
+                        <div class="container">
+                            <div class="navbar-header">
+                                <a class="navbar-brand" href="#">knowYourNeighborhood</a>
+                            </div>
+                            <ul class="nav navbar-nav navbar-right">
+                                <li><a href="show-profile.html"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
+                                <li><a href="" id="logoutBtn" class="btn btn-danger navbar-btn"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+                            </ul>
+                        </div>
+                    </nav>
+                </header>
+                <div class="content-wrapper">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4"></div>
+                            <div class="col-lg-6 col-md-6 col-sm-4 col-xs-4">
+                                <form>
+                                    <div class="input-group">
+                                        <input type="text" name="searchKey" class="form-control" placeholder="Search Neighbors in Block "/>
+                                        <div class="input-group-btn">
+                                            <button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4"></div>
+                            <div class="col-lg-6 col-md-6 col-sm-4 col-xs-4">
+                                <div id="messagesMap"></div>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4"></div>
+                            <div class="col-lg-6 col-md-6 col-sm-4 col-xs-4">
+                                <div id="searchResultsForMsg"></div>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </body>
+</html>
