@@ -3,6 +3,9 @@ import logging
 class ServerError(Exception):pass
 
 def getBlockUsersResidents(db, bid):
+    '''
+    Get all residents in a block
+    '''
     logging.info("getting Block residents")
     error = None
     try:

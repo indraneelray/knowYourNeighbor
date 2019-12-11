@@ -205,7 +205,8 @@ def show_feed():
 		for ft in friendThreads:
 			logging.info(ft)
 			threadDeets = message_boards.getThreadDetails(db, ft, 'f')
-			friendThreadInfo.append({'CreatedBy': threadDeets[1], 'Title': threadDeets[2], 'Description_Msg': threadDeets[3], 'CreatedAt': threadDeets[4]})
+			if threadDeets:
+				friendThreadInfo.append({'CreatedBy': threadDeets[1], 'Title': threadDeets[2], 'Description_Msg': threadDeets[3], 'CreatedAt': threadDeets[4]})
 		logging.info(friendThreadInfo)
 
 		# Neighbors
@@ -216,7 +217,8 @@ def show_feed():
 			logging.info(ft)
 			threadDeets = message_boards.getThreadDetails(db, nt, 'n')
 			logging.info(threadDeets)
-			neighborThreadInfo.append({'CreatedBy': threadDeets[1], 'Title': threadDeets[2], 'Description_Msg': threadDeets[3], 'CreatedAt': threadDeets[4]})
+			if threadDeets:
+				neighborThreadInfo.append({'CreatedBy': threadDeets[1], 'Title': threadDeets[2], 'Description_Msg': threadDeets[3], 'CreatedAt': threadDeets[4]})
 		logging.info(neighborThreadInfo)
 
 		#block
@@ -226,11 +228,21 @@ def show_feed():
 		for bt in blockThreads:
 			logging.info(bt)
 			threadDeets = message_boards.getThreadDetails(db, bt, 'b')
-			logging.info("BLOCK Deets")
-			logging.info(threadDeets)
-			blockThreadInfo.append({'CreatedBy': threadDeets[1], 'Title': threadDeets[2], 'Description_Msg': threadDeets[3], 'CreatedAt': threadDeets[4]})
+			if threadDeets:
+				blockThreadInfo.append({'CreatedBy': threadDeets[1], 'Title': threadDeets[2], 'Description_Msg': threadDeets[3], 'CreatedAt': threadDeets[4]})
 
-		return render_template('user-feed.html', friendFeedInfo = friendThreadInfo, neighborFeedInfo = neighborThreadInfo, blockFeedInfo = blockThreadInfo)
+		#hood
+		hoodThreads = message_boards.getUserHoodThreads(db)
+		logging.info("hood threads")
+		logging.info(hoodThreads)
+		hoodThreadInfo = []
+		for ht in hoodThreads:
+			logging.info(ht)
+			threadDeets = message_boards.getThreadDetails(db, ht, 'h')
+			if threadDeets:
+				hoodThreadInfo.append({'CreatedBy': threadDeets[1], 'Title': threadDeets[2], 'Description_Msg': threadDeets[3], 'CreatedAt': threadDeets[4]})
+		
+		return render_template('user-feed.html', friendFeedInfo = friendThreadInfo, neighborFeedInfo = neighborThreadInfo, blockFeedInfo = blockThreadInfo, hoodFeedInfo = hoodThreadInfo)
 	if request.method == 'POST':
 		logging.info("POST feed")
 		if request.form['submit_btn'] == 'Submit':
