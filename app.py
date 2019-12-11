@@ -90,11 +90,12 @@ def login():
 			return response
 		else:
 			message = {'message': 'Failed to log in', 'type': 'error'}
-			return render_template('login.html', message=message)
+			response = make_response(render_template('login.html',message=message))
+			response.headers['X-XSS-Protection'] = '1; mode=block'
+			return response
 	response = make_response(render_template('login.html',message=message))
 	response.headers['X-XSS-Protection'] = '1; mode=block'
 	return response
-	#return render_template('login.html',message=message)
 
 
 @app.route('/logout')
@@ -178,15 +179,15 @@ def editProfile():
 		return redirect(url_for('login'))
 	return render_template('edit_profile.html')
 
-@app.route('/threads')
-def show_message():
-	if 'uid' not in session:
-		logging.info(session)
-		return redirect(url_for('login'))
-	db = DB()
-	allInfo = message_boards.getUserThreads(db)
-	logging.info(allInfo)
-	return render_template('user-feed.html', allInfo = allInfo)
+# @app.route('/threads')
+# def show_message():
+# 	if 'uid' not in session:
+# 		logging.info(session)
+# 		return redirect(url_for('login'))
+# 	db = DB()
+# 	allInfo = message_boards.getUserThreads(db)
+# 	logging.info(allInfo)
+# 	return render_template('user-feed.html', allInfo = allInfo)
 
 @app.route('/feed', methods=['GET','POST'])
 def show_feed():
@@ -195,9 +196,17 @@ def show_feed():
 		logging.info(session)
 		return redirect(url_for('login'))
 	db = DB()
-	#allInfo = message_boards.getUserThreads(db)
-	#logging.info(allInfo)
-	logging.info(request)
+	if request.method == 'GET':
+		logging.info(request)
+		friendThreads = message_boards.getUserFriendThreads(db)
+		logging.info(friendThreads)
+		friendThreadInfo = []
+		for ft in friendThreads:
+			logging.info(ft)
+			threadDeets = message_boards.getThreadDetails(db, ft)
+			friendThreadInfo.append({'CreatedBy': threadDeets[1], 'Title': threadDeets[2], 'Description_Msg': threadDeets[3], 'CreatedAt': threadDeets[4]})
+		logging.info(friendThreadInfo)
+		return render_template('user-feed.html', allInfo = friendThreadInfo)
 	if request.method == 'POST':
 		logging.info("POST feed")
 		if request.form['submit_btn'] == 'Submit':
@@ -205,7 +214,6 @@ def show_feed():
 			result = message_boards.postNewThread(db, request.form)
 			logging.info(result)
 	return render_template('user-feed.html')
-
 
 #Run app
 if __name__ == '__main__':
