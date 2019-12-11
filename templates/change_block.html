@@ -14,7 +14,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <style>
             .img-class{
-                background-image: url("background-photo.jpg");
+                background-image: url("https://images.unsplash.com/photo-1534430480872-3498386e7856?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1650&q=80");
                 background-position: center;
                 background-repeat: no-repeat;
                 background-size: cover;
@@ -23,10 +23,7 @@
                 overflow: auto;
                 position: relative;
             }
-            * {
-                box-sizing: border-box;
-            }
-
+           
             input[type=password]{
                 background:rgba(156, 140, 140, 0.9);
             }
@@ -75,11 +72,9 @@
                         <div class="navbar-header">
                             <a class="navbar-brand" href="#">knowYourNeighborhood</a>
                         </div>
-                        <ul class="nav navbar-nav navbar-right">
-                            <li><button id="logoutBtn" class="btn btn-danger navbar-btn"><span class="glyphicon glyphicon-log-out"></span>Logout  </button></li>
-                        </ul>
                       <ul class="nav navbar-nav navbar-right">
-                            <li><button id="profileBtn" class="btn btn-danger navbar-btn"><span class="glyphicon glyphicon-log-out"></span>Your Profile</button></li>
+                          <li class="nav-item"><button id="logoutBtn" class="btn btn-danger navbar-btn"><span class="glyphicon glyphicon-log-out"></span>Logout  </button></li> <span> </span>
+                            <li class="nav-item"><button id="profileBtn" class="btn btn-danger navbar-btn"><span class="glyphicon glyphicon-log-out"></span>Your Profile</button></li>
                         </ul>
                     </div>
                 </nav>
