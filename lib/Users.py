@@ -1,93 +1,215 @@
-from flask import Flask, render_template, request, jsonify, session, redirect, escape, url_for
+from flask import Flask , jsonify
 import bcrypt
-import logging
+
 class ServerError(Exception):pass
 
-def loginForm(db, form):
-	logging.info('Users login')
-	error = None
-	try:
-		username = form['Username']
-		cur = db.query("SELECT COUNT(1) FROM SignUp_Details WHERE username = %s", [username])
-		if not cur.fetchone()[0]:
-			raise ServerError('Incorrect username / password')
+def signup(conn,form,ROUNDS):
+    error = None
+    try:
+        #password = form['password']
+        #email = form['email']
+        password = "abcd"
+        email ="sunidhi.6@nyu.com"
+        firstname = "sunidhi"
+        lastname ="brajesh"
+        phone_number = "+919916039335"
+        gender= "Female"
+        user_bio= ""
+        email_preference= "1"
+        apartment_no= "B4"
+        street= "68th street"
+        city = "Brooklyn"
+        state="New York"
+        zipcode="11220"
 
-		cur2 = db.query("SELECT * from SignUp_Details WHERE username = %s", [username])
-		#r = [dict((cur.description[i][0], value) \
-		#for i, value in enumerate(row)) for row in ]
-		query_row = cur2.fetchall()[0]
-		uid = query_row[0]
-		logging.info(uid)
+        if not password or not email:
+            raise ServerError('Fill in all fields')
 
-		password = form['password']
-		cur = db.query("SELECT pwd FROM SignUp_Details WHERE username = %s;", [username])
-		for row in cur.fetchall():
-			print(row)
-			if bcrypt.hashpw(password.encode('utf-8'), row[0]) == row[0]:
-				session['uid'] = uid
-				print("password match")
-				return None
+        new_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt(ROUNDS))
 
-		raise ServerError('Incorrect username / password')
-	except ServerError as e:
-		error = str(e)
-		return error
+        cursor = conn.cursor()
+        cursor.execute("SELECT COUNT(*) FROM user_signup WHERE email = %s", [email])
+        c = cursor.fetchone()
+        if c[0] == 0:
+            try:
+                cursor.execute("INSERT INTO user_signup (`email`, `password`, `signup_at`, `updated_at`) VALUES (%s,%s,NOW(),NOW())",[email, new_password])
+                cursor.execute("Select userid from user_signup where email = %s ",[email])
+                d = cursor.fetchone()
+                uid=d[0]
+                cur = cursor.execute("INSERT INTO user_details (`userid`,`firstname`,`lastname`,`email`, `phone_number`, `gender`, `user_bio`,`email_preference`,`apartment_no`,`street`,`city`,`state`,`zipcode`) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", [int(uid),firstname,lastname,email,phone_number,gender,user_bio,email_preference,apartment_no,street,city,state,int(zipcode)])
+                conn.commit()
+            except:
+                print("in rollback")
+                conn.rollback()
+                error ="Error"
+                return error
+            return None
+        else:
+            return "User exists"
+    except ServerError as e:
+        error = str(e)
+        return error
 
-def signupUser(db, form, ROUNDS):
-	error = None
-	try:
-		logging.info('This is an info message')
-		print("Inside signupuser")
-		username = form['fname']
-		password = form['password']
-		email    = form['email']
-		lname = form["lname"]
-		addressLine1 = form["addressLine1"]
-		addressLine2 = form["addressLine2"]
-		city = form["city"]
-		state = form["state"]
-		xipcode = form["xipcode"]
-		gender = form["gender"]
-		email_pref = form["email_pref"]
-		if email_pref == "yes":
-			email_pref = 1
-		else:
-			email_pref = 0
+def getUser(db,form):
+    error = None
+    try:
+        email = "sunidhi@nyu.com"
+        password = "abcd"
+        hashed_password = bcrypt.hashpw(password.encode('utf8'), bcrypt.gensalt())
+        string_password = hashed_password.decode('utf8')
 
-		# if not username or not password or not email:
-		# 	raise ServerError('Fill in all fields')
+        if not password or not email:
+            raise ServerError('Fill in all fields')
 
-		newpassword = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt(ROUNDS))
+        cur = db.query("SELECT COUNT(1) FROM user_signup where email = %s",[email])
 
-		cur = db.query("SELECT COUNT(*) FROM SignUp_Details WHERE username = %s",[username])
-		c = cur.fetchone()
-		if c[0] == 0:
-			# Referred this to prevent SQLI https://realpython.com/prevent-python-sql-injection/
-			cur = db.query("""INSERT INTO SignUp_Details(`username`, `pwd`, `signuptime`) VALUES (%s,%s,NOW())""", (username, newpassword,))
-			#cur = db.query("INSERT INTO User_Info ('Fname', 'Lname', 'email', 'phone_number', 'apt_num', 'street', 'city', 'state', 'zip_code', )VALUES ")
-			return None
-		else:
-			return "User exists"
-	except ServerError as e:
-		error = str(e)
-		return error
+        #if not cur.fetchone()[0]:
+            #raise ServerError('Incorrect username / password')
+        if not cur.fetchone()[0] == 1:
+            print("in check")
+            raise ServerError('Incorrect username / password')
 
-def getUsers(db):
-	error = None
-	try:
-		userlist = []
-		cur = db.query("SELECT user, email FROM users")
-		for row in cur.fetchall():
-			userlist.append({'name': row[0], 'email': row[1]})
-		return userlist
-	except:
-		error = "Failed"
-		return error
+        cur = db.query("SELECT password FROM user_signup WHERE email = %s;", [email])
+        #print(cur.fetchall())
+        for row in cur.fetchall():
+            print(type(row))
+            if bcrypt.hashpw(string_password.encode('utf-8'), row[0].encode('utf-8')) == row[0]:
+                #session['username'] = form['username']
+                print("password match:")
+                return error
 
-def deleteUser(db, user):
-	error = None
-	try:
-		cur = db.query("DELETE FROM users WHERE user = %s",[user])
-		return None
-	except:
-		return "Failed"
+        #raise ServerError('Incorrect username / password')
+    except ServerError as e:
+        error = str(e)
+        return error
+
+def update_password(conn, form):
+    error = None
+    try :
+        password = ""
+        userid = ""
+        if not password:
+            raise ServerError('Fill in all fields')
+        cursor = conn.cursor()
+        cursor.execute("SELECT COUNT(*) FROM user_signup WHERE userid = %s", [userid])
+        c = cursor.fetchone()
+        if c[0] == 1:
+            cursor.execute(
+            "UPDATE user_signup set password = %s and updated_at = NOW() where userid = %s",
+            [password,userid])
+            conn.commit()
+            return None
+        else:
+            raise ServerError("User doesnt exist'")
+    except ServerError as e:
+        error = str(e)
+        return error
+
+
+
+def  update_block_details(conn,form):
+    error = None
+    try:
+        blockid=""
+        if not password:
+            raise ServerError('Fill in all fields')
+        cursor = conn.cursor()
+        cursor.execute("SELECT COUNT(*) FROM user_signup WHERE userid = %s", [userid])
+        c = cursor.fetchone()
+        if c[0] == 1:
+            cursor.execute("SELECT blockid from user_details where userid= %s",[userid])
+            d = cursor.fetchone()
+            if d[0] != "NULL":
+                cursor.execute("UPDATE user_details set blockid = %s where userid = %s",[blockid,userid])
+                conn.commit()
+                return None
+            else:
+                raise ServerError("Block is not null")
+        else:
+            raise ServerError("User does not exist")
+    except ServerError as e:
+        error = str(e)
+        return error
+
+def view_profile(conn,form):
+    error =None
+    cursor = conn.cursor()
+    profile_details = []
+    email="sunidhi.4@nyu.com"
+    try:
+        cursor.execute("select * from user_details where email = %s",[email])
+        c = cursor.fetchone()
+        if c is not None:
+            print("c is:",c)
+            return jsonify(c)
+        else :
+            raise ServerError("User does not exist")
+    except ServerError as e:
+        error = str(e)
+        return error
+
+
+def update_profile_details(conn,form):
+    error =None
+    try:
+        firstname = ""
+        lastname =""
+        phonenumber=""
+        user_bio=""
+        apartment_no=""
+        street=""
+        city=""
+        state=""
+        zipcode=""
+
+        cursor = conn.cursor()
+        try:
+            if firstname:
+                cursor.execute("UPDATE user_details set firstname = %s where userid = %s",[firstname,userid])
+            if lastname :
+                cursor.execute("UPDATE user_details set lastname = %s where userid = %s", [lastname, userid])
+            if phonenumber:
+                cursor.execute("UPDATE user_details set phone_number = %s where userid = %s", [phonenumber, userid])
+            if user_bio :
+                cursor.execute("UPDATE user_details set user_bio = %s where userid = %s", [user_bio, userid])
+            if apartment_no :
+                cursor.execute("UPDATE user_details set apartment_no = %s where userid = %s", [apartment_no, userid])
+            if city :
+                cursor.execute("UPDATE user_details set city = %s where userid = %s", [city, userid])
+            if street :
+                cursor.execute("UPDATE user_details set street = %s where userid = %s", [street, userid])
+            if state :
+                cursor.execute("UPDATE user_details set state = %s where userid = %s", [state, userid])
+            if zipcode :
+                cursor.execute("UPDATE user_details set zipcode = %s where userid = %s", [zipcode, userid])
+            conn.commit()
+            return None
+        except:
+            print("in rollback")
+            conn.rollback()
+            error = "Error in database update"
+            return error
+    except ServerError as e:
+        error = str(e)
+        return error
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
