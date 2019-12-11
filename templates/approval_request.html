@@ -1,5 +1,5 @@
-<!DOCTYPE html>
-<html lang = "en">
+<!DOCTYPE HTML>
+<html ng-app="myApp">
     <head>
         <meta charset="UTF-8">
         <title>Welcome to Neighbourhood</title>
@@ -11,9 +11,6 @@
 
         <!-- Latest compiled JavaScript -->
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-        <script src="//cdn.jsdelivr.net/alertifyjs/1.10.0/alertify.min.js"></script>
-        <link rel="stylesheet" href="//cdn.jsdelivr.net/alertifyjs/1.10.0/css/alertify.min.css" />
-        <link rel="stylesheet" href="//cdn.jsdelivr.net/alertifyjs/1.10.0/css/themes/bootstrap.min.css" />
         <script src="app.js"></script>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <style>
@@ -30,10 +27,11 @@
                 background-position: center;
                 background-repeat: no-repeat;
                 background-size:inherit;
+
             }
         </style>
     </head>
-  <body class="bg-image">
+    <body class="bg-image">
             <div class="wrapper">
                     <header class="main-header">
                         <nav class="navbar navbar-inverse">
@@ -73,15 +71,40 @@
                             <div class="row">
                                 <div class="col-lg-1 col-md-1 col-sm-2 col-xs-2"></div>
                                 <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8" style="background-color: rgba(255, 255, 255, 0.8);">
-                                    <div class="row-fluid">
-                                            {% for info in friendFeedInfo %}
-                                            <p><h2>{{ info.Title }}</h2></p><p class="text-info">{{ info.Description_Msg }}</p>
+                                    <h2 class="text-center">Approval Requests</h2>
+                                    <div class="media">
+                                        <div class="media-left">
+                                            <img src="../static/img/user_icon.png" class="media-object" style="width:60px">
+                                        </div>
+                                        <div class="media-body">
+                                            <h4 class="media-heading">John Doe</h4>
+                                            <div class="btn-group btn-group-lg">
+                                                <a href="#" class="btn btn-success">Approve</a>
+                                            </div>
+                                            <div class="btn-group btn-group-lg">
+                                                <a href="#" class="btn btn-danger">Decline</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="media">
+                                        <div class="media-left">
+                                            <img src="../static/img/user_icon.png" class="media-object" style="width:60px">
+                                        </div>
+                                        <div class="media-body">
+                                            <h4 class="media-heading">John Doe</h4>
+                                            <div class="btn-group btn-group-lg">
+                                                <a href="#" class="btn btn-success">Approve</a>
+                                            </div>
+                                            <div class="btn-group btn-group-lg">
+                                                <a href="#" class="btn btn-danger">Decline</a>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-lg-1 col-md-1 col-sm-2 col-xs-2"></div>
                             </div>
                         </div>
                     </div>
-        </div>
-</body>
+            </div>
+    </body>
 </html>
