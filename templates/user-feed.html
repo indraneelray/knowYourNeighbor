@@ -96,7 +96,13 @@
                                         </ul>
                                         </div>
                                         <h2>Recently active Threads in your Neighborhood</h2>
-                                        
+                                        <ul>
+                                                {% for info in hoodFeedInfo %}
+                                                    <li><a href="show-threads.html"><p>{{ info.Title }}</p></a><p class="text-info">{{ info.Description_Msg }}</p></li>
+                                                {% else %}
+                                                <li><em>Unbelievable.  No recent messages here so far</em>
+                                                {% endfor %}
+                                        </ul>
                                         <h2>Recently active Threads in your Block</h2>
                                         <ul>
                                                 {% for info in blockFeedInfo %}
