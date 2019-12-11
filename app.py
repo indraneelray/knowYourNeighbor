@@ -198,15 +198,39 @@ def show_feed():
 	db = DB()
 	if request.method == 'GET':
 		logging.info(request)
+		# friend 
 		friendThreads = message_boards.getUserFriendThreads(db)
 		logging.info(friendThreads)
 		friendThreadInfo = []
 		for ft in friendThreads:
 			logging.info(ft)
-			threadDeets = message_boards.getThreadDetails(db, ft)
+			threadDeets = message_boards.getThreadDetails(db, ft, 'f')
 			friendThreadInfo.append({'CreatedBy': threadDeets[1], 'Title': threadDeets[2], 'Description_Msg': threadDeets[3], 'CreatedAt': threadDeets[4]})
 		logging.info(friendThreadInfo)
-		return render_template('user-feed.html', allInfo = friendThreadInfo)
+
+		# Neighbors
+		neighborThreads = message_boards.getUserNeighborThreads(db)
+		logging.info(neighborThreads)
+		neighborThreadInfo = []
+		for nt in neighborThreads:
+			logging.info(ft)
+			threadDeets = message_boards.getThreadDetails(db, nt, 'n')
+			logging.info(threadDeets)
+			neighborThreadInfo.append({'CreatedBy': threadDeets[1], 'Title': threadDeets[2], 'Description_Msg': threadDeets[3], 'CreatedAt': threadDeets[4]})
+		logging.info(neighborThreadInfo)
+
+		#block
+		blockThreads = message_boards.getUserBlockThreads(db)
+		logging.info(blockThreads)
+		blockThreadInfo = []
+		for bt in blockThreads:
+			logging.info(bt)
+			threadDeets = message_boards.getThreadDetails(db, bt, 'b')
+			logging.info("BLOCK Deets")
+			logging.info(threadDeets)
+			blockThreadInfo.append({'CreatedBy': threadDeets[1], 'Title': threadDeets[2], 'Description_Msg': threadDeets[3], 'CreatedAt': threadDeets[4]})
+
+		return render_template('user-feed.html', friendFeedInfo = friendThreadInfo, neighborFeedInfo = neighborThreadInfo, blockFeedInfo = blockThreadInfo)
 	if request.method == 'POST':
 		logging.info("POST feed")
 		if request.form['submit_btn'] == 'Submit':
@@ -217,13 +241,4 @@ def show_feed():
 
 #Run app
 if __name__ == '__main__':
-	if config['ssl']:
-		context = (config['ssl_crt'],config['ssl_key'])
-		app.run(
-			host=config['server_ip'],
-			port=config['server_port'],
-			ssl_context=context,
-			debug=config['debug']
-		)
-	else:
 		app.run()
