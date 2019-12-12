@@ -32,3 +32,10 @@ def getBlockUsersResidents(db, bid):
         logging.error("error fetching residents of same block")
         error = "error"
         return error
+
+def getBlockNameFromBid(db, bid):
+    logging.info("getBlockNameFromBid")
+    cur = db.query("select bname from block_details where bid = %s", [bid])
+    bname = cur.fetchone()[0]
+    logging.info(bname)
+    return bname
