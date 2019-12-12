@@ -99,7 +99,7 @@
                 <nav class="navbar navbar-inverse">
                     <div class="container-fluid">
                         <div class="navbar-header">
-                            <a class="navbar-brand" href="#">knowYourNeighborhood</a>
+                            <a class="navbar-brand" href="/">knowYourNeighborhood</a>
                         </div>
                         <ul class="nav navbar-nav navbar-right">
                             <a href="/logout"><li><button id="logoutBtn" class="btn btn-danger navbar-btn"><span class="glyphicon glyphicon-log-out"></span>Logout</button></li></a>
@@ -180,7 +180,9 @@
                                 </div>	
                             </div>
                         <div class="form-group">
-                            <button type="submit" class="btn btn-success btn-lg btn-block sign_up" onclick="window.location.href = 'https://w3docs.com'"> Update Profile</button>
+                                <!--<button type="submit" class="btn btn-success btn-lg btn-block sign_up" onclick="window.location.href = '/editProfile'"> Update Profile</button>-->
+                                <a href="/editProfile"><button type="button" id="updateBtn" class="btn btn-success btn-lg btn-block">Update Profile</button></a>
+
                         </div>
                         <!-- <input class="sign_up" type="submit" value="Sign Up"/> -->
                     </div>

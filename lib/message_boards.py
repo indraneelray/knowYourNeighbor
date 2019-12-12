@@ -3,10 +3,10 @@ import logging
 import lib.Friends as Friends
 import lib.Neighbors as Neighbors
 import lib.Block as Block
+import lib.Hood as Hood
 class ServerError(Exception):pass
 
-def getUserFriendThreads(db):
-	error = None
+def getUserFriendThreads(db, latest = False):
 	try:
 		logging.info("getting friends")
 		#threadlist = []
@@ -19,7 +19,7 @@ def getUserFriendThreads(db):
 		logging.info(friends)
 		tids = []
 		for friendId in friends:
-			tids = getLatestCommentTIDs(db, friendId, logout_time)
+			tids = getCommentTIDs(db, friendId, logout_time, latest)
 		logging.info(tids)
 		threads = []
 		for tid in tids:
@@ -32,11 +32,9 @@ def getUserFriendThreads(db):
 		return threads
 	except:
 		logging.info("error fetching user threads")
-		error = "Failed"
-		return error
+		return None
 
-def getUserNeighborThreads(db):
-	error = None
+def getUserNeighborThreads(db, latest = False):
 	try:
 		logging.info("getting neighbor threads")
 		#threadlist = []
@@ -49,7 +47,7 @@ def getUserNeighborThreads(db):
 		logging.info(neighbors)
 		tids = []
 		for neighborId in neighbors:
-			tids = getLatestCommentTIDs(db, neighborId, logout_time)
+			tids = getCommentTIDs(db, neighborId, logout_time, latest)
 			logging.info(tids)
 		threads = []
 		for tid in tids:
@@ -62,12 +60,10 @@ def getUserNeighborThreads(db):
 		return threads
 	except:
 		logging.info("error fetching user threads")
-		error = "Failed"
-		return error
+		return None
 
 
-def getUserBlockThreads(db):
-	error = None
+def getUserBlockThreads(db, latest = False):
 	try:
 		logging.info("getting block threads")
 		uid = session['uid']
@@ -81,9 +77,10 @@ def getUserBlockThreads(db):
 		logging.info(blockUsers)
 		tids = []
 		for user in blockUsers:
-			blockTid = getLatestCommentTIDs(db, user, logout_time)
-			if blockTid:
-				tids.append(blockTid)
+			blockTids = getCommentTIDs(db, user, logout_time, latest)
+			if blockTids:
+				for b in blockTids:
+					tids.append(b)
 		logging.info("tids")
 		logging.info(tids)
 		threads = []
@@ -94,8 +91,46 @@ def getUserBlockThreads(db):
 		return threads
 	except:
 		logging.info("error fetching user threads")
-		error = "Failed"
-		return error
+		return None
+
+def getUserHoodThreads(db, latest = False):
+	try:
+		logging.info("getting hood threads")
+		# get logout time
+		uid = session['uid']
+		curTime = db.query("""select logout_time from user_info where uid = %s""", [uid])
+		logout_time = curTime.fetchone()[0]
+		logging.info(logout_time)
+		# get users blockid
+		cur2 = db.query("""select block_id from user_info where uid = %s""", [uid])
+		logging.info("bid")
+		bid = cur2.fetchone()[0]
+		logging.info(bid)
+		# get hood id from block id
+		curh = db.query("""select nid from block_details where bid = %s""", [bid])
+		hid = curh.fetchone()[0]
+		logging.info("hid")
+		logging.info(hid)
+		hoodUsers = Hood.getHoodResidents(db, hid)
+		logging.info('hood users')
+		logging.info(hoodUsers)
+		tids = []
+		for user in hoodUsers:
+			hoodTid = getCommentTIDs(db, user, logout_time, latest)
+			if hoodTid:
+				for h in hoodTid:
+					tids.append(h)
+		logging.info("tids")
+		logging.info(tids)
+		threads = []
+		for tid in tids:
+			threads.append(tid)
+		logging.info("threads")
+		logging.info(threads)
+		return threads
+	except:
+		logging.info("error fetching user threads")
+		return None
 
 def postNewThread(db, form):
 	error = None
@@ -119,19 +154,27 @@ def postNewThread(db, form):
 		error = "Failed"
 		return error
 
-def getLatestCommentTIDs(db, uid, logout_time):
-	logging.info("getting latest comments")
+def getCommentTIDs(db, uid, logout_time, latest = False):
+	logging.info("getting comments")
 	try:
 		logging.info(logout_time)
 
 		logout = str(logout_time)
 		logging.info(logout)
 		logging.info(type(logout_time))
-		cur = db.query("""select distinct(tid) from ThreadComments where comment_by = %s and commentTime > %s""", (int(uid), logout))
+		if latest is True:
+			logging.info("Finding latest active threads")
+			cur = db.query("""select distinct(tid) from ThreadComments where comment_by = %s and commentTime > %s""", [int(uid), logout])
+		else:
+			logging.info("Finding all threads")
+			cur = db.query("""select distinct(tid) from ThreadComments where comment_by = %s""", [int(uid)])
 		logging.info("success query")
+		tids = cur.fetchall()
+		logging.info(tids)
 		threads = []
-		for c in cur.fetchall()[0]:
-			threads.append(c)
+		for c in tids:
+			logging.info(c[0])
+			threads.append(c[0])
 		logging.info(threads)
 		logging.info("got latest comments")
 		return threads
@@ -139,17 +182,17 @@ def getLatestCommentTIDs(db, uid, logout_time):
 		logging.info("failed to get latest comment threads")
 		return None
 
-#access level
-def getThreadDetails(db, tid, access_level = 'h'):
+def getThreadDetails(db, tid, access_level):
 	error = None
 	try:
 		logging.info("getting message threads")
+		logging.info(tid)
 		cur = db.query("""select * from messagethreads where tid = %s and access_level = %s""", [tid, access_level])
-		threadContent = cur.fetchall()[0]
-		logging.info(threadContent)
-		return threadContent
+		metaThreadContent = cur.fetchone()
+		logging.info(metaThreadContent)
+		return metaThreadContent
 	except:
-		logging.info("error posting in user thread")
+		logging.error("error getting thread details")
 		error = "Failed"
 		return error
 	

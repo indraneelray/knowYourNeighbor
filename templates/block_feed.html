@@ -36,17 +36,17 @@
                         <nav class="navbar navbar-inverse">
                             <div class="container">
                                 <div class="navbar-header">
-                                    <a class="navbar-brand" href="#">knowYourNeighborhood</a>
+                                    <a class="navbar-brand" href="/">knowYourNeighborhood</a>
                                 </div>
                                 <ul class="nav navbar-nav navbar-right">
                                     <li class="dropdown">
                                         <a class="dropdown-toggle" data-toggle="dropdown" href="#">Feed
                                             <span class="caret"></span></a>
                                             <ul class="dropdown-menu">
-                                                <li><a href="block_feed.html">Block Feed</a></li>
-                                                <li><a href="hood_feed.html">Hood Feed</a></li>
-                                                <li><a href="friend_feed.html">Friend Feed</a></li>
-                                                <li><a href="neighbor_feed.html">Neighbor Feed</a></li>
+                                                <li><a href="/block-feed">Block Feed</a></li>
+                                                <li><a href="/hood-feed">Hood Feed</a></li>
+                                                <li><a href="/friend-feed">Friend Feed</a></li>
+                                                <li><a href="/neighbor-feed">Neighbor Feed</a></li>
                                             </ul>
                                     </li>
                                     <li><a href="show-profile.html"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
@@ -62,24 +62,13 @@
                                 <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8" style="background-color: rgba(255, 255, 255, 0.5);">
                                     <p><h2><span class="glyphicon glyphicon-th-list"></span> Block Feed</h2></p>
                                     <div class="media">
-                                        <div class="media-left">
-                                            <img src="../static/img/user_icon.png" class="media-object" style="width:45px;"/>
-                                        </div>
-                                        <div class="media-body">
-                                            <h4 class="media-heading">User 1 <small><i> Posted today</i></small></h4>
-                                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-
-                                            <div class="media">
-                                                <div class="media-left">
-                                                    <img src="../static/img/user_icon.png" class="media-object" style="width:45px;"/>
-                                                </div>
-                                                <div class="media-body">
-                                                    <h4 class="media-heading">User 2<small><i> Posted yesterday</i></small></h4>
-                                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-                                                </div>
-
-                                            </div>
-                                        </div>
+                                            <ul>
+                                                    {% for info in blockFeedInfo %}
+                                                        <li><a href="/show-thread"></a><p>{{ info.Title }}</p></a><p class="text-info">{{ info.Description_Msg }}</p></li>
+                                                    {% else %}
+                                                    <li><em>Unbelievable.  No recent messages here so far</em>
+                                                    {% endfor %}
+                                            </ul>
                                     </div>
                                 </div>
                                 <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1"></div>

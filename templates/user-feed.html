@@ -39,17 +39,17 @@
                         <nav class="navbar navbar-inverse">
                             <div class="container">
                                 <div class="navbar-header">
-                                    <a class="navbar-brand" href="user-feed.html">knowYourNeighborhood</a>
+                                    <a class="navbar-brand" href="/">knowYourNeighborhood</a>
                                 </div>
                                 <ul class="nav navbar-nav navbar-right">
                                     <li class="dropdown">
                                         <a class="dropdown-toggle" data-toggle="dropdown" href="#">Feed
                                             <span class="caret"></span></a>
                                             <ul class="dropdown-menu">
-                                                <li><a href="block_feed.html">Block Feed</a></li>
-                                                <li><a href="hood_feed.html">Hood Feed</a></li>
-                                                <li><a href="friend_feed.html">Friend Feed</a></li>
-                                                <li><a href="neighbor_feed.html">Neighbor Feed</a></li>
+                                                <li><a href="/block-feed">Block Feed</a></li>
+                                                <li><a href="/hood-feed">Hood Feed</a></li>
+                                                <li><a href="/friend-feed">Friend Feed</a></li>
+                                                <li><a href="/neighbor-feed">Neighbor Feed</a></li>
                                             </ul>
                                     </li>
                                     <li class="dropdown">
@@ -79,7 +79,7 @@
                                         <div class="row-fluid">
                                                 <ul>
                                                 {% for info in friendFeedInfo %}
-                                                    <li><a href="show-threads.html"><p>{{ info.Title }}</p></a><p class="text-info">{{ info.Description_Msg }}</p></li>
+                                                    <li><a href="/show-thread"><p>{{ info.Title }}</p></a><p class="text-info">{{ info.Description_Msg }}</p></li>
                                                 {% else %}
                                                 <li><em>Unbelievable.  No recent messages here so far</em>
                                                 {% endfor %}
@@ -89,18 +89,24 @@
                                         <div class="row-fluid">
                                         <ul>
                                             {% for info in neighborFeedInfo %}
-                                                <li><a href="show-threads.html"><p>{{ info.Title }}</p></a><p class="text-info">{{ info.Description_Msg }}</p></li>
+                                                <li><a href="/show-thread"><p>{{ info.Title }}</p></a><p class="text-info">{{ info.Description_Msg }}</p></li>
                                             {% else %}
                                             <li><em>Unbelievable.  No recent messages here so far</em>
                                             {% endfor %}
                                         </ul>
                                         </div>
                                         <h2>Recently active Threads in your Neighborhood</h2>
-                                        
+                                        <ul>
+                                                {% for info in hoodFeedInfo %}
+                                                    <li><a href="/show-thread"><p>{{ info.Title }}</p></a><p class="text-info">{{ info.Description_Msg }}</p></li>
+                                                {% else %}
+                                                <li><em>Unbelievable.  No recent messages here so far</em>
+                                                {% endfor %}
+                                        </ul>
                                         <h2>Recently active Threads in your Block</h2>
                                         <ul>
                                                 {% for info in blockFeedInfo %}
-                                                    <li><a href="show-threads.html"><p>{{ info.Title }}</p></a><p class="text-info">{{ info.Description_Msg }}</p></li>
+                                                    <li><a href="/show-thread"><p>{{ info.Title }}</p></a><p class="text-info">{{ info.Description_Msg }}</p></li>
                                                 {% else %}
                                                 <li><em>Unbelievable.  No recent messages here so far</em>
                                                 {% endfor %}
