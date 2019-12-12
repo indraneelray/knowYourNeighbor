@@ -4,6 +4,7 @@ import lib.Users as Users
 import lib.message_boards as message_boards
 import lib.Threads as Threads
 import lib.Block as Block
+import lib.Search as Search
 from flask_wtf.csrf import CSRFProtect
 import logging
 
@@ -364,6 +365,38 @@ def neighborfeed():
 				neighborThreadInfo.append({'tid': threadDeets[0],'CreatedBy': threadDeets[1], 'Title': threadDeets[2], 'Description_Msg': threadDeets[3], 'CreatedAt': threadDeets[4]})
 		logging.info(neighborThreadInfo)
 	return render_template('neighbor_feed.html', neighborFeedInfo = neighborThreadInfo)
+
+@app.route("/search/thread", methods=['GET', 'POST'])
+def search_threads():
+	notifications = None
+	result = Search.search_thread(db.conn, request.form)
+	logging.info("result thread")
+	logging.info(result)
+	if request.method == 'GET':
+		return render_template('map_threads.html')
+	if not result:
+		message = {'message': 'Search failed', 'type': 'failure'}
+		return render_template('show_friends.html', message = message)
+	else:
+		notifications = result
+		return render_template('map_threads.html' )
+
+
+# @app.route("/search/people", methods=['GET', 'POST'])
+# def search_people():
+# 	notifications = None
+# 	result = Search.search_people(db.conn, request.form)
+# 	logging.info("result people")
+# 	logging.info(result)
+# 	if not result:
+# 		message = {'message': 'Search failed', 'type': 'failure'}
+# 		return render_template('show_friends.html')
+# 		return message
+
+# 	else:
+# 		notifications = result
+# 		return render_template('show_friends.html')
+
 
 #Run app
 if __name__ == '__main__':
