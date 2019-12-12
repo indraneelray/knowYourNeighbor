@@ -199,7 +199,7 @@ def show_feed():
 			logging.info(ft)
 			threadDeets = message_boards.getThreadDetails(db, ft, 'f')
 			if threadDeets:
-				friendThreadInfo.append({'CreatedBy': threadDeets[1], 'Title': threadDeets[2], 'Description_Msg': threadDeets[3], 'CreatedAt': threadDeets[4]})
+				friendThreadInfo.append({'tid': threadDeets[0], 'CreatedBy': threadDeets[1], 'Title': threadDeets[2], 'Description_Msg': threadDeets[3], 'CreatedAt': threadDeets[4]})
 		logging.info(friendThreadInfo)
 
 		# Neighbors
@@ -211,7 +211,7 @@ def show_feed():
 			threadDeets = message_boards.getThreadDetails(db, nt, 'n')
 			logging.info(threadDeets)
 			if threadDeets:
-				neighborThreadInfo.append({'CreatedBy': threadDeets[1], 'Title': threadDeets[2], 'Description_Msg': threadDeets[3], 'CreatedAt': threadDeets[4]})
+				neighborThreadInfo.append({'tid': threadDeets[0], 'CreatedBy': threadDeets[1], 'Title': threadDeets[2], 'Description_Msg': threadDeets[3], 'CreatedAt': threadDeets[4]})
 		logging.info(neighborThreadInfo)
 
 		#block
@@ -222,7 +222,7 @@ def show_feed():
 			logging.info(bt)
 			threadDeets = message_boards.getThreadDetails(db, bt, 'b')
 			if threadDeets:
-				blockThreadInfo.append({'CreatedBy': threadDeets[1], 'Title': threadDeets[2], 'Description_Msg': threadDeets[3], 'CreatedAt': threadDeets[4]})
+				blockThreadInfo.append({'tid': threadDeets[0], 'CreatedBy': threadDeets[1], 'Title': threadDeets[2], 'Description_Msg': threadDeets[3], 'CreatedAt': threadDeets[4]})
 
 		#hood
 		hoodThreads = message_boards.getUserHoodThreads(db, latest=True)
@@ -234,7 +234,7 @@ def show_feed():
 			logging.info("HOOD threadDeets")
 			logging.info(threadDeets)
 			if threadDeets:
-				hoodThreadInfo.append({'CreatedBy': threadDeets[1], 'Title': threadDeets[2], 'Description_Msg': threadDeets[3], 'CreatedAt': threadDeets[4]})
+				hoodThreadInfo.append({'tid': threadDeets[0], 'CreatedBy': threadDeets[1], 'Title': threadDeets[2], 'Description_Msg': threadDeets[3], 'CreatedAt': threadDeets[4]})
 		
 		return render_template('user-feed.html', friendFeedInfo = friendThreadInfo, neighborFeedInfo = neighborThreadInfo, blockFeedInfo = blockThreadInfo, hoodFeedInfo = hoodThreadInfo)
 	
@@ -260,13 +260,26 @@ def blockfeed():
 		logging.info(bt)
 		threadDeets = message_boards.getThreadDetails(db, bt, 'b')
 		if threadDeets:
-			blockThreadInfo.append({'CreatedBy': threadDeets[1], 'Title': threadDeets[2], 'Description_Msg': threadDeets[3], 'CreatedAt': threadDeets[4]})
+			blockThreadInfo.append({'tid': threadDeets[0], 'CreatedBy': threadDeets[1], 'Title': threadDeets[2], 'Description_Msg': threadDeets[3], 'CreatedAt': threadDeets[4]})
 
 	return render_template('block_feed.html', blockFeedInfo = blockThreadInfo)
 
+
+# TODO : Populate the thread details on top
 @app.route('/show-thread', methods=['GET','POST'])
 def showThread():
-	return render_template('show-threads.html')
+	logging.info('get thread')
+	if request.method == 'GET':
+		logging.info(request)
+		comments = message_boards.showThreadComments(db)
+		logging.info(comments)
+		commentInfo = []
+		# get thread title
+		title = message_boards.getThreadTitle(db)
+		for c in comments:
+			if comments:
+				commentInfo.append({'comment': c[0], 'commentTime': c[1], 'FName': c[2], 'LName': c[3]})
+		return render_template('show-threads.html', threadCommentInfo = commentInfo, threadTitle = title)
 
 @app.route('/hood-feed', methods=['GET','POST'])
 def hoodfeed():
@@ -280,7 +293,7 @@ def hoodfeed():
 		logging.info("getting hood thread deets")
 		threadDeets = message_boards.getThreadDetails(db, ht, 'h')
 		if threadDeets:
-			hoodThreadInfo.append({'CreatedBy': threadDeets[1], 'Title': threadDeets[2], 'Description_Msg': threadDeets[3], 'CreatedAt': threadDeets[4]})
+			hoodThreadInfo.append({'tid': threadDeets[0], 'CreatedBy': threadDeets[1], 'Title': threadDeets[2], 'Description_Msg': threadDeets[3], 'CreatedAt': threadDeets[4]})
 
 	return render_template('hood_feed.html', hoodFeedInfo = hoodThreadInfo)
 
@@ -294,7 +307,7 @@ def friendfeed():
 		logging.info(ft)
 		threadDeets = message_boards.getThreadDetails(db, ft, 'f')
 		if threadDeets:
-			friendThreadInfo.append({'CreatedBy': threadDeets[1], 'Title': threadDeets[2], 'Description_Msg': threadDeets[3], 'CreatedAt': threadDeets[4]})
+			friendThreadInfo.append({'tid': threadDeets[0], 'CreatedBy': threadDeets[1], 'Title': threadDeets[2], 'Description_Msg': threadDeets[3], 'CreatedAt': threadDeets[4]})
 	logging.info(friendThreadInfo)
 	return render_template('friend_feed.html', friendFeedInfo = friendThreadInfo)
 
@@ -309,7 +322,7 @@ def neighborfeed():
 		threadDeets = message_boards.getThreadDetails(db, nt, 'n')
 		logging.info(threadDeets)
 		if threadDeets:
-			neighborThreadInfo.append({'CreatedBy': threadDeets[1], 'Title': threadDeets[2], 'Description_Msg': threadDeets[3], 'CreatedAt': threadDeets[4]})
+			neighborThreadInfo.append({'tid': threadDeets[0],'CreatedBy': threadDeets[1], 'Title': threadDeets[2], 'Description_Msg': threadDeets[3], 'CreatedAt': threadDeets[4]})
 	logging.info(neighborThreadInfo)
 	return render_template('neighbor_feed.html', neighborFeedInfo = neighborThreadInfo)
 
