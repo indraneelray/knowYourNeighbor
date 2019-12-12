@@ -195,4 +195,31 @@ def getThreadDetails(db, tid, access_level):
 		logging.error("error getting thread details")
 		error = "Failed"
 		return error
+
+def showThreadComments(db, tid = 11):
+	error = None
+	try:
+		logging.info("getting thread comments")
+		cur = db.query("""select comment_Msg, commentTime, FName, LName from threadComments, user_info where threadComments.Comment_by = user_info.uid and tid = %s""", [tid])
+		comments = cur.fetchall()
+		commentList = []
+		for c in comments:
+			commentList.append(c)
+		logging.info(commentList)
+		return commentList
+	except:
+		logging.error("error getting thread comments")
+		return error
+
+def getThreadTitle(db, tid = 11):
+	error = None
+	try:
+		logging.info("getting thread comments")
+		cur = db.query("""select title from messagethreads where tid = %s""", [tid])
+		title = cur.fetchone()[0]
+		return title
+	except:
+		logging.error("error fetching thread title")
+		return error
+
 	
