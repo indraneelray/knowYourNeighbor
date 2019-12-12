@@ -152,7 +152,7 @@ def signup():
 def join_block():
 	if 'uid' not in session:
 		logging.info(session)
-		return redirect(url_for('index'))
+		return redirect(url_for('login'))
 	if request.method == 'POST':
 		logging.info("/join_block")
 		result = Users.requestBlock(db, request.form)
@@ -171,18 +171,32 @@ def join_block():
 		#blocks = 
 	return render_template('join_block.html')
 
-@app.route('/profile')
+@app.route('/profile', methods = ['GET'])
 def profile():
 	if 'uid' not in session:
 		logging.info(session)
 		return redirect(url_for('login'))
 	return render_template('show_profile.html')
 
-@app.route('/editProfile')
-def editProfile():
+@app.route("/users/editProfile", methods=['POST', 'GET'])
+def update_profile():
+	notifications = None
 	if 'uid' not in session:
 		logging.info(session)
 		return redirect(url_for('login'))
+	if request.method == 'POST':
+		logging.info("POST on update profile")
+		result = Users.update_profile_details(db.conn, request.form)
+		if not result:
+			message = {'message': 'Profile update successful', 'type': 'success'}
+			response = make_response(render_template("show_profile.html", message =message))
+			response.headers['X-XSS-Protection'] = '1; mode=block'
+			return response
+		else:
+			message = {'message': 'Something went wrong: '+result, 'type': 'error'}
+			response = make_response(render_template("show_profile.html", message =message))
+			response.headers['X-XSS-Protection'] = '1; mode=block'
+			return response
 	return render_template('edit_profile.html')
 
 # TODO: XSS
@@ -199,24 +213,26 @@ def show_feed():
 		friendThreads = message_boards.getUserFriendThreads(db, latest=True)
 		logging.info(friendThreads)
 		friendThreadInfo = []
-		for ft in friendThreads:
-			logging.info(ft)
-			threadDeets = message_boards.getThreadDetails(db, ft, 'f')
-			if threadDeets:
-				friendThreadInfo.append({'tid': threadDeets[0], 'CreatedBy': threadDeets[1], 'Title': threadDeets[2], 'Description_Msg': threadDeets[3], 'CreatedAt': threadDeets[4]})
-		logging.info(friendThreadInfo)
+		if friendThreads:
+			for ft in friendThreads:
+				logging.info(ft)
+				threadDeets = message_boards.getThreadDetails(db, ft, 'f')
+				if threadDeets:
+					friendThreadInfo.append({'tid': threadDeets[0], 'CreatedBy': threadDeets[1], 'Title': threadDeets[2], 'Description_Msg': threadDeets[3], 'CreatedAt': threadDeets[4]})
+			logging.info(friendThreadInfo)
 
 		# Neighbors
 		neighborThreads = message_boards.getUserNeighborThreads(db, latest=True)
 		logging.info(neighborThreads)
 		neighborThreadInfo = []
-		for nt in neighborThreads:
-			logging.info(nt)
-			threadDeets = message_boards.getThreadDetails(db, nt, 'n')
-			logging.info(threadDeets)
-			if threadDeets:
-				neighborThreadInfo.append({'tid': threadDeets[0], 'CreatedBy': threadDeets[1], 'Title': threadDeets[2], 'Description_Msg': threadDeets[3], 'CreatedAt': threadDeets[4]})
-		logging.info(neighborThreadInfo)
+		if neighborThreads:
+			for nt in neighborThreads:
+				logging.info(nt)
+				threadDeets = message_boards.getThreadDetails(db, nt, 'n')
+				logging.info(threadDeets)
+				if threadDeets:
+					neighborThreadInfo.append({'tid': threadDeets[0], 'CreatedBy': threadDeets[1], 'Title': threadDeets[2], 'Description_Msg': threadDeets[3], 'CreatedAt': threadDeets[4]})
+			logging.info(neighborThreadInfo)
 
 		#block
 		blockThreads = message_boards.getUserBlockThreads(db, latest=True)
@@ -313,12 +329,13 @@ def friendfeed():
 	friendThreads = message_boards.getUserFriendThreads(db)
 	logging.info(friendThreads)
 	friendThreadInfo = []
-	for ft in friendThreads:
-		logging.info(ft)
-		threadDeets = message_boards.getThreadDetails(db, ft, 'f')
-		if threadDeets:
-			friendThreadInfo.append({'tid': threadDeets[0], 'CreatedBy': threadDeets[1], 'Title': threadDeets[2], 'Description_Msg': threadDeets[3], 'CreatedAt': threadDeets[4]})
-	logging.info(friendThreadInfo)
+	if friendThreads:
+		for ft in friendThreads:
+			logging.info(ft)
+			threadDeets = message_boards.getThreadDetails(db, ft, 'f')
+			if threadDeets:
+				friendThreadInfo.append({'tid': threadDeets[0], 'CreatedBy': threadDeets[1], 'Title': threadDeets[2], 'Description_Msg': threadDeets[3], 'CreatedAt': threadDeets[4]})
+		logging.info(friendThreadInfo)
 	return render_template('friend_feed.html', friendFeedInfo = friendThreadInfo)
 
 @app.route('/neighbor-feed', methods=['GET','POST'])
@@ -327,13 +344,14 @@ def neighborfeed():
 	neighborThreads = message_boards.getUserNeighborThreads(db)
 	logging.info(neighborThreads)
 	neighborThreadInfo = []
-	for nt in neighborThreads:
-		logging.info(nt)
-		threadDeets = message_boards.getThreadDetails(db, nt, 'n')
-		logging.info(threadDeets)
-		if threadDeets:
-			neighborThreadInfo.append({'tid': threadDeets[0],'CreatedBy': threadDeets[1], 'Title': threadDeets[2], 'Description_Msg': threadDeets[3], 'CreatedAt': threadDeets[4]})
-	logging.info(neighborThreadInfo)
+	if neighborThreads:
+		for nt in neighborThreads:
+			logging.info(nt)
+			threadDeets = message_boards.getThreadDetails(db, nt, 'n')
+			logging.info(threadDeets)
+			if threadDeets:
+				neighborThreadInfo.append({'tid': threadDeets[0],'CreatedBy': threadDeets[1], 'Title': threadDeets[2], 'Description_Msg': threadDeets[3], 'CreatedAt': threadDeets[4]})
+		logging.info(neighborThreadInfo)
 	return render_template('neighbor_feed.html', neighborFeedInfo = neighborThreadInfo)
 
 #Run app
