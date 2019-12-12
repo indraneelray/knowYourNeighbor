@@ -14,6 +14,8 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
 
         <script src="//cdn.jsdelivr.net/alertifyjs/1.10.0/alertify.min.js"></script>
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/alertifyjs/1.10.0/css/alertify.min.css" />
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/alertifyjs/1.10.0/css/themes/bootstrap.min.css" />
 
         <style>
              .img-class{
@@ -33,7 +35,7 @@
         <header class="main-header">
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
                     <div class="container">
-                    <a class="navbar-brand" href="index.html">knowYourNeighborhood</a>
+                    <a class="navbar-brand" href="/">knowYourNeighborhood</a>
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
@@ -135,5 +137,10 @@
             alert("Submitted")
         }
     </script>
+    {% if message %}
+    <script>
+    alertify.{{message.type}}("{{ message.message }}");
+    </script>
+    {% endif %}
     </body>
 </html>
