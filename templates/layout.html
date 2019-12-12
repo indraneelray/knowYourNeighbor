@@ -11,16 +11,14 @@
 
         <!-- Latest compiled JavaScript -->
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular-route.min.js"></script>
-        <script src="app.js"></script>
+
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <style>
             .body-background {
                 background-color:lightblue;
             }
             .bg-image {
-                background-image: url("background-photo.jpg");
+                background-image: url("../static/img/background-photo.jpg");
 
                 /* Full height */
                 height: auto;
@@ -49,12 +47,6 @@
                     <div class="content-wrapper">
                             {% block body %}{% endblock %}
                     </div>
-                    <footer class="main-footer">
-                            <div class="pull-right hidden-xs">
-                                <b>Version</b> 0.1.0
-                            </div>
-                            <strong>By Madpilot</strong>
-                    </footer>
             </div>
     </body>
 </html>

@@ -1,4 +1,4 @@
-from flask import Flask , jsonify
+from flask import Flask , jsonify,session
 
 
 class ServerError(Exception):pass
@@ -7,8 +7,12 @@ class ServerError(Exception):pass
 
 def block_request(conn,form):
     error = None
-    blockid = 1
-    userid= 5
+    #blockid = 1
+    #userid= 5
+    userid = session['uid']
+    blockid = form["baname"]
+    print("blockid is:",blockid)
+    print("userid is:", userid)
     status = "pending"
     activeneighbors=[]
     #if blockid or userid is None:
@@ -16,8 +20,9 @@ def block_request(conn,form):
     cursor = conn.cursor()
     try :
         ## fetching active neighbors in the block
-        cursor.execute("select * from userneighborhood where blockid = %s and left_at is NULL",[blockid])
+        cursor.execute("select * from userneighborhood where blockid = %s and left_at is NULL",[int(blockid)])
         #c = cursor.fetchall()
+        print("neighborhood")
         for row in cursor.fetchall():
             print("row:",row)
             activeneighbors.append({'blockid': row[0], 'userid': row[1], 'joined_at': row[2], 'left_at': row[3]})
@@ -26,6 +31,7 @@ def block_request(conn,form):
             #default insert if no neighbors in that block
             status = "approved"
             requestapproved=1
+            print("active neighbors")
             try:
                 cursor.execute("INSERT INTO neighborhood_request (`userid`, `blockid`, `request_status`, `request_approved`) VALUES (%s,%s,%s,%s)",[userid, blockid,status,int(requestapproved)])
                 cursor.execute("update user_details set blockid = %s where userid = %s",[blockid,userid])
@@ -33,6 +39,7 @@ def block_request(conn,form):
                 conn.commit()
                 return None
             except :
+                print("in neighbor rollback")
                 conn.rollback()
                 error = "Error"
                 return error

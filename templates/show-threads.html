@@ -26,8 +26,8 @@
                   </div>
                   <div class="row-fluid">
 					<ul>
-					{% for info in allInfo %}
-					<li><h2><font color="#0000A3">{{ info.CreatedBy }}</font></h2><p class="text-success">success：{{ info.Title }}</p><p class="text-info">{{ info.Description_Msg }}</p><p class="text-success">success：{{ info.CreatedAt }}</p>
+					{% for info in threads %}
+					<li><p class="text-success">success：{{ info.thread_title }}</p><p class="text-info">{{ info.thread_description }}</p><p class="text-success">success：{{ info.posted_at }}</p>
 					{% else %}
 					<li><em>Unbelievable.  No messages here so far</em>
 					{% endfor %}

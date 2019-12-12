@@ -1,0 +1,84 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Welcome to Neighbourhood</title>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+
+        <!-- jQuery library -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+        <!-- Latest compiled JavaScript -->
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+
+        <script src="//cdn.jsdelivr.net/alertifyjs/1.10.0/alertify.min.js"></script>
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/alertifyjs/1.10.0/css/alertify.min.css" />
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/alertifyjs/1.10.0/css/themes/bootstrap.min.css" />
+
+        <style>
+             .img-class{
+                background-image: url("https://images.unsplash.com/photo-1534430480872-3498386e7856?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1650&q=80");
+                background-position: center;
+                background-repeat: no-repeat;
+                background-size: cover;
+                background-size: 100% 280%;
+                /* height: 900px; */
+                overflow: auto;
+                position: relative;
+            }
+        </style>
+        <script src="loginController.js"></script>
+    </head>
+    <body class="img-class">
+          <div class="wrapper">
+            <header class="main-header">
+                <nav class="navbar navbar-inverse">
+                    <div class="container-fluid">
+                        <div class="navbar-header">
+                            <a class="navbar-brand" href="">knowYourNeighborhood</a>
+                        </div>
+                    </div>
+                </nav>
+            </header>
+            <div class="content-wrapper">
+        <!-- <div class="img-class"> -->
+        <div class="wrapper">
+            <div class="content-wrapper">
+        <div class="container">
+            <div class="row" style="margin-top:20%;">
+                <div class="col-lg-3 col-md-3 col-sm-2 col-xs-2"></div>
+                <div class="col-lg-6 col-md-6 col-sm-8 col-xs-8" style="background-color: rgba(255, 255, 255, 0.8);">
+                    <form action="/neighbors/send_block_request" method="POST">
+                        <h1 class="text-center">Join a Block</h1>
+                        </br>
+                        </br>
+                        <div class="form-group">
+                            <label> Select Hood </label>
+                            <select id = "myHood">
+                                <option value="HoodId1">HoodVivek</option>
+                                <option value="HoodId2">HoodNeel</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label> Select Block </label>
+                            <select id = "myBlock", name = "baname">
+                                <option value="1">BlockName1</option>
+                                <option value="2">BlockName2</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" value="Submit" class="btn btn-success btn-lg btn-block sign_up"/>
+                        </div>
+                    </form>
+                </div>
+            <div class="col-lg-3 col-md-3 col-sm-2 col-xs-2"></div>
+        </div>
+    </body>
+    {% if message %}
+    <script>
+    alertify.{{message.type}}("{{ message.message }}");
+    </script>
+    {% endif %}
+</html>

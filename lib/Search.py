@@ -1,4 +1,4 @@
-from flask import Flask , jsonify
+from flask import Flask , jsonify,session
 
 class ServerError(Exception):pass
 
@@ -9,8 +9,13 @@ def search_people(conn,form):
     #check userid not null and invalid
     people_list =[]
     final_list=[]
-    searchstring="S" #fetch from form
-    userid = 19 # fetch from session
+    #searchstring="S" #fetch from form
+    #userid = 19 # fetch from session
+    print("in search fetch method")
+    searchstring = form["searchKey"]
+    userid=session['uid']
+    print("searchkey:", searchstring)
+
     neighborhoodid = find_neighborhood_id(conn,userid)
     print("neighborhood id:",neighborhoodid)
     try:
@@ -36,7 +41,7 @@ def search_people(conn,form):
                 error = "No result found!"
                 return error
             else :
-                return jsonify(final_list)
+                return final_list
         else:
             raise ServerError("No result found")
     except ServerError as e:
@@ -49,11 +54,17 @@ def search_people(conn,form):
 def search_thread(conn,form):
     error = None
     # check userid not null and invalid
+    cursor = conn.cursor()
     final_list = []
     thread_list=[]
-    searchstring = "a"  # fetch from form
-    cursor=conn.cursor()
-    userid = 19  # fetch from session
+    print("in search fetch method")
+    #searchstring = "a"  # fetch from form
+    #userid = 19  # fetch from session
+
+    searchstring = form["searchKey"]
+    print("searchkey:",searchstring)
+    userid = session['uid']
+
     neighborhoodid = find_neighborhood_id(conn, userid)
     print("neighborhood id:", neighborhoodid)
     try:
@@ -82,7 +93,7 @@ def search_thread(conn,form):
                 error = "No result found!"
                 return error
             else :
-                return jsonify(final_list)
+                return final_list
         else:
             raise ServerError("user not associated with block")
     except ServerError as e:
@@ -160,7 +171,6 @@ def find_neighborhors_by_id(conn,neighborhoodid):
         for row in cursor.fetchall():
             print("userid is:",row[0])
             neighbors_list.append({'userid': row[0], 'firstname': row[1], 'lastname': row[2], 'email': row[3],'phone_number': row[4],'gender':row[5],'user_bio':row[6]})
-        #conn.commit()
         return neighbors_list
     except:
         error = "Error in fetching neighborhood id"
