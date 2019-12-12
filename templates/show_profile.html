@@ -116,22 +116,23 @@
                 <div class="col-lg-3 col-md-3 col-sm-2 col-xs-2"></div>
                 <div class="col-lg-6 col-md-6 col-sm-8 col-xs-8" style="background-color: rgba(255, 255, 255, 0.8);">
                     <form action="" target="_blank">
+                        {% for profile in profileInfo %}
                         <h1 class="text-center">Your Profile</h1>
                         <div class="form-group">
                             <label class="control-label" for="fname"><b>First Name</b></label>
-                            <input name="fname" class="form-control" readonly/>
+                            <input name="fname" class="form-control" value= "{{ profile.Fname }}" readonly/>
                         </div>
                         <div class="form-group">
                             <label class="control-label" for="lname"><b>Last Name</b></label>
-                            <input name="lname" class="form-control" value="Vivek" readonly />
+                            <input name="lname" class="form-control" value= "{{ profile.LName }}"readonly />
                         </div>
                         <div class="form-group">
                             <label class="control-label" for="email"><b>Email Address</b></label>
-                            <input name="email" class="form-control" value="Vivek@gmail.com" readonly/>
+                            <input name="email" class="form-control" value="{{ profile.email }}" readonly/>
                         </div>
                         <div class="form-group">
                             <label class="control-label" for="username"><b>Username</b></label>
-                            <input name="username" class="form-control" value="sd" readonly/>
+                            <input name="username" class="form-control" value="{{ profile.Username }}" readonly/>
                         </div>
                         <div class="form-group">
                             <label class="control-label" for="password"><b>Password</b></label>
@@ -139,37 +140,33 @@
                             <button onclick="href='changepassword.html'">Change Password</button>
                         </div>
                         <div class="form-group">
-                            <label class="control-label" for="gender"><b>Gender</b></label><br/>
-                            <input name="gender" class="form-control" value="Male" readonly><br/>
-                        </div>
-                        <div class="form-group">
                             <label class="control-label" for="addressLine1"><b>Street Address</b></label>
-                            <input name="addressLine1" class="form-control" readonly/>
+                            <input name="addressLine1" class="form-control" value= "{{ profile.apt }}"readonly/>
                         </div>
                         <div class="form-group">
                             <label class="control-label" for="addressLine2"><b>Address Line 2</b></label>
-                            <input name="addressLine2" class="form-control" readonly/>
+                            <input name="addressLine2" class="form-control" value = "{{ profile.street }}"readonly/>
                         </div>
                         <div class="form-group">
                             <label class="control-label" for="blockID"><b> Block Name </b></label>
-                            <input name="blockID" class="form-control" value="59 street" readonly/>
-                            <button onclick="href = 'changeblock.html;">Change Block</button>
+                            <input name="blockID" class="form-control" value="{{ profile.block_name }}" readonly/>
+                            <button onclick="href = '/changeblock'">Change Block</button>
                         </div>
                         <div class="form-group">
                             <label class="control-label" for="city"><b>City</b></label>
-                            <input name="city" class="form-control" readonly/>
+                            <input name="city" class="form-control" value = "{{ profile.city }}" readonly/>
                         </div>
                         <div class="form-group">
                             <label class="control-label" for="state"><b>State</b></label>
-                            <input name="state" class="form-control" readonly/>
+                            <input name="state" class="form-control" value = "{{ profile.state }}" readonly/>
                         </div>
                         <div class="form-group">
                             <label class="control-label" for="zipcode"><b>Zip</b></label>
-                            <input name="xipcode" class="form-control" readonly/>
+                            <input name="xipcode" class="form-control" value = "{{ profile.zip }}" readonly/>
                         </div>
                         <div class="form-group">
                             <label class="control-label" for="email_pref"><b>Notifications on email</b></label><br/>
-                            <input name="email_pref" class="form-control" value="yes" readonly><br/>
+                            <input name="email_pref" class="form-control" value="{{ profile.email_preference }}"readonly><br/>
                         </div>
                         <label class="control-label">Profile Picture</label>	
                             <div class="avatar-upload">	
@@ -189,6 +186,7 @@
                         </div>
                         <!-- <input class="sign_up" type="submit" value="Sign Up"/> -->
                     </div>
+                    {% endfor %}
                 </form>
             </div>
             <div class="col-lg-3 col-md-3 col-sm-2 col-xs-2"></div>

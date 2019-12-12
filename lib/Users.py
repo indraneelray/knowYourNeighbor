@@ -48,7 +48,6 @@ def signupUser(conn, form, ROUNDS):
 		city = form["city"]
 		state = form["state"]
 		xipcode = form["xipcode"]
-		gender = form["gender"]
 		intro = "I am a good guy"
 		email_pref = form["email_pref"]
 		if email_pref == "yes":
@@ -81,15 +80,15 @@ def signupUser(conn, form, ROUNDS):
 				logging.info("inserted")
 				conn.commit()
 				conn.autocommit(True)
+				session['uid'] = uid
 			except:
-				print("in rollback")
-				logging.info("Error in insertion")
+				logging.error("Rollback. Error in insertion")
 				conn.rollback()
 				error ="Error"
 				return error
 			return None
 		else:
-			logging.info("user exists")
+			logging.error("user exists")
 			return "User exists"
 	except ServerError as e:
 		logging.info("Error in fetching user data")
@@ -125,4 +124,63 @@ def requestBlock(db, form):
 	except:
 		logging.error("Failed to request block")
 		error = "error in requesting block"
+		return error
+
+
+def update_profile_details(conn,form):
+		error =None
+		try:
+			firstname = form["fname"]
+			lastname = form["lname"]
+			apartment_no=form["addressLine1"]
+			street=form["addressLine2"]
+			city=form["city"]
+			state=form["state"]
+			zipcode=form["xipcode"]
+			userid = session['uid']
+			cursor = conn.cursor()
+			try:
+				conn.autocommit(False)
+				if firstname:
+					cursor.execute("UPDATE user_info set fname = %s where uid = %s",[firstname,userid])
+				if lastname :
+					cursor.execute("UPDATE user_info set lname = %s where uid = %s", [lastname, userid])
+				if apartment_no :
+					cursor.execute("UPDATE user_info set apt_num = %s where uid = %s", [apartment_no, userid])
+				if city :
+					cursor.execute("UPDATE user_info set city = %s where uid = %s", [city, userid])
+				if street :
+					cursor.execute("UPDATE user_info set street = %s where uid = %s", [street, userid])
+				if state :
+					cursor.execute("UPDATE user_info set state = %s where uid = %s", [state, userid])
+				if zipcode :
+					cursor.execute("UPDATE user_info set zip_code = %s where uid = %s", [zipcode, userid])
+				conn.commit()
+				conn.autocommit(True)
+				return None
+			except:
+				print("in rollback")
+				conn.rollback()
+				error = "Error in database update"
+				return error
+		except ServerError as e:
+			error = str(e)
+			return error
+
+def view_profile(conn,form):
+	error =None
+	cursor = conn.cursor()
+	profile_details = []
+	uid = session['uid']
+	try:
+		cursor.execute("select * from user_info where uid = %s",[uid])
+		c = cursor.fetchone()
+		if c is not None:
+			logging.info("user info")
+			logging.info(c)
+			return c
+		else :
+			raise ServerError("User does not exist")
+	except ServerError as e:
+		error = str(e)
 		return error

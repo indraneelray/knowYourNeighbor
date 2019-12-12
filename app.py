@@ -3,6 +3,7 @@ import MySQLdb
 import lib.Users as Users
 import lib.message_boards as message_boards
 import lib.Threads as Threads
+import lib.Block as Block
 from flask_wtf.csrf import CSRFProtect
 import logging
 
@@ -174,9 +175,19 @@ def join_block():
 @app.route('/profile', methods = ['GET'])
 def profile():
 	if 'uid' not in session:
-		logging.info(session)
 		return redirect(url_for('login'))
-	return render_template('show_profile.html')
+	profile = []
+	if request.method == 'GET':
+		logging.info("Get profile")
+		profile_data = Users.view_profile(db.conn, request.form)
+		block_id = profile_data[10]
+		block_name = Block.getBlockNameFromBid(db, block_id)
+		logging.info(profile_data)
+		if profile_data:
+			profile.append({"Fname": profile_data[1], "LName": profile_data[2], "email": profile_data[3], "Username": profile_data[5], "apt": profile_data[5],\
+				"street": profile_data[6], "city": profile_data[7], "state": profile_data[8], "zip": profile_data[9],"block_name" : block_name, "email_preference": profile_data[14]})
+			logging.info(profile)				
+	return render_template('show_profile.html', profileInfo = profile)
 
 @app.route("/users/editProfile", methods=['POST', 'GET'])
 def update_profile():
