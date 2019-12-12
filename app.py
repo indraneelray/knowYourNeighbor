@@ -190,7 +190,7 @@ def profile():
 			logging.info(profile)				
 	return render_template('show_profile.html', profileInfo = profile)
 
-@app.route("/users/editProfile", methods=['POST', 'GET'])
+@app.route("/editProfile", methods=['POST', 'GET'])
 def update_profile():
 	notifications = None
 	if 'uid' not in session:
@@ -368,34 +368,42 @@ def neighborfeed():
 
 @app.route("/search/thread", methods=['GET', 'POST'])
 def search_threads():
-	notifications = None
-	result = Search.search_thread(db.conn, request.form)
-	logging.info("result thread")
-	logging.info(result)
+	logging.info("display search threads")
+	if 'uid' not in session:
+		logging.info(session)
+		return redirect(url_for('login'))
 	if request.method == 'GET':
 		return render_template('map_threads.html')
-	if not result:
-		message = {'message': 'Search failed', 'type': 'failure'}
-		return render_template('show_friends.html', message = message)
+	if request.method == "POST":
+		logging.info("POST search threads")
+		result = Search.search_thread(db.conn, request.form)
+		logging.info(result)
+		if not result:
+			message = {'message': 'Search failed', 'type': 'failure'}
+			return render_template('show_friends.html', message = message)
+		else:
+			notifications = result
+			return render_template('map_threads.html')
+	return render_template('map_threads.html')
+
+
+@app.route("/search/people", methods=['GET', 'POST'])
+def search_people():
+	notifications = None
+	if 'uid' not in session:
+		logging.info(session)
+		return redirect(url_for('login'))
+	if request.method == "POST":
+		logging.info("POST search poeple")
+		result = Search.search_people(db.conn, request.form)
+		logging.info(result)
+		if not result:
+			message = {'message': 'Search failed', 'type': 'failure'}
+			return render_template('map_friends.html')
+		else:
+			return render_template('map_friends.html')
 	else:
-		notifications = result
-		return render_template('map_threads.html' )
-
-
-# @app.route("/search/people", methods=['GET', 'POST'])
-# def search_people():
-# 	notifications = None
-# 	result = Search.search_people(db.conn, request.form)
-# 	logging.info("result people")
-# 	logging.info(result)
-# 	if not result:
-# 		message = {'message': 'Search failed', 'type': 'failure'}
-# 		return render_template('show_friends.html')
-# 		return message
-
-# 	else:
-# 		notifications = result
-# 		return render_template('show_friends.html')
+		return render_template('map_friends.html')
 
 
 #Run app
