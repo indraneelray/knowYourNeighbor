@@ -6,32 +6,85 @@ class ServerError(Exception):pass
 
 def search_people(conn,form):
     error = None
-    search_list=[]
-    cursor = conn.cursor()
-    userid=19
     #check userid not null and invalid
-    people_list =[{}]
-
-    neighborhoodid = find_neighborhood_id(cursor,userid)
+    people_list =[]
+    final_list=[]
+    searchstring="S" #fetch from form
+    userid = 19 # fetch from session
+    neighborhoodid = find_neighborhood_id(conn,userid)
     print("neighborhood id:",neighborhoodid)
     try:
         if neighborhoodid is not None:
             #filter on name
-            neighborhood_list = find_neighborhors_by_id(cursor,neighborhoodid)
+            neighborhood_list = find_neighborhors_by_id(conn,neighborhoodid)
             for neighbor in neighborhood_list:
                 addFriend=False
                 addNeighbor=False
-                for d in neighborhood_list:
-                    print("first neighbor:",d.get('userid'))
                     #check friend
-                    addFriend = is_friend(cursor,userid,d.get('userid'))
-                    print("add friend is:",addFriend)
-                    addNeighbor = is_neighbor(cursor,userid,d.get('userid'))
-                    people_list.append({'userid':})
+                addFriend = is_friend(conn,userid,neighbor.get('userid'))
+                    #check neighbor
+                addNeighbor = is_neighbor(conn,userid,neighbor.get('userid'))
+                people_list.append({'user_details':neighbor,'addFriend':addFriend,'addNeighbor':addNeighbor})
 
-                #check already friends if yes, add friend false
+            # filter people with letter a
+            for peoples in people_list:
+                user=peoples.get('user_details').get('firstname')
+                if user.startswith(searchstring.casefold()):
+                    final_list.append(peoples)
+
+            if len(final_list) == 0:
+                error = "No result found!"
+                return error
+            else :
+                return jsonify(final_list)
         else:
-            print("not")
+            raise ServerError("No result found")
+    except ServerError as e:
+        error = "failure"
+        return error
+
+
+
+
+def search_thread(conn,form):
+    error = None
+    # check userid not null and invalid
+    final_list = []
+    thread_list=[]
+    searchstring = "a"  # fetch from form
+    cursor=conn.cursor()
+    userid = 19  # fetch from session
+    neighborhoodid = find_neighborhood_id(conn, userid)
+    print("neighborhood id:", neighborhoodid)
+    try:
+        if neighborhoodid is not None:
+            neighborhood_list = find_neighborhors_by_id(conn, neighborhoodid)
+            for neighbor in neighborhood_list:
+                user = neighbor.get('userid')
+                #find all threads posted
+                cursor.execute("select * from Threads where author=%s",[user])
+                for row in cursor.fetchall():
+                    thread_list.append({'threadid': row[0], 'userid': row[1], 'thread_title': row[2], 'thread_description': row[3],'posted_at': row[4]})
+            print("thread_list",thread_list)
+
+            if len(thread_list) == 0:
+                error = "No result found!"
+                return error
+
+            else :
+                # check for filters in thread
+                for thread in thread_list:
+                    if searchstring.casefold() in thread.get('thread_title'):
+                        final_list.append(thread)
+                print("final list is:",final_list)
+
+            if len(final_list) == 0:
+                error = "No result found!"
+                return error
+            else :
+                return jsonify(final_list)
+        else:
+            raise ServerError("user not associated with block")
     except ServerError as e:
         error = "failure"
         return error
@@ -41,16 +94,15 @@ def search_people(conn,form):
 
 
 
-
-
-
-
-
-def is_friend(cursor,user1,user2):
+def is_friend(conn,user1,user2):
     add = True
+    cursor=conn.cursor()
     try:
-        cursor.execute("select count(*) from friendship where (user1=%s and user2=%s ) or (user1=2 and user2=1) and endtime is NULL",[user1,user2,user2,user1])
-        c = cursor.fetchall()
+        cursor.execute("select count(*) from friendship where (user1=%s and user2=%s ) or (user1=%s and user2=%s) and endtime is NULL",[user1,user2,user2,user1])
+        conn.commit()
+        c = cursor.fetchone()
+        print("c is:", c)
+        print("c[0] is :", c[0])
         if c[0] >=1:
             add=False
         return add
@@ -58,11 +110,15 @@ def is_friend(cursor,user1,user2):
         error = "failure"
         return error
 
-def is_neighbor(cursor,user1,user2):
+def is_neighbor(conn,user1,user2):
     add = True
+    cursor=conn.cursor()
     try:
         cursor.execute("select count(*) from neighbors where (user1=%s and user2=%s ) or (user1=%s and user2=%s) and endtime is NULL",[user1,user2,user2,user1])
-        c = cursor.fetchall()
+        conn.commit()
+        c = cursor.fetchone()
+        print("c is:",c)
+        print("c[0] is :",c[0])
         if c[0] >=1:
             add=False
         return add
@@ -72,9 +128,10 @@ def is_neighbor(cursor,user1,user2):
 
 
 
-def find_neighborhood_id(cursor,userid):
+def find_neighborhood_id(conn,userid):
     error=None
     neighborhood = 0
+    cursor = conn.cursor()
     if not userid:
         raise ServerError("Request incomplete")
     try :
@@ -90,10 +147,11 @@ def find_neighborhood_id(cursor,userid):
 
 
 
-def find_neighborhors_by_id(cursor,neighborhoodid):
+def find_neighborhors_by_id(conn,neighborhoodid):
     error=None
     print("in neighbors")
     neighbors_list=[]
+    cursor=conn.cursor()
     if not neighborhoodid:
         raise ServerError("Request incomplete")
     try :
@@ -105,8 +163,5 @@ def find_neighborhors_by_id(cursor,neighborhoodid):
         #conn.commit()
         return neighbors_list
     except:
-        #conn.rollback()
         error = "Error in fetching neighborhood id"
         return error
-
-
