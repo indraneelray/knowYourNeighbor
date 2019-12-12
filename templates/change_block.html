@@ -68,16 +68,36 @@
         <div class="wrapper">
             <header class="main-header">
                 <nav class="navbar">
-                    <div class="container-fluid">
-                        <div class="navbar-header">
-                            <a class="navbar-brand" href="/">knowYourNeighborhood</a>
-                        </div>
-                      <ul class="nav navbar-nav navbar-right">
-                          <li><a href="/profile"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
+                            <div class="container">
+                                <div class="navbar-header">
+                                    <a class="navbar-brand" href="/">knowYourNeighborhood</a>
+                                </div>
+                                <ul class="nav navbar-nav navbar-right">
+                                    <li class="dropdown">
+                                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Feed
+                                            <span class="caret"></span></a>
+                                            <ul class="dropdown-menu">
+                                                <li><a href="/block-feed">Block Feed</a></li>
+                                                <li><a href="/hood-feed">Hood Feed</a></li>
+                                                <li><a href="/friend-feed">Friend Feed</a></li>
+                                                <li><a href="/neighbor-feed">Neighbor Feed</a></li>
+                                            </ul>
+                                    </li>
+                                    <li class="dropdown">
+                                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Map View
+                                            <span class="caret"></span></a>
+                                            <ul class="dropdown-menu">
+                                                <li><a href="/map_threads">Threads</a></li>
+                                                <li><a href="/map_friends">Friends</a></li>
+                                                <li><a href="/map_neighbors">Neighbors</a></li>
+                                            </ul>
+                                    </li>
+
+                                    <li><a href="/profile"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
                                     <li><a href="/logout" class="btn-danger navbar-right">Logout</a></li>
-                        </ul>
-                    </div>
-                </nav>
+                                </ul>
+                            </div>
+                        </nav>
             </header>
         <div class="content-wrapper">
         <div class="container">
