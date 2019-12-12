@@ -51,6 +51,7 @@
                 <div class="col-lg-3 col-md-3 col-sm-2 col-xs-2"></div>
                 <div class="col-lg-6 col-md-6 col-sm-8 col-xs-8" style="background-color: rgba(255, 255, 255, 0.8);">
                     <form action=" " method="POST">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />  
                         <h1 class="text-center">Join a Block</h1>
                         </br>
                         </br>
@@ -71,16 +72,14 @@
                         <div class="form-group">
                             <input type="submit" value="Submit" class="btn btn-success btn-lg btn-block sign_up"/>
                         </div>
-                    </div>
-                </form>
-            </div>
+                    </form>
+                </div>
             <div class="col-lg-3 col-md-3 col-sm-2 col-xs-2"></div>
         </div>
-    </div>
+    </body>
     {% if message %}
     <script>
     alertify.{{message.type}}("{{ message.message }}");
     </script>
     {% endif %}
-    </body>
 </html>
