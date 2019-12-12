@@ -18,15 +18,15 @@
                 background-color:lightblue;
             }
             .bg-image {
-                background-image: url("../static/img/background-photo.jpg");
+                background-image: url("https://images.unsplash.com/photo-1534430480872-3498386e7856?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1650&q=80");
 
                 /* Full height */
-                height: auto;
+                height: 100%;
 
                 /* Center and scale the image nicely */
                 background-position: center;
                 background-repeat: no-repeat;
-                background-size: cover;
+                background-size:inherit;
             }
             #messagesMap {
                 height: 400px;
@@ -52,17 +52,37 @@
     <body class="bg-image">
             <div class="wrapper">
                 <header class="main-header">
-                    <nav class="navbar navbar-inverse">
-                        <div class="container">
-                            <div class="navbar-header">
-                                <a class="navbar-brand" href="#">knowYourNeighborhood</a>
+                    <nav class="navbar">
+                            <div class="container">
+                                <div class="navbar-header">
+                                    <a class="navbar-brand" href="user-feed.html">knowYourNeighborhood</a>
+                                </div>
+                                <ul class="nav navbar-nav navbar-right">
+                                    <li class="dropdown">
+                                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Feed
+                                            <span class="caret"></span></a>
+                                            <ul class="dropdown-menu">
+                                                <li><a href="block_feed.html">Block Feed</a></li>
+                                                <li><a href="hood_feed.html">Hood Feed</a></li>
+                                                <li><a href="friend_feed.html">Friend Feed</a></li>
+                                                <li><a href="neighbor_feed.html">Neighbor Feed</a></li>
+                                            </ul>
+                                    </li>
+                                    <li class="dropdown">
+                                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Map View
+                                            <span class="caret"></span></a>
+                                            <ul class="dropdown-menu">
+                                                <li><a href="map_threads.html">Threads</a></li>
+                                                <li><a href="map_friends.html">Friends</a></li>
+                                                <li><a href="map_neighbors.html">Neighbors</a></li>
+                                            </ul>
+                                    </li>
+
+                                    <li><a href="/profile"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
+                                    <li><a href="/logout" class="btn-danger navbar-right">Logout</a></li>
+                                </ul>
                             </div>
-                            <ul class="nav navbar-nav navbar-right">
-                                <li><a href="show-profile.html"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
-                                <li><a href="" id="logoutBtn" class="btn btn-danger navbar-btn"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
-                            </ul>
-                        </div>
-                    </nav>
+                        </nav>
                 </header>
                 <div class="content-wrapper">
                     <div class="container-fluid">
