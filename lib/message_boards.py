@@ -137,16 +137,20 @@ def postNewThread(db, form):
 	try:
 		logging.info("posting new thread")
 		uid = session['uid']
+		logging.info(uid)
 		threadTitle = form['title']
+		logging.info(threadTitle)
 		#threadTitle = "thread title"
 		description = form['description']
+		logging.info(description)
 		#description = "description"
 		access_level = form['privacy']
+		logging.info(access_level)
 		#access_level = "f"
 		logging.info(uid)
-		logging.info(threadTitle)
-		logging.info(description)
-		logging.info(access_level)
+		
+		
+		
 		db.query("""INSERT INTO MessageThreads(Created_By, Title, Description_Msg, Created_Time, Access_Level)VALUES\
 			(%s,%s,%s,NOW(),%s)""", [uid, threadTitle, description, access_level])
 	except:
@@ -223,3 +227,16 @@ def getThreadTitle(db, tid = 11):
 		return error
 
 	
+def postComment(db, form):
+	uid = session['uid']
+	privacy = form["privacy"]
+	logging.info(privacy)
+	description = form["description"]
+	logging.info(description)
+	title = form["title"]
+	logging.info(title)
+	try:
+		cur = db.query("""insert into messagethreads (created_by, title, description_msg, created_time, access_level)values (%s, %s, %s, NOW(), %s)""", [uid, title, description, privacy])
+		return None
+	except:
+		return "error"

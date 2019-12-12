@@ -84,7 +84,8 @@
                                                     <li><em>Unbelievable.  No recent messages here so far</em>
                                                     {% endfor %}
                                             </ul>
-                                            <form action="" method="">
+                                            <form action="" method="POST">
+                                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />                                    
                                                 <div class="form-group">
                                                     <label for="commentText" class="control-label">Comment: </label>
                                                     <textarea name="commentText" class="form-control" placeholder="Enter a comment..."></textarea>
@@ -101,4 +102,9 @@
                     </div>
         </div>
 </body>
+{% if message %}
+<script>
+alertify.{{message.type}}("{{ message.message }}");
+</script>
+{% endif %}
 </html>

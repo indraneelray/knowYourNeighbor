@@ -274,8 +274,8 @@ def show_feed():
 	
 	if request.method == 'POST':
 		logging.info("POST feed")
-		if request.form['submit_btn'] == 'Submit':
-			logging.info("POSTED from create thread")
+		if request.form['CreateThreadBtn'] == 'Save changes':
+			logging.info("Creating new thread")
 			result = message_boards.postNewThread(db, request.form)
 			logging.info(result)
 	return render_template('user-feed.html')
@@ -284,6 +284,9 @@ def show_feed():
 # TODO : XSS
 @app.route('/block-feed', methods=['GET','POST'])
 def blockfeed():
+	if 'uid' not in session:
+		logging.info(session)
+		return redirect(url_for('login'))
 	logging.info("Fetching block feed")
 	# get thread description
 	blockThreadInfo = []
@@ -304,18 +307,63 @@ def blockfeed():
 # TODO : Populate the thread details on top
 @app.route('/show-thread', methods=['GET','POST'])
 def showThread():
+	if 'uid' not in session:
+		logging.info(session)
+		return redirect(url_for('login'))
 	logging.info('get thread')
+	commentInfo = []
 	if request.method == 'GET':
 		logging.info(request)
+		commentInfo = []
 		comments = message_boards.showThreadComments(db)
 		logging.info(comments)
-		commentInfo = []
 		# get thread title
 		title = message_boards.getThreadTitle(db)
 		for c in comments:
 			if comments:
 				commentInfo.append({'comment': c[0], 'commentTime': c[1], 'FName': c[2], 'LName': c[3]})
 		return render_template('show-threads.html', threadCommentInfo = commentInfo, threadTitle = title)
+	if request.method == 'POST':
+		logging.info(request)
+		logging.info('post comment on thread ')
+		posted = message_boards.postComment(db, request.form)
+		if posted is None:
+			message = {'message': 'Posted comment successfully', 'type': 'success'}
+			# get thread title
+			title = message_boards.getThreadTitle(db)
+			comments = message_boards.showThreadComments(db)
+			for c in comments:
+				if comments:
+					commentInfo.append({'comment': c[0], 'commentTime': c[1], 'FName': c[2], 'LName': c[3]})
+			response = make_response(render_template('show-threads.html', threadCommentInfo = commentInfo, threadTitle = title, message = message))
+			response.headers['X-XSS-Protection'] = '1; mode=block'
+			return response
+		else:
+			message = {'message': 'Error in posting comment', 'type': 'error'}
+			response = make_response(render_template("show-threads.html", message =message))
+			response.headers['X-XSS-Protection'] = '1; mode=block'
+			return response
+
+
+@app.route('/show-thread/post-comment', methods=['POST'])
+def postThreadComment():
+	if 'uid' not in session:
+		logging.info(session)
+		return redirect(url_for('login'))
+	if request.method == 'POST':
+		logging.info('post comment on thread ')
+		posted = message_boards.postComment(db, request.form)
+		if posted is None:
+			message = {'message': 'Posted comment successfully', 'type': 'success'}
+			response = make_response(render_template("show-threads.html", message =message))
+			response.headers['X-XSS-Protection'] = '1; mode=block'
+			return response
+		else:
+			message = {'message': 'Error in posting comment', 'type': 'error'}
+			response = make_response(render_template("show-threads.html", message =message))
+			response.headers['X-XSS-Protection'] = '1; mode=block'
+			return response
+
 
 @app.route('/hood-feed', methods=['GET','POST'])
 def hoodfeed():
@@ -326,7 +374,6 @@ def hoodfeed():
 	if hoodThreads:
 		hoodThreads = list(set(hoodThreads))
 		logging.info(hoodThreads)
-		
 		for ht in hoodThreads:
 			logging.info("getting hood thread deets")
 			threadDeets = message_boards.getThreadDetails(db, ht, 'h')
