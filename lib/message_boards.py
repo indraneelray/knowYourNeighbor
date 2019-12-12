@@ -6,7 +6,7 @@ import lib.Block as Block
 import lib.Hood as Hood
 class ServerError(Exception):pass
 
-def getUserFriendThreads(db):
+def getUserFriendThreads(db, latest = False):
 	try:
 		logging.info("getting friends")
 		#threadlist = []
@@ -19,7 +19,7 @@ def getUserFriendThreads(db):
 		logging.info(friends)
 		tids = []
 		for friendId in friends:
-			tids = getLatestCommentTIDs(db, friendId, logout_time)
+			tids = getCommentTIDs(db, friendId, logout_time, latest)
 		logging.info(tids)
 		threads = []
 		for tid in tids:
@@ -34,7 +34,7 @@ def getUserFriendThreads(db):
 		logging.info("error fetching user threads")
 		return None
 
-def getUserNeighborThreads(db):
+def getUserNeighborThreads(db, latest = False):
 	try:
 		logging.info("getting neighbor threads")
 		#threadlist = []
@@ -47,7 +47,7 @@ def getUserNeighborThreads(db):
 		logging.info(neighbors)
 		tids = []
 		for neighborId in neighbors:
-			tids = getLatestCommentTIDs(db, neighborId, logout_time)
+			tids = getCommentTIDs(db, neighborId, logout_time, latest)
 			logging.info(tids)
 		threads = []
 		for tid in tids:
@@ -63,7 +63,7 @@ def getUserNeighborThreads(db):
 		return None
 
 
-def getUserBlockThreads(db):
+def getUserBlockThreads(db, latest = False):
 	try:
 		logging.info("getting block threads")
 		uid = session['uid']
@@ -77,9 +77,10 @@ def getUserBlockThreads(db):
 		logging.info(blockUsers)
 		tids = []
 		for user in blockUsers:
-			blockTid = getLatestCommentTIDs(db, user, logout_time)
-			if blockTid:
-				tids.append(blockTid)
+			blockTids = getCommentTIDs(db, user, logout_time, latest)
+			if blockTids:
+				for b in blockTids:
+					tids.append(b)
 		logging.info("tids")
 		logging.info(tids)
 		threads = []
@@ -92,7 +93,7 @@ def getUserBlockThreads(db):
 		logging.info("error fetching user threads")
 		return None
 
-def getUserHoodThreads(db):
+def getUserHoodThreads(db, latest = False):
 	try:
 		logging.info("getting hood threads")
 		# get logout time
@@ -115,9 +116,10 @@ def getUserHoodThreads(db):
 		logging.info(hoodUsers)
 		tids = []
 		for user in hoodUsers:
-			hoodTid = getLatestCommentTIDs(db, user, logout_time)
+			hoodTid = getCommentTIDs(db, user, logout_time, latest)
 			if hoodTid:
-				tids.append(hoodTid)
+				for h in hoodTid:
+					tids.append(h)
 		logging.info("tids")
 		logging.info(tids)
 		threads = []
@@ -152,19 +154,27 @@ def postNewThread(db, form):
 		error = "Failed"
 		return error
 
-def getLatestCommentTIDs(db, uid, logout_time):
-	logging.info("getting latest comments")
+def getCommentTIDs(db, uid, logout_time, latest = False):
+	logging.info("getting comments")
 	try:
 		logging.info(logout_time)
 
 		logout = str(logout_time)
 		logging.info(logout)
 		logging.info(type(logout_time))
-		cur = db.query("""select distinct(tid) from ThreadComments where comment_by = %s and commentTime > %s""", (int(uid), logout))
+		if latest is True:
+			logging.info("Finding latest active threads")
+			cur = db.query("""select distinct(tid) from ThreadComments where comment_by = %s and commentTime > %s""", [int(uid), logout])
+		else:
+			logging.info("Finding all threads")
+			cur = db.query("""select distinct(tid) from ThreadComments where comment_by = %s""", [int(uid)])
 		logging.info("success query")
+		tids = cur.fetchall()
+		logging.info(tids)
 		threads = []
-		for c in cur.fetchall()[0]:
-			threads.append(c)
+		for c in tids:
+			logging.info(c[0])
+			threads.append(c[0])
 		logging.info(threads)
 		logging.info("got latest comments")
 		return threads
