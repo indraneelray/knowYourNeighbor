@@ -446,9 +446,9 @@ def search_people():
 		logging.info(result)
 		if not result:
 			message = {'message': 'Search failed', 'type': 'failure'}
-			return render_template('map_friends.html')
+			return render_template('map_friends.html', message)
 		else:
-			return render_template('map_friends.html')
+			return render_template('show_friends.html')
 	else:
 		return render_template('map_friends.html')
 

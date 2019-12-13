@@ -73,6 +73,9 @@
                                     <div class="row-fluid">
                                             {% for info in friendFeedInfo %}
                                             <p><h2>{{ info.Title }}</h2></p><p class="text-info">{{ info.Description_Msg }}</p>
+                                            {% else %}
+                                            <li><em>Unbelievable.  No recent messages here so far</em>
+                                            {% endfor %}
                                     </div>
                                 </div>
                                 <div class="col-lg-1 col-md-1 col-sm-2 col-xs-2"></div>
