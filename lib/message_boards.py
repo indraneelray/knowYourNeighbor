@@ -16,13 +16,13 @@ def getUserFriendThreads(db, latest = False):
 		#cur = db.query("""select * from MessageThreads where created_by = %s order by created_time limit 10;""", [uid])
 		curTime = db.query("""select logout_at from user_details where userid = %s""", [uid])
 		logout_time = curTime.fetchone()[0]
-		#logging.info(logout_time)
+		print("logout_time:",logout_time)
 		friends = Friends.getFriendList(db)
-		#logging.info(friends)
+		print("friends is:",friends)
 		tids = []
 		for friendId in friends:
 			tids = getCommentTIDs(db, friendId, logout_time, latest)
-		#logging.info(tids)
+		print("thread:",tids)
 		threads = []
 		for tid in tids:
 			threads.append(tid)
@@ -31,6 +31,7 @@ def getUserFriendThreads(db, latest = False):
 
 		# for row in cur.fetchall():
 		# 	threadlist.append({'CreatedBy': row[1], 'Title': row[2], 'Description_Msg': row[3], 'CreatedAt': row[4]})
+		print("threads returned for friemds:",threads)
 		return threads
 	except:
 		#logging.info("error fetching user threads")
@@ -185,6 +186,7 @@ def getThreadDetails(db, tid, access_level):
 		cur = db.query("""select * from Threads where threadid = %s and view_level = %s""", [tid, access_level])
 		metaThreadContent = cur.fetchone()
 		#logging.info(metaThreadContent)
+		print("metathreadcount is:",metaThreadContent)
 		return metaThreadContent
 	except:
 		#logging.error("error getting thread details")

@@ -210,16 +210,22 @@ def send_friend_request():
         return render_template('show-people.html')
 
 
-@app.route("/friends/accept_friend_request", methods=['POST'])
+@app.route("/friends/accept_friend_request", methods=['GET','POST'])
 def accept_friend_request():
     notifications = None
-    result = Friends.accept_friend_request(db.conn, None)
-    if not result:
-        notifications = {'message': 'Friend request accepted', 'type': 'success'}
-        return notifications
+    if request.method == "GET":
+        friendid = request.args.get('userid')
+        action = request.args.get('action')
+        result = Friends.accept_friend_request(db.conn,friendid,action)
+        if not result:
+            message = {'message': 'Friend request accepted', 'type': 'success'}
+            return render_template('friend-requests.html', message=message)
+        else:
+            message = {'message': 'Failed to send request.Please try again!', 'type': 'error'}
+            return render_template('friend-requests.html', message=message)
     else:
-        message = {'message': 'Failed to send request.Please try again!', 'type': 'error'}
-        return message
+        return render_template('friend-requests.html')
+
 
 
 @app.route("/neighbors/send_block_request", methods=['GET', 'POST'])
@@ -252,13 +258,11 @@ def send_block_request():
 def get_friends_details():
     notifications = None
     if request.method=="GET":
-        print("in get")
-        result = Friends.get_friends_details(db.conn)
+        result = Friends.get_friend_requests(db.conn)
         if not result:
             message = {'message': 'Error in fetching', 'type': 'success'}
             return render_template("friend-requests.html", message=message)
         else:
-            print("get friends")
             friendDetails = result
             return render_template("friend-requests.html", friendDetails=friendDetails)
     else :
@@ -270,13 +274,38 @@ def get_friends_details():
 @app.route("/neighbors/approve_block_request", methods=['GET', 'POST'])
 def accept_block_request():
     notifications = None
-    result = Neighbors.block_approve(db.conn, None)
-    if not result:
-        notifications = {'message': 'Neighborhood request approved', 'type': 'success'}
-        return notifications
+    if request.method=="GET":
+        id = request.args.get('userid')
+        print("usrid is:",id)
+        result = Neighbors.block_approve(db.conn,id)
+        if not result:
+            message = {'message': 'Failed to send request.Please try again!', 'type': 'error'}
+            #return notifications
+            return render_template("approval-requests.html", message=message)
+        else:
+            details = result
+            message = {'message': 'Neighborhood request approved', 'type': 'success'}
+            return render_template("approval-requests.html", details=details)
     else:
-        message = {'message': 'Failed to send request.Please try again!', 'type': 'error'}
-        return message
+        return render_template("approval-requests.html")
+
+
+@app.route("/neighbors/get_blockapproval_requests", methods=['GET', 'POST'])
+def get_blockapproval_requests():
+    notifications = None
+    if request.method=="GET":
+        result = Neighbors.get_requests_for_block(db.conn)
+        if not result:
+            message = {'message': 'Failed to send request.Please try again!', 'type': 'error'}
+            #return notifications
+            return render_template("approval-requests.html", message=message)
+        else:
+            details = result
+            message = {'message': 'Neighborhood request approved', 'type': 'success'}
+            return render_template("approval-requests.html", details=details)
+    else:
+        return render_template("approval-requests.html")
+
 
 
 @app.route("/neighbors/leave_block", methods=['GET', 'POST'])
@@ -373,7 +402,7 @@ def show_feed():
             #logging.info(neighborThreads)
             for nt in neighborThreads:
                 #logging.info(nt)
-                 threadDeets = message_boards.getThreadDetails(db, nt, '1')
+                 threadDeets = message_boards.getThreadDetails(db, nt, 1)
                  #logging.info(threadDeets)
                  if threadDeets:
                      neighborThreadInfo.append({'tid': threadDeets[0], 'CreatedBy': threadDeets[1], 'Title': threadDeets[2],
@@ -388,7 +417,7 @@ def show_feed():
             #blockThreadInfo = []
             for bt in blockThreads:
                 #logging.info(bt)
-                threadDeets = message_boards.getThreadDetails(db, bt, '2')
+                threadDeets = message_boards.getThreadDetails(db, bt, 2)
                 if threadDeets:
                     blockThreadInfo.append({'tid': threadDeets[0], 'CreatedBy': threadDeets[1], 'Title': threadDeets[2],
                                         'Description_Msg': threadDeets[3], 'CreatedAt': threadDeets[4]})
@@ -402,7 +431,7 @@ def show_feed():
             #logging.info(hoodThreads)
             #hoodThreadInfo = []
             for ht in hoodThreads:
-                threadDeets = message_boards.getThreadDetails(db, ht, '3')
+                threadDeets = message_boards.getThreadDetails(db, ht, 3)
                 # logging.info("HOOD threadDeets")
                 #logging.info(threadDeets)
                 if threadDeets:

@@ -66,18 +66,19 @@ def block_request(conn,form):
         return error
 
 
-def block_approve(conn,form):
+def block_approve(conn,id):
     error = None
     cursor = conn.cursor()
-    user2 = 19
-    user1 = 5
+    user2 = int(session['uid'])
+    user1 = id
     blockid=0
     try:
         approval=1
-        cursor.execute("update neighborhood_access set approval = %s where requested_touser=%s and requested_byuser= %s",[approval,user2,user1])
+        print("updating block request")
+        cursor.execute("update neighborhood_access set approval=1 where requested_touser=%s and requested_byuser= %s",[user2,user1])
         cursor.execute("select count(approval) from neighborhood_access where requested_byuser= %s and approval=1",[user1])
         c=cursor.fetchone()
-        print("count is:",c[0] )
+        print("count is:",c[0])
         if c[0] == 3:
             print("in count")
             cursor.execute("select blockid from user_details where userid = %s",[user2])
@@ -86,6 +87,7 @@ def block_approve(conn,form):
                            [blockid, user1])
             cursor.execute("update user_details set blockid = %s where userid = %s", [blockid, user1])
         conn.commit()
+        return None
     except ServerError as e:
         print("in rollback")
         conn.rollback()
@@ -126,6 +128,24 @@ def add_neighbors(conn,id):
         conn.rollback()
         error = "Update failed"
         return error
+
+
+def get_requests_for_block(conn):
+    userid = int(session['uid'])
+    error = None
+    details = []
+    cursor = conn.cursor()
+    cursor.execute(
+        "select * from Neighborhood_access inner join user_details on user_details.userid=Neighborhood_access.requested_byuser and Neighborhood_access.requested_touser=%s and Neighborhood_access.approval!=1",
+        [userid])
+    if cursor.fetchall is not None:
+        for row in cursor.fetchall():
+            details.append({'userid': row[3], 'firstname': row[4], 'lastname': row[5]})
+            print("details:", details)
+        return details
+    else:
+        raise ServerError("No friends for this user")
+
 
 
 
