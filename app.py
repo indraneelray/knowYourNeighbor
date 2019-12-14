@@ -5,6 +5,8 @@ import lib.message_boards as message_boards
 import lib.Threads as Threads
 import lib.Block as Block
 import lib.Search as Search
+import lib.Friends as Friends
+import lib.Neighbors as Neighbors
 from flask_wtf.csrf import CSRFProtect
 import logging
 
@@ -432,10 +434,10 @@ def search_threads():
 		logging.info(result)
 		if not result:
 			message = {'message': 'Search failed', 'type': 'failure'}
-			return render_template('show_friends.html', message = message)
+			return render_template('show-threads.html', message = message)
 		else:
-			notifications = result
-			return render_template('map_threads.html')
+			#notifications = result
+			return render_template('show-threads.html',threadCommentInfo=result)
 	return render_template('map_threads.html')
 
 
@@ -453,9 +455,84 @@ def search_people():
 			message = {'message': 'Search failed', 'type': 'failure'}
 			return render_template('search_people.html', message = message)
 		else:
-			return render_template('show_friends.html')
+			return render_template('show_people.html',people=result)
 	else:
 		return render_template('search_people.html')
+
+
+@app.route("/friends/get_friends_details", methods=['GET', 'POST'])
+def get_friends_details():
+    notifications = None
+    if request.method=="GET":
+        print("in get")
+        result = Friends.get_friends_details(db.conn)
+        if not result:
+            message = {'message': 'Error in fetching', 'type': 'success'}
+            return render_template("friend_requests.html", message=message)
+        else:
+            print("get friends")
+            friendDetails = result
+            return render_template("friend_requests.html", friendDetails=friendDetails)
+    else :
+        print("in else")
+        return render_template('friend_requests.html')
+
+
+@app.route("/friends/send_friend_request", methods=['GET', 'POST'])
+def send_friend_request():
+    notifications = None
+    if request.method == "GET":
+        friendid = request.args.get('userid')
+        print("friend id from ui is:", friendid)
+        result = Friends.send_friend_request(db.conn, friendid)
+        if not result:
+            message = {'message': 'Friend Request sent', 'type': 'success'}
+            # return notifications
+            return render_template('show_people.html', message=message)
+        else:
+            message = {'message': 'Failed to send request.Please try again!', 'type': 'error'}
+            return render_template('show_people.html', message=message)
+            # return message
+    else:
+        return render_template('show_people.html')
+
+
+
+@app.route("/neighbors/add_neighbors", methods=['GET', 'POST'])
+def add_neighbors():
+    notifications = None
+    if request.method == "GET":
+        neighborid = request.args.get('userid')
+        result = Neighbors.add_neighbors(db.conn, neighborid)
+        if not result:
+            message = {'message': 'Neighbors added successfully!', 'type': 'success'}
+            return render_template("show_people.html", message=message)
+            # return notifications
+        else:
+            message = {'message': 'Failed to send request.Please try again!', 'type': 'error'}
+            # return message
+            return render_template("show_people.html", message=message)
+    else:
+        return render_template("show_people.html", message=message)
+
+
+
+@app.route("/neighbors/get_blockapproval_requests", methods=['GET', 'POST'])
+def get_blockapproval_requests():
+    notifications = None
+    if request.method == "GET":
+        result = Neighbors.get_requests_for_block(db.conn)
+        if not result:
+            message = {'message': 'Failed to send request.Please try again!', 'type': 'error'}
+            # return notifications
+            return render_template("approval-requests.html", message=message)
+        else:
+            details = result
+            message = {'message': 'Neighborhood request approved', 'type': 'success'}
+            return render_template("approval-requests.html", details=details)
+    else:
+        return render_template("approval-requests.html")
+		
 
 #Run app
 if __name__ == '__main__':

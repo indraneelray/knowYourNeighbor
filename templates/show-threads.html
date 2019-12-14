@@ -79,7 +79,7 @@
                                             </h2>
                                             <ul>
                                                     {% for info in threadCommentInfo %}
-                                                        <li><p>{{ info.FName }} {{info.LName}}</p><p class="text-info">{{ info.comment }}</p></li>
+                                                        <li><p>{{ info.thread_title }} {{info.posted_at}}</p><p class="text-info">{{ info.thread_description }}</p></li>
                                                     {% else %}
                                                     <li><em>Unbelievable.  No recent messages here so far</em>
                                                     {% endfor %}
