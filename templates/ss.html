@@ -11,13 +11,10 @@
 
         <!-- Latest compiled JavaScript -->
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-        <script src="//cdn.jsdelivr.net/alertifyjs/1.10.0/alertify.min.js"></script>
-        <link rel="stylesheet" href="//cdn.jsdelivr.net/alertifyjs/1.10.0/css/alertify.min.css" />
-        <link rel="stylesheet" href="//cdn.jsdelivr.net/alertifyjs/1.10.0/css/themes/bootstrap.min.css" />
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <style>
             .img-class{
-                background-image: url("https://images.unsplash.com/photo-1534430480872-3498386e7856?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1650&q=80");
+                background-image: url("../static/img/background-photo.jpg");
                 background-position: center;
                 background-repeat: no-repeat;
                 background-size: cover;
@@ -29,7 +26,6 @@
             * {
                 box-sizing: border-box;
             }
-
             input[type=text], input[type=password], input[type=email]{
                 background:rgba(156, 140, 140, 0.9);
             }
@@ -40,103 +36,29 @@
             .sign_up:hover {
                 opacity : 1.0;
             }
-            .avatar-upload {
-                position: relative;
-                max-width: 205px;
-                margin: 50px auto;
-            }
-            .avatar-edit {
-                position: absolute;
-                right: 12px;
-                z-index: 1;
-            }
-            #imageUpload {
-                display: none;
-            }
-            #labelImageUpload{
-                display: inline-block;
-                width: 34px;
-                height: 34px;
-                margin-bottom: 0;
-                border-radius: 100%;
-                background: #FFFFFF;
-                border: 1px solid transparent;
-                box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.12);
-                cursor: pointer;
-                font-weight: normal;
-                transition: all .2s ease-in-out;
-            }
-            #labelImageUpload::after {
-                content: "\f040";
-                font-family: 'FontAwesome';
-                color: #757575;
-                position: absolute;
-                top: 10px;
-                left: 0;
-                right: 0;
-                text-align: center;
-                margin: auto;
-            }
-            .avatar-preview {
-                width: 192px;
-                height: 192px;
-                position: relative;
-                border-radius: 100%;
-                border: 6px solid #F8F8F8;
-                box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.1);
-            }
-            #imagePreview {
-                width: 100%;
-                height: 100%;
-                border-radius: 100%;
-                background-size: cover;
-                background-repeat: no-repeat;
-                background-position: center;
-            }
         </style>
     </head>
     <body class="img-class">
         <!-- <div class="img-class"> -->
-        <div class="wrapper">
-            <header class="main-header">
-                <nav class="navbar">
+                    <div class="wrapper">
+                    <header class="main-header">
+                        <nav class="navbar navbar-inverse">
                             <div class="container">
                                 <div class="navbar-header">
                                     <a class="navbar-brand" href="/">knowYourNeighborhood</a>
                                 </div>
                                 <ul class="nav navbar-nav navbar-right">
-                                    <li class="dropdown">
-                                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Feed
-                                            <span class="caret"></span></a>
-                                            <ul class="dropdown-menu">
-                                                <li><a href="/block-feed">Block Feed</a></li>
-                                                <li><a href="/hood-feed">Hood Feed</a></li>
-                                                <li><a href="/friend-feed">Friend Feed</a></li>
-                                                <li><a href="/neighbor-feed">Neighbor Feed</a></li>
-                                            </ul>
-                                    </li>
-                                    <li class="dropdown">
-                                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Map View
-                                            <span class="caret"></span></a>
-                                            <ul class="dropdown-menu">
-                                                <li><a href="/map_threads">Threads</a></li>
-                                                <li><a href="/map_friends">Friends</a></li>
-                                                <li><a href="/map_neighbors">Neighbors</a></li>
-                                            </ul>
-                                    </li>
-
-                                    <li><a href="/profile"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
-                                    <li><a href="/logout" class="btn-danger navbar-right">Logout</a></li>
+                                     <li><a href="/profile"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
+                                    <li><a href="/logout"><button id="logoutBtn" class="btn btn-danger navbar-btn"><span class="glyphicon glyphicon-log-out"></span> Logout</button></a></li>
                                 </ul>
                             </div>
                         </nav>
-            </header>
-            <div class="content-wrapper">
+                    </header>
         <div class="container">
             <div class="row">
                 <div class="col-lg-3 col-md-3 col-sm-2 col-xs-2"></div>
                 <div class="col-lg-6 col-md-6 col-sm-8 col-xs-8" style="background-color: rgba(255, 255, 255, 0.8);">
-                    <form action="" class="form-horizontal">
+                    <form action="/updateProfilePage" class="form-horizontal">
                         <h1 class="text-center">Your Profile</h1>
                         <div class="form-group">
                             <label class="control-label col-sm-4" for="fname"><b>First Name</b></label>
@@ -160,8 +82,15 @@
                         <div class="form-group">
                             <label class="control-label col-sm-4" for="password"><b>Password</b></label>
                             <div class="form-control-static col-sm-8">
-                                <button><a href="/changePassword">Change Password</a></button>
+                                <button><a href="/changePasswordPage">Change Password</a></button>
                             </div>                            
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-4" for="gender"><b>Gender</b></label><br/>
+                            <div class="form-control-static col-sm-8">
+                                <label>{{ profileInfo[0].gender }}</label>
+                            </div>
+
                         </div>
                         <div class="form-group">
                             <label class="control-label col-sm-4" for="addressLine1"><b>Street Address</b></label>
@@ -183,7 +112,7 @@
                                 <label>{{ profileInfo[0].block_name }}</label>
                             </div>
                             <div class="form-control-static col-sm-4">
-                                <button><a href="/changeBlock">Change Block</a></button>
+                                <button><a href="/neighborhood_details">Change Block</a></button>
                             </div>                            
                         </div>
                         <div class="form-group">
@@ -215,20 +144,14 @@
 
                         </div>
                         <div class="form-group">
-                            <a href="/editProfile"><button type="submit" class="btn btn-success btn-lg btn-block sign_up"> Update Profile</button></a>
+                            <button type="submit" class="btn btn-success btn-lg btn-block sign_up"> Update Profile</button>
                         </div>
                         <!-- <input class="sign_up" type="submit" value="Sign Up"/> -->
                     </div>
-                    {% endfor %}
                 </form>
             </div>
             <div class="col-lg-3 col-md-3 col-sm-2 col-xs-2"></div>
         </div>
     </div>
     </body>
-    {% if message %}
-    <script>
-    alertify.{{message.type}}("{{ message.message }}");
-    </script>
-    {% endif %}
 </html>
