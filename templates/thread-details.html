@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <script type="text/javascript">
+        $().ready(function() {
+            var text = document.getElementById('threadid');
+            $.ajax({
+                  url: "/show-thread",
+                  type: "get",
+                  data: {tid: text},
+                  dataType:"json",
+                  success: function(response) {
+                    document.write(response);
+                  },
+                    //window.location.replace('/redirectToThreadDetails');
+                  error: function(xhr) {
+                    //Do Something to handle error
+                  }
+        })
+    </script>
+    </head>
+    <body>
+        <input id='threadid' type="text" value="text" hidden/>
+
+    </body>
+</html>
+

@@ -313,29 +313,34 @@ def showThread():
 	logging.info('get thread')
 	commentInfo = []
 	if request.method == 'GET':
-		logging.info(request)
+		tid = request.args.get('tid')
+		logging.info('getting full thread')
+		logging.info(tid)
 		commentInfo = []
-		comments = message_boards.showThreadComments(db)
+		comments = message_boards.showThreadComments(db, tid)
 		logging.info(comments)
 		# get thread title
-		title = message_boards.getThreadTitle(db)
+		title = message_boards.getThreadTitle(db, tid)
 		for c in comments:
 			if comments:
-				commentInfo.append({'comment': c[0], 'commentTime': c[1], 'FName': c[2], 'LName': c[3]})
-		return render_template('show-threads.html', threadCommentInfo = commentInfo, threadTitle = title)
+				commentInfo.append({'tid':c[0], 'comment': c[1], 'tid': c[2], 'FName': c[3], 'LName': c[4]})
+		logging.info("rendering template")
+		#return jsonify({'threadCommentInfo' : commentInfo, 'threadTitle' : title})
+		return render_template('show-threads.html', threadCommentInfo = commentInfo, threadTitle = title, tid = tid)
 	if request.method == 'POST':
 		logging.info(request)
 		logging.info('post comment on thread ')
-		posted = message_boards.postComment(db, request.form)
+		tid = request.args.get('tid')
+		posted = message_boards.postComment(db, request.form, tid)
 		if posted is None:
 			message = {'message': 'Posted comment successfully', 'type': 'success'}
 			# get thread title
-			title = message_boards.getThreadTitle(db)
-			comments = message_boards.showThreadComments(db)
+			title = message_boards.getThreadTitle(db, tid)
+			comments = message_boards.showThreadComments(db, tid)
 			for c in comments:
 				if comments:
-					commentInfo.append({'comment': c[0], 'commentTime': c[1], 'FName': c[2], 'LName': c[3]})
-			response = make_response(render_template('show-threads.html', threadCommentInfo = commentInfo, threadTitle = title, message = message))
+					commentInfo.append({'tid':c[0], 'comment': c[1], 'commentTime': c[2], 'FName': c[3], 'LName': c[4]})
+			response = make_response(render_template('show-threads.html', threadCommentInfo = commentInfo, threadTitle = title, message = message, tid = tid))
 			response.headers['X-XSS-Protection'] = '1; mode=block'
 			return response
 		else:
@@ -446,12 +451,20 @@ def search_people():
 		logging.info(result)
 		if not result:
 			message = {'message': 'Search failed', 'type': 'failure'}
-			return render_template('map_friends.html', message)
+			return render_template('map_friends.html', message = message)
 		else:
 			return render_template('show_friends.html')
 	else:
 		return render_template('map_friends.html')
 
+# @app.route('/redirectToThreadDetails', methods=['GET','POST'])
+# def redirectToThreadDetails():
+# 	data = request.args.get('threadDetails')
+# 	data2 = request.json
+# 	logging.info("data is ")
+# 	logging.info(data)
+# 	logging.info(data2)
+# 	return render_template('show-threads.html', threadCommentInfo = data.threadCommentInfo, threadTitle = data.threadTitle)
 
 #Run app
 if __name__ == '__main__':
