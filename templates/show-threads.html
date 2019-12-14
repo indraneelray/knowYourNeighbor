@@ -1,40 +1,71 @@
-<!DOCTYPE html>
-<html lang = "en">
- 	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<title>message board</title>
-		<link href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css" rel="stylesheet">
-		<link href="http://twitter.github.com/bootstrap/assets/css/docs.css" rel="stylesheet">
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Welcome to Neighbourhood</title>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+        <!-- jQuery library -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+        <!-- Latest compiled JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>
+            .body-background {
+                background-color:lightblue;
+            }
+            .bg-image {
+                background-image: url("../static/img/background-photo.jpg");
+
+                /* Full height */
+                height: auto;
+
+                /* Center and scale the image nicely */
+                background-position: center;
+                background-repeat: no-repeat;
+                background-size: cover;
+            }
+
+        </style>
 	</head>
-  <body>
-	<div class="page-header">
-	<h1 align="center" ><font color="#009900">message board</font></h1>
-	</div>
-     <div class="container-fluid">
-         <div class="row-fluid">
-              <div class="span3">
-                   <div class="well sidebar-nav">
-                       <ul class="nav nav-list">
-                            <li class="nav-header">Sections</li>
-                            <li><a href="http://www.baidu.com/">help</a></li>
-                       </ul>
-                   </div>
-              </div>
-              <div class="span6">
-                   <div class="hero-unit">
-					<div class= "metanav" >
-                  </div>
-                  <div class="row-fluid">
-					<ul>
-					{% for info in threads %}
-					<li><p class="text-success">success：{{ info.thread_title }}</p><p class="text-info">{{ info.thread_description }}</p><p class="text-success">success：{{ info.posted_at }}</p>
-					{% else %}
-					<li><em>Unbelievable.  No messages here so far</em>
-					{% endfor %}
-					</ul>
+  <body class="bg-image">
+        <div class="wrapper">
+            <header class="main-header">
+                <nav class="navbar navbar-inverse">
+                    <div class="container">
+                        <div class="navbar-header">
+                            <a class="navbar-brand" href="/">knowYourNeighborhood</a>
+                        </div>
+                        <ul class="nav navbar-nav navbar-right">
+                            <li><a href="show-profile.html"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
+                            <li><a href="" id="logoutBtn" class="btn btn-danger navbar-btn"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+                        </ul>
+                    </div>
+                </nav>
+            </header>
+            <div class="content-wrapper">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-lg-1 col-md-1 col-sm-2 col-xs-2"></div>
+                        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8" style="background-color: rgba(255, 255, 255, 0.8);">
+					            {% for info in threads %}
+                                <div class="media">
+                                    <div class="media-body">
+                                        <h4 class="media-heading">{{ info.thread_title }}</h4>
+                                        <small><p class="text-info">{{ info.thread_description }}</p></small>
+                                        <small><p><i>Posted at </i> {{ info.posted_at }} </p></small>
+                                    </div>
+                                </div>
+					            {% else %}
+					            <em>Unbelievable.  No friends here so far</em>
+					            {% endfor %}
+                        </div>
+                        <div class="col-lg-1 col-md-1 col-sm-2 col-xs-2"></div>
+                    </div>
                 </div>
-              </div>
-         </div>
-     </div>
+            </div>
+        </div>
   </body>
 </html>

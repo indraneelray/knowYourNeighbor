@@ -19,7 +19,7 @@
 
         <style>
              .img-class{
-                background-image: url("https://images.unsplash.com/photo-1534430480872-3498386e7856?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1650&q=80");
+                background-image: url("../static/img/background-photo.jpg");
                 background-position: center;
                 background-repeat: no-repeat;
                 background-size: cover;
@@ -37,44 +37,45 @@
                 <nav class="navbar navbar-inverse">
                     <div class="container-fluid">
                         <div class="navbar-header">
-                            <a class="navbar-brand" href="">knowYourNeighborhood</a>
+                            <a class="navbar-brand" href="/">knowYourNeighborhood</a>
                         </div>
                     </div>
                 </nav>
             </header>
             <div class="content-wrapper">
         <!-- <div class="img-class"> -->
-        <div class="wrapper">
-            <div class="content-wrapper">
-        <div class="container">
-            <div class="row" style="margin-top:20%;">
-                <div class="col-lg-3 col-md-3 col-sm-2 col-xs-2"></div>
-                <div class="col-lg-6 col-md-6 col-sm-8 col-xs-8" style="background-color: rgba(255, 255, 255, 0.8);">
-                    <form action="/neighbors/send_block_request" method="POST">
-                        <h1 class="text-center">Join a Block</h1>
-                        </br>
-                        </br>
-                        <div class="form-group">
-                            <label> Select Hood </label>
-                            <select id = "myHood">
-                                <option value="HoodId1">HoodVivek</option>
-                                <option value="HoodId2">HoodNeel</option>
-                            </select>
+                <div class="container">
+                    <div class="row" style="margin-top:20%;">
+                        <div class="col-lg-3 col-md-3 col-sm-2 col-xs-2"></div>
+                        <div class="col-lg-6 col-md-6 col-sm-8 col-xs-8" style="background-color: rgba(255, 255, 255, 0.8);">
+                            <form action="/neighbors/send_block_request" method="POST">
+                                <h1 class="text-center">Join a Block</h1>
+                                </br>
+                                </br>
+                                <div class="form-group">
+                                    <label> Select Hood </label>
+                                    <select id = "myHood">
+                                        <option value="HoodId1">HoodVivek</option>
+                                        <option value="HoodId2">HoodNeel</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label> Select Block </label>
+                                    <select id = "myBlock", name = "baname">
+                                        <option value="1">BlockName1</option>
+                                        <option value="2">BlockName2</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <input type="submit" value="Submit" class="btn btn-success btn-lg btn-block sign_up"/>
+                                </div>
+                            </form>
                         </div>
-                        <div class="form-group">
-                            <label> Select Block </label>
-                            <select id = "myBlock", name = "baname">
-                                <option value="1">BlockName1</option>
-                                <option value="2">BlockName2</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <input type="submit" value="Submit" class="btn btn-success btn-lg btn-block sign_up"/>
-                        </div>
-                    </form>
+                        <div class="col-lg-3 col-md-3 col-sm-2 col-xs-2"></div>
+                    </div>
                 </div>
-            <div class="col-lg-3 col-md-3 col-sm-2 col-xs-2"></div>
-        </div>
+            </div>
+          </div>
     </body>
     {% if message %}
     <script>
