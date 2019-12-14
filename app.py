@@ -189,16 +189,20 @@ def view_profile():
         return render_template('show_profile.html', message=message)
 
 
+
+## add friend api
 @app.route("/friends/send_friend_request", methods=['POST'])
 def send_friend_request():
     notifications = None
-    result = Friends.send_friend_request(db.conn, None)
+    result = Friends.send_friend_request(db.conn, request.form)
     if not result:
         notifications = {'message': 'Friend Request sent', 'type': 'success'}
-        return notifications
+        #return notifications
+        return render_template('show-people.html', notifications=notifications)
     else:
         message = {'message': 'Failed to send request.Please try again!', 'type': 'error'}
-        return message
+        return render_template('show-people.html', message=message)
+        #return message
 
 
 @app.route("/friends/accept_friend_request", methods=['POST'])
@@ -273,16 +277,19 @@ def leave_block():
         return message
 
 
-@app.route("/neighbors/add_neighbors", methods=['GET', 'POST'])
+##add neighbors
+@app.route("/neighbors/add_neighbors", methods=['POST'])
 def add_neighbors():
     notifications = None
-    result = Neighbors.add_neighbors(db.conn, None)
+    result = Neighbors.add_neighbors(db.conn, request.form)
     if not result:
         notifications = {'message': 'Neighbors added successfully!', 'type': 'success'}
-        return notifications
+        return render_template("show-people.html",notifications=notifications)
+        #return notifications
     else:
         message = {'message': 'Failed to send request.Please try again!', 'type': 'error'}
-        return message
+        #return message
+        return render_template("show-people.html", message=message)
 
 
 @app.route("/search/people", methods=['GET', 'POST'])
@@ -560,6 +567,12 @@ def block_details_for_hood():
 def getChangePasswordHTML() :
     message={}
     return render_template('change_password.html', message=message)
+
+@app.route('/updateProfilePage')
+def getUpdateProfileHTML() :
+    message={}
+    print(request.form);
+    return render_template('edit_profile.html', info=request.form)
 
 
 

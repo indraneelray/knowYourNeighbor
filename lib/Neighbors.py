@@ -96,7 +96,7 @@ def block_approve(conn,form):
 def leave_block(conn,form):
     error = None
     cursor = conn.cursor()
-    userid=19
+    userid=session['uid']
     blockid=None
     #add userid null check
     #add user exists or not
@@ -114,8 +114,8 @@ def leave_block(conn,form):
 def add_neighbors(conn,form):
     error = None
     cursor=conn.cursor()
-    requested_byuser = 6
-    requested_touser = 5
+    requested_byuser = session['uid']
+    requested_touser = form["userid"]
     #check for user
     # check if entry exists
     try:

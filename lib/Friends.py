@@ -1,4 +1,4 @@
-from flask import Flask , jsonify
+from flask import Flask , jsonify,session
 
 
 class ServerError(Exception):pass
@@ -6,8 +6,8 @@ class ServerError(Exception):pass
 
 def send_friend_request(conn,form):
     error = None
-    user1 = ""
-    user2 = ""   #request from ui
+    user1 = session['uid']
+    user2 = form["userid"]
     status = "pending"
     if not user1 or user2 :
         raise ServerError("user ids should be present")

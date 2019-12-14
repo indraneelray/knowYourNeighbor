@@ -20,7 +20,7 @@
                 background-image: url("../static/img/background-photo.jpg");
 
                 /* Full height */
-                height: auto;
+                height: 100vh;
 
                 /* Center and scale the image nicely */
                 background-position: center;
@@ -39,8 +39,8 @@
                                 <a class="navbar-brand" href="/">knowYourNeighborhood</a>
                             </div>
                             <ul class="nav navbar-nav navbar-right">
-                                <li><a href="show-profile.html"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
-                                <li><a href="" id="logoutBtn" class="btn btn-danger navbar-btn"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+                                <li><a href="/profile"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
+                                <li><a href="/logout" id="logoutBtn" class="btn btn-danger navbar-btn"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
                             </ul>
                         </div>
                     </nav>
@@ -60,7 +60,8 @@
                                             <div class="btn-group">
                                                 <a href="#" class="btn btn-success">Add friend</a>
                                             </div>
-                                            {% elif info.addNeighbor == true %}
+                                            {% endif %}
+                                            {% if info.addNeighbor == true %}
                                             <div class="btn-group">
                                                 <a href="#" class="btn btn-danger">Add Neighbour</a>
                                             </div>
