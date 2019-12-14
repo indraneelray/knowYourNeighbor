@@ -11,14 +11,17 @@
 
         <!-- Latest compiled JavaScript -->
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC8SaNs99HdtzGjoVDasS2Dqbg9bpMYQ6w&callback=initMap" async defer></script>
+        <script src="//cdn.jsdelivr.net/alertifyjs/1.10.0/alertify.min.js"></script>
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/alertifyjs/1.10.0/css/alertify.min.css" />
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/alertifyjs/1.10.0/css/themes/bootstrap.min.css" />
+        <script src="app.js"></script>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <style>
             .body-background {
                 background-color:lightblue;
             }
             .bg-image {
-                background-image: url("../static/img/background-photo.jpg");
+                background-image: url("https://images.unsplash.com/photo-1534430480872-3498386e7856?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1650&q=80");
 
                 /* Full height */
                 height: 100vh;
@@ -26,28 +29,9 @@
                 /* Center and scale the image nicely */
                 background-position: center;
                 background-repeat: no-repeat;
-                background-size: cover;
-            }
-            #messagesMap {
-                height: 400px;
-                width: 730px;
-                margin-top: 5%;
-                /* margin-left: 20%; */
+                background-size:inherit;
             }
         </style>
-        <script type="text/javascript">
-                var map;
-                function initMap() {
-                  map = new google.maps.Map(document.getElementById('messagesMap'), {
-                    center: {lat: 40.633374, lng: -74.024944},
-                    zoom: 15
-                  });
-                  var marker=new google.maps.Marker({
-                      position : {lat: 40.633374, lng: -74.024944},
-                      map : map
-                  })
-                }
-        </script>
     </head>
     <body class="bg-image">
             <div class="wrapper">
@@ -90,8 +74,7 @@
                         <div class="row">
                             <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4"></div>
                             <div class="col-lg-6 col-md-6 col-sm-4 col-xs-4">
-                                <form id = "searchThreads" method="POST">
-                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" /> 
+                                <form action="/search/thread" method="POST">
                                     <div class="input-group">
                                         <input type="text" name="searchKey" class="form-control" placeholder="Search in messages"/>
                                         <div class="input-group-btn">
@@ -102,20 +85,7 @@
                             </div>
                             <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4"></div>
                         </div>
-                        <div class="row">
-                            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4"></div>
-                            <div class="col-lg-6 col-md-6 col-sm-4 col-xs-4">
-                                <div id="messagesMap"></div>
-                            </div>
-                            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4"></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4"></div>
-                            <div class="col-lg-6 col-md-6 col-sm-4 col-xs-4">
-                                <div id="searchResultsForMsg"></div>
-                            </div>
-                            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4"></div>
-                        </div>
+                        
                     </div>
                 </div>
             </div>
