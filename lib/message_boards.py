@@ -42,16 +42,17 @@ def getUserNeighborThreads(db, latest = False):
 		print("getting neighbor threads")
 		#threadlist = []
 		uid = session['uid']
+		print("uid is:",uid)
 		#cur = db.query("""select * from MessageThreads where created_by = %s order by created_time limit 10;""", [uid])
 		curTime = db.query("""select logout_at from user_details where userid = %s""", [uid])
 		logout_time = curTime.fetchone()[0]
 		#logging.info(logout_time)
 		neighbors = Neighbors.getNeighborList(db)
-		#logging.info(neighbors)
+		print("neighbors are:",neighbors)
 		tids = []
 		for neighborId in neighbors:
 			tids = getCommentTIDs(db, neighborId, logout_time, latest)
-			logging.info(tids)
+			print("thread ids:",tids)
 		threads = []
 		for tid in tids:
 			threads.append(tid)
@@ -60,6 +61,7 @@ def getUserNeighborThreads(db, latest = False):
 
 		# for row in cur.fetchall():
 		# 	threadlist.append({'CreatedBy': row[1], 'Title': row[2], 'Description_Msg': row[3], 'CreatedAt': row[4]})
+		print("thread returned for neighbors:",threads)
 		return threads
 	except:
 		#logging.info("error fetching user threads")
@@ -146,7 +148,7 @@ def postNewThread(db, form):
 		#description = "description"
 		access_level = form['privacy']
 		#access_level = "f"
-		db.query("""INSERT INTO Threads('author','thread_title','thread_description','postedat','view_level')VALUES\
+		db.query("""INSERT INTO Threads('author','thread_title','thread_description','postedat','view_level')VALUES
 			(%s,%s,%s,NOW(),%s)""", [uid, threadTitle, description, access_level])
 	except:
 		logging.info("error posting in user thread")
@@ -192,3 +194,50 @@ def getThreadDetails(db, tid, access_level):
 		#logging.error("error getting thread details")
 		error = "Failed"
 		return error
+
+
+def showThreadComments(db, tid):
+	error = None
+	try:
+		print("threadid is:",tid)
+		print("getting thread comments")
+		cur = db.query(
+			"""select messages.threadid, messages.comment_message, messages.posted_at, user_details.firstname, user_details.lastname from messages, user_details where messages.replied_by = user_details.userid and threadid = %s""",
+			[tid])
+		comments = cur.fetchall()
+		commentList = []
+		for c in comments:
+			commentList.append(c)
+		print("commentlist is:",commentList)
+		return commentList
+	except:
+		return error
+
+
+
+def getThreadTitle(db, tid):
+	error = None
+	try:
+		logging.info("getting thread title")
+		cur = db.query("""select thread_title from threads where threadid = %s""", [tid])
+		title = cur.fetchone()[0]
+		return title
+	except:
+		#logging.error("error fetching thread title")
+		return error
+
+
+def postComment(db, form, tid):
+	logging.info("posting comments")
+	uid = session['uid']
+	logging.info(uid)
+	commentTxt = form["commentText"]
+	logging.info(commentTxt)
+	# description = form["description"]
+	try:
+		cur = db.query(
+			"""insert into messages (threadid, comment_message, author, posted_at)values (%s, %s, %s, NOW())""",
+			[tid, commentTxt, uid])
+		return None
+	except:
+		return "error"

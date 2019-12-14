@@ -22,6 +22,7 @@ def search_people(conn,form):
         if neighborhoodid is not None:
             #filter on name
             neighborhood_list = find_neighborhors_by_id(conn,neighborhoodid)
+            print("neighborhood list:",neighborhood_list)
             for neighbor in neighborhood_list:
                 addFriend=False
                 addNeighbor=False
@@ -41,6 +42,7 @@ def search_people(conn,form):
                 error = "No result found!"
                 return error
             else :
+                print("final list is:",final_list)
                 return final_list
         else:
             raise ServerError("No result found")

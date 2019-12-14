@@ -147,5 +147,21 @@ def get_requests_for_block(conn):
         raise ServerError("No friends for this user")
 
 
+def getNeighborList(db):
+    print("getting Neighbor list")
+    error = None
+    neighborlist=[]
+    uid = int(session['uid'])
+    cursor = db.query("""select user1, user2 from Neighbors where user1 = %s or user2 = %s and starttime is not Null and endtime is NULL""",[uid,uid])
+    for row in cursor.fetchall():
+        print("User has Neighbors")
+        if row[0]!= uid:
+            neighborlist.append(row[0])
+        if row[1]!=uid :
+            neighborlist.append(row[1])
+    return neighborlist
+
+
+
 
 
