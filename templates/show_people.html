@@ -1,0 +1,146 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Welcome to Neighbourhood</title>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+        <!-- jQuery library -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+        <!-- Latest compiled JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <script src="//cdn.jsdelivr.net/alertifyjs/1.10.0/alertify.min.js"></script>
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/alertifyjs/1.10.0/css/alertify.min.css" />
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/alertifyjs/1.10.0/css/themes/bootstrap.min.css" />
+        <script src="app.js"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>
+            .body-background {
+                background-color:lightblue;
+            }
+            .bg-image {
+                background-image: url("https://images.unsplash.com/photo-1534430480872-3498386e7856?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1650&q=80");
+
+                /* Full height */
+                height: 100vh;
+
+                /* Center and scale the image nicely */
+                background-position: center;
+                background-repeat: no-repeat;
+                background-size:inherit;
+            }
+        </style>
+        <script type="text/javascript">
+            var callAddFriend = function() {
+                var userid = document.getElementById('input1').value;
+            alert("add friend called");
+                alert(userid);
+                $.ajax({
+                    url: '/friends/send_friend_request',
+                    type: 'GET',
+                    data: {userid : userid},
+                    success: function(response){
+                        var message = response.message;
+                        alert("Friend request sent");
+                    },
+                    error : function(response){
+                        var message = response.message;
+                        alert("Error ");
+                    }
+                });
+            }
+            var callAddNeighbor = function() {
+                var userid = document.getElementById('input1').value;
+                alert("add friend called");
+                alert(userid);
+                $.ajax({
+                    url: '/neighbors/add_neighbors',
+                    type: 'GET',
+                    data: {userid : userid},
+                    success: function(response){
+                        var message = response.message;
+                        alert(message);
+                    },
+                    error : function(response){
+                        var message = response.message;
+                        alert(message);
+                    }
+                });
+            }
+        </script>
+	</head>
+  <body class="bg-image">
+            <div class="wrapper">
+                <header class="main-header">
+                    <nav class="navbar">
+                            <div class="container">
+                                <div class="navbar-header">
+                                    <a class="navbar-brand" href="/">knowYourNeighborhood</a>
+                                </div>
+                                <ul class="nav navbar-nav navbar-right">
+                                    <li class="dropdown">
+                                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Feed
+                                            <span class="caret"></span></a>
+                                            <ul class="dropdown-menu">
+                                                <li><a href="/block-feed">Block Feed</a></li>
+                                                <li><a href="/hood-feed">Hood Feed</a></li>
+                                                <li><a href="/friend-feed">Friend Feed</a></li>
+                                                <li><a href="/neighbor-feed">Neighbor Feed</a></li>
+                                                <li><a href="/crime-feed">Crime Feed</a></li>
+                                            </ul>
+                                    </li>
+                                    <li class="dropdown">
+                                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Map View
+                                            <span class="caret"></span></a>
+                                            <ul class="dropdown-menu">
+                                                <li><a href="/map_threads">Threads</a></li>
+                                                <li><a href="/map_friends">Friends</a></li>
+                                                <li><a href="/map_neighbors">Neighbors</a></li>
+                                            </ul>
+                                    </li>
+
+                                    <li><a href="/profile"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
+                                    <li><a href="/logout" class="btn-danger navbar-right">Logout</a></li>
+                                </ul>
+                            </div>
+                        </nav>
+                </header>
+                <div class="content-wrapper">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-1 col-md-1 col-sm-2 col-xs-2"></div>
+                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8" style="background-color: rgba(255, 255, 255, 0.8);">
+                                <h2 class="text-center">Search Results</h2>
+					            {% for info in people %}
+                                <div class="media">
+                                    <div class="media-body">
+                                        <h4 class="media-heading text-capitalize">{{ info.user_details.firstname }} {{info.user_details.lastname}}</h4>
+                                        <small><p class="text-info">{{ info.user_details.user_bio }}</p></small>
+                                        <input id="input1" type="text" value="{{info.user_details.userid}}" hidden/>
+                                            {% if info.addFriend == true %}
+                                            <div class="btn-group">
+                                                <a onclick="callAddFriend()" class="btn btn-success">Add friend</a>
+                                            </div>
+                                            {% endif %}
+                                            {% if info.addNeighbor == true %}
+                                            <div class="btn-group">
+                                                <a onclick="callAddNeighbor()" class="btn btn-danger">Add Neighbour</a>
+                                            </div>
+                                            {% else %}
+                                            <div></div>
+                                            {% endif %}
+                                    </div>
+                                </div>
+					            {% else %}
+					            <em>Unbelievable.  No friends here so far</em>
+					            {% endfor %}
+                            </div>
+                            <div class="col-lg-1 col-md-1 col-sm-2 col-xs-2"></div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+  </body>
+</html>
