@@ -52,7 +52,18 @@ def getBlockNameFromBid(db, bid):
     bname = cur.fetchone()[0]
     return bname
 
-
+def get_block_details_for_hood(conn, hoodid):
+    error = None
+    block_details=[]
+    cursor = conn.cursor()
+    try :
+        cursor.execute("""select * from block_details where neighborhood_id = %s""",[int(hoodid)])
+        for row in cursor.fetchall():
+            block_details.append({'blockid': row[0], 'blockname': row[1], 'neighborhood_id': row[6], 'pincode': row[7]})
+        return block_details
+    except:
+        error = "error"
+        return error
 
 
 

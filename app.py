@@ -515,14 +515,15 @@ def get_block_details():
         return render_template('join_block.html', message=message)
 
 
-@app.route('/neighborhood_details',methods=['GET', 'POST'])
+@app.route('/neighborhood_details')
 def get_neighborhood_details():
-    if request.method == "POST":
-        result =Hood.getHooddetail(db.conn, request.form)
+    # if request.method == "POST":
+        result =Hood.getHooddetails(db.conn)
+        print(result);
         return render_template('join_block.html', hoodinfo=result)
-    else:
-        message={'message': 'Failed to send request.Please try again!', 'type': 'error'}
-        return render_template('join_block.html', message=message)
+    # else:
+    #     message={'message': 'Failed to send request.Please try again!', 'type': 'error'}
+    #     return render_template('join_block.html', message=message)
 
 @app.route('/searchMessages')
 def getSearchMessagesPage() :
@@ -545,6 +546,20 @@ def getFriendRequests() :
     message={}
     return render_template('friend-requests.html', message=message)
 
+@app.route('/block_details_for_hood',methods=['GET', 'POST'])
+def block_details_for_hood():
+    if request.method == "GET":
+        hoodid = request.args.get('selectedHoodid');
+        result =Block.get_block_details_for_hood(db.conn, hoodid)
+        return jsonify(blockList=result);
+    else:
+        message={'message': 'Failed to send request.Please try again!', 'type': 'error'}
+        return render_template('join_block.html', message=message)
+
+@app.route('/changePasswordPage')
+def getChangePasswordHTML() :
+    message={}
+    return render_template('change_password.html', message=message)
 
 
 

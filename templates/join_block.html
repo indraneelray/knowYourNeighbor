@@ -29,7 +29,25 @@
                 position: relative;
             }
         </style>
-        <script src="loginController.js"></script>
+        <script type="text/javascript">
+            var getBlockValues = function() {
+                var selectedHoodid = document.getElementById('myHood').value;
+                var option = '';
+                document.getElementById('myBlock').innerHTML = '';
+                $.ajax({
+                    url: '/block_details_for_hood',
+                    type: 'GET',
+                    data: {selectedHoodid : selectedHoodid},
+                    success: function(response){
+                        var blocklist = response.blockList;
+                        for (i=0;i<blocklist.length;i++){
+                            option += '<option value="'+ blocklist[i].blockid + '">' + blocklist[i].blockname + '</option>';
+                        }
+                        $('#myBlock').append(option);
+                    }
+                 });
+            }
+        </script>
     </head>
     <body class="img-class">
           <div class="wrapper">
@@ -54,16 +72,16 @@
                                 </br>
                                 <div class="form-group">
                                     <label> Select Hood </label>
-                                    <select id = "myHood">
-                                        <option value="HoodId1">HoodVivek</option>
-                                        <option value="HoodId2">HoodNeel</option>
+                                    <select id = "myHood" onchange="getBlockValues()">
+                                        <option value="" selected></option>
+                                        {% for hood in hoodinfo %}
+                                        <option value="{{hood.neighborhoodid}}">{{hood.neighborhoodname}}</option>
+                                        {% endfor %}
                                     </select>
                                 </div>
                                 <div class="form-group">
                                     <label> Select Block </label>
-                                    <select id = "myBlock", name = "baname">
-                                        <option value="1">BlockName1</option>
-                                        <option value="2">BlockName2</option>
+                                    <select id = "myBlock" name = "baname">
                                     </select>
                                 </div>
                                 <div class="form-group">

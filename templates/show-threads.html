@@ -29,6 +29,19 @@
             }
 
         </style>
+        <script type="text/javascript">
+            var openThreadDetails = function() {
+                var threadid = document.getElementById('myThread').value;
+                $.ajax({
+                    url: '',
+                    type: 'GET',
+                    data: {threadid : threadid},
+                    success: function(response){
+                        console.log("success");
+                    }
+                 });
+            };
+        </script>
 	</head>
   <body class="bg-image">
         <div class="wrapper">
@@ -53,7 +66,8 @@
 					            {% for info in threads %}
                                 <div class="media">
                                     <div class="media-body">
-                                        <h4 class="media-heading">{{ info.thread_title }}</h4>
+                                        <h4 class="media-heading" onclick="openThreadDetails()">{{ info.thread_title }}</h4>
+                                        <input type="text" id="myThread" value="{{info.thread_id}}" hidden/>
                                         <small><p class="text-info">{{ info.thread_description }}</p></small>
                                         <small><p><i>Posted at </i> {{ info.posted_at }} </p></small>
                                     </div>
