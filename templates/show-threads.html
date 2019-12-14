@@ -84,7 +84,8 @@
                                                     <li><em>Unbelievable.  No recent messages here so far</em>
                                                     {% endfor %}
                                             </ul>
-                                            <form action="" method="POST">
+                                            {{tid}}
+                                            <form action="{{ url_for('showThread',tid=tid) }}" method="POST">
                                                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />                                    
                                                 <div class="form-group">
                                                     <label for="commentText" class="control-label">Comment: </label>

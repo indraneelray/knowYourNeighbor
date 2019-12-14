@@ -200,11 +200,11 @@ def getThreadDetails(db, tid, access_level):
 		error = "Failed"
 		return error
 
-def showThreadComments(db, tid = 11):
+def showThreadComments(db, tid):
 	error = None
 	try:
 		logging.info("getting thread comments")
-		cur = db.query("""select comment_Msg, commentTime, FName, LName from threadComments, user_info where threadComments.Comment_by = user_info.uid and tid = %s""", [tid])
+		cur = db.query("""select tid, comment_Msg, commentTime, FName, LName from threadComments, user_info where threadComments.Comment_by = user_info.uid and tid = %s""", [tid])
 		comments = cur.fetchall()
 		commentList = []
 		for c in comments:
@@ -218,7 +218,7 @@ def showThreadComments(db, tid = 11):
 def getThreadTitle(db, tid = 11):
 	error = None
 	try:
-		logging.info("getting thread comments")
+		logging.info("getting thread title")
 		cur = db.query("""select title from messagethreads where tid = %s""", [tid])
 		title = cur.fetchone()[0]
 		return title
@@ -227,16 +227,15 @@ def getThreadTitle(db, tid = 11):
 		return error
 
 	
-def postComment(db, form):
+def postComment(db, form, tid):
+	logging.info("posting comments")
 	uid = session['uid']
-	privacy = form["privacy"]
-	logging.info(privacy)
-	description = form["description"]
-	logging.info(description)
-	title = form["title"]
-	logging.info(title)
+	logging.info(uid)
+	commentTxt = form["commentText"]
+	logging.info(commentTxt)
+	#description = form["description"]
 	try:
-		cur = db.query("""insert into messagethreads (created_by, title, description_msg, created_time, access_level)values (%s, %s, %s, NOW(), %s)""", [uid, title, description, privacy])
+		cur = db.query("""insert into threadcomments (tid, comment_msg, comment_by, commentTime)values (%s, %s, %s, NOW())""", [tid, commentTxt, uid])
 		return None
 	except:
 		return "error"

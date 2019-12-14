@@ -32,6 +32,46 @@
                 background-size:inherit;
             }
         </style>
+        <script type="text/javascript">
+
+        
+        $().ready(function(){
+            $('#div1').click(function() {
+                console.log('here');
+                var text = document.getElementById('threadid10').value;
+                console.log(text);
+                $.ajax({
+                  url: "/show-thread",
+                  type: "get",
+
+                  data: {tid: text},
+                  dataType:"json",
+                  success: function(response) {
+                    // var dataPassed = response;
+                    // console.log(dataPassed);
+                    // data2 = {'threadDetails': dataPassed};
+                    // $.ajax({
+                    //     url : "/redirectToThreadDetails",
+                    //     type: "GET",
+                    //     data : data2,
+                    //     dataType:'json',
+                    //     //data : {threadDetails : dataPassed},
+                    //     success : function(response) {
+                    //         console.log("success");
+                    //     }
+                    window.location.replace(response);
+                    },
+                    //window.location.replace('/redirectToThreadDetails');
+                  error: function(xhr) {
+                    //Do Something to handle error
+                  }
+                });
+            })
+        });
+            var getThreadDetails = function(){
+                
+            }
+        </script>
     </head>
     <body class="bg-image">
             <div class="wrapper">
@@ -82,7 +122,7 @@
                                         <li class="list-group-item"><button class="btn btn-warning" onclick="location.href='/block_request'">Block Approval Requests</button></li> 
                                         
                                     </ul>
-                                    <!--Create thread modal-->
+                                    <!--Create thread modal <a href="/show-thread">-->
                                     <div class="modal fade" id="createThreadModal" role="dialog">
                                         <div class="modal-dialog modal-dialog-centered modal-lg">
                                             <div class="modal-content">
@@ -156,11 +196,12 @@
                                         <h2>Recently active Threads in your Block</h2>
                                         <ul>
                                                 {% for info in blockFeedInfo %}
-                                                    <li><a href="/show-thread"><p>{{ info.Title }}</p></a><p class="text-info">{{ info.Description_Msg }}</p></li>
+                                                    <li><div id="div1"><a href="{{url_for('showThread',tid=info.tid)}}"><p>{{ info.Title }}</p></a></div><p class="text-info">{{ info.Description_Msg }}</p></li>
                                                 {% else %}
                                                 <li><em>Unbelievable.  No recent messages here so far</em>
                                                 {% endfor %}
                                         </ul>
+                                        
                                     </div>
                                 </div>
                                 <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1"></div>
