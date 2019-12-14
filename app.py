@@ -206,7 +206,7 @@ def update_profile():
 			return response
 		else:
 			message = {'message': 'Something went wrong: '+result, 'type': 'error'}
-			response = make_response(render_template("show_profile.html", message =message))
+			response = make_response(render_template("edit_profile.html", message =message))
 			response.headers['X-XSS-Protection'] = '1; mode=block'
 			return response
 	return render_template('edit_profile.html')
@@ -451,20 +451,11 @@ def search_people():
 		logging.info(result)
 		if not result:
 			message = {'message': 'Search failed', 'type': 'failure'}
-			return render_template('map_friends.html', message = message)
+			return render_template('search_people.html', message = message)
 		else:
 			return render_template('show_friends.html')
 	else:
-		return render_template('map_friends.html')
-
-# @app.route('/redirectToThreadDetails', methods=['GET','POST'])
-# def redirectToThreadDetails():
-# 	data = request.args.get('threadDetails')
-# 	data2 = request.json
-# 	logging.info("data is ")
-# 	logging.info(data)
-# 	logging.info(data2)
-# 	return render_template('show-threads.html', threadCommentInfo = data.threadCommentInfo, threadTitle = data.threadTitle)
+		return render_template('search_people.html')
 
 #Run app
 if __name__ == '__main__':
