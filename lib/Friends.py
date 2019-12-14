@@ -4,16 +4,14 @@ from flask import Flask , jsonify,session
 class ServerError(Exception):pass
 
 
-def send_friend_request(conn,form):
+def send_friend_request(conn,id):
     error = None
-    user1 = session['uid']
-    user2 = form["userid"]
+    user1 = int(session['uid'])
+    user2 = int(id)
     status = "pending"
-    if not user1 or user2 :
-        raise ServerError("user ids should be present")
     cursor = conn.cursor()
     try:
-        cursor.execute("INSERT INTO friendrequest (`requested_by`, `requested_to`, 'status') VALUES (%s,%s,%s)",[user1, user2,status])
+        cursor.execute("INSERT INTO friendrequest (`requested_by`, `requestedto`, `status`) VALUES (%s,%s,%s)",[user1, user2,status])
         conn.commit()
         return None
     except ServerError as e:
@@ -52,9 +50,9 @@ def accept_friend_request(conn,form):
 
 
 
-def get_friends_details(conn,form):
+def get_friends_details(conn):
     error = None
-    userid = 1
+    userid = session['uid']
     friendslist=[]
     if not userid:
         raise ServerError("Mandatory fields not present in request")

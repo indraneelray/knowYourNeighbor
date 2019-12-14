@@ -111,11 +111,11 @@ def leave_block(conn,form):
         return error
 
 
-def add_neighbors(conn,form):
+def add_neighbors(conn,id):
     error = None
     cursor=conn.cursor()
-    requested_byuser = session['uid']
-    requested_touser = form["userid"]
+    requested_byuser = int(session['uid'])
+    requested_touser = int(id)
     #check for user
     # check if entry exists
     try:
