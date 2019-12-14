@@ -241,10 +241,12 @@ def send_block_request():
         return render_template("join_block.html", message=message)
 
 
+#get friends of a user
+
 @app.route("/friends/get_friends_details", methods=['GET', 'POST'])
 def get_friends_details():
     notifications = None
-    result = Friends.get_friends_details(db.conn, None)
+    result = Friends.get_friends_details(db.conn, request.form)
     if not result:
         notifications = {'message': 'Error in fetching', 'type': 'success'}
         return notifications
@@ -573,7 +575,6 @@ def getUpdateProfileHTML() :
     message={}
     print(request.form);
     return render_template('edit_profile.html', info=request.form)
-
 
 
 

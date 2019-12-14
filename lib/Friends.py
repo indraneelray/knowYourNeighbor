@@ -54,7 +54,7 @@ def accept_friend_request(conn,form):
 
 def get_friends_details(conn,form):
     error = None
-    userid = 1
+    userid = form["userid"]
     friendslist=[]
     if not userid:
         raise ServerError("Mandatory fields not present in request")
