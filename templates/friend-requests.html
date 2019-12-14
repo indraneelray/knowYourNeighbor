@@ -30,12 +30,11 @@
             }
         </style>
         <script type="text/javascript">
-            var callAddFriend = function(userid) {
-                alert(userid);
+            var callAddFriend = function(action,userid) {
                 $.ajax({
-                    url: '/accept_friend_request',
+                    url: '/friends/accept_friend_request',
                     type: 'GET',
-                    data: {userid : userid},
+                    data: {userid : userid, action:action},
                     success: function(response){
                         var message = response.message;
                         alert("Friend request accepted");
@@ -69,34 +68,19 @@
                                 <div class="col-lg-1 col-md-1 col-sm-2 col-xs-2"></div>
                                 <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8" style="background-color: rgba(255, 255, 255, 0.8);">
                                     <h2 class="text-center">Friend Requests</h2>
+                                    {% for friend in friendDetails %}
                                     <div class="media">
-                                        <div class="media-left">
-                                            <img src="../static/img/user_icon.png" class="media-object" style="width:60px">
-                                        </div>
                                         <div class="media-body">
-                                            <h4 class="media-heading">John Doe</h4>
+                                            <h4 class="media-heading">{{friend.firstname}} {{friend.lastname}}</h4>
                                             <div class="btn-group btn-group-lg">
-                                                <a onclick="callAddFriend()" class="btn btn-success">Approve</a>
+                                                <a onclick="callAddFriend('approve',{{friend.userid}})" class="btn btn-success">Approve</a>
                                             </div>
                                             <div class="btn-group btn-group-lg">
-                                                <a onclick="callAddFriend()" class="btn btn-danger">Decline</a>
+                                                <a onclick="callAddFriend('decline',{{friend.userid}})" class="btn btn-danger">Decline</a>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="media">
-                                        <div class="media-left">
-                                            <img src="../static/img/user_icon.png" class="media-object" style="width:60px">
-                                        </div>
-                                        <div class="media-body">
-                                            <h4 class="media-heading">John Doe</h4>
-                                            <div class="btn-group btn-group-lg">
-                                                <a href="#" class="btn btn-success">Approve</a>
-                                            </div>
-                                            <div class="btn-group btn-group-lg">
-                                                <a href="#" class="btn btn-danger">Decline</a>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    {% endfor %}
                                 </div>
                                 <div class="col-lg-1 col-md-1 col-sm-2 col-xs-2"></div>
                             </div>
