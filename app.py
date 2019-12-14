@@ -191,18 +191,23 @@ def view_profile():
 
 
 ## add friend api
-@app.route("/friends/send_friend_request", methods=['POST'])
+@app.route("/friends/send_friend_request", methods=['GET','POST'])
 def send_friend_request():
     notifications = None
-    result = Friends.send_friend_request(db.conn, request.form)
-    if not result:
-        notifications = {'message': 'Friend Request sent', 'type': 'success'}
-        #return notifications
-        return render_template('show-people.html', notifications=notifications)
+    if request.method=="GET":
+        friendid= request.args.get('userid')
+        print("friend id from ui is:",friendid)
+        result = Friends.send_friend_request(db.conn, friendid)
+        if not result:
+            message = {'message': 'Friend Request sent', 'type': 'success'}
+            #return notifications
+            return render_template('show-people.html', message=message)
+        else:
+            message = {'message': 'Failed to send request.Please try again!', 'type': 'error'}
+            return render_template('show-people.html', message=message)
+            #return message
     else:
-        message = {'message': 'Failed to send request.Please try again!', 'type': 'error'}
-        return render_template('show-people.html', message=message)
-        #return message
+        return render_template('show-people.html')
 
 
 @app.route("/friends/accept_friend_request", methods=['POST'])
@@ -246,13 +251,20 @@ def send_block_request():
 @app.route("/friends/get_friends_details", methods=['GET', 'POST'])
 def get_friends_details():
     notifications = None
-    result = Friends.get_friends_details(db.conn, request.form)
-    if not result:
-        notifications = {'message': 'Error in fetching', 'type': 'success'}
-        return notifications
-    else:
-        notifications = result
-        return notifications
+    if request.method=="GET":
+        print("in get")
+        result = Friends.get_friends_details(db.conn)
+        if not result:
+            message = {'message': 'Error in fetching', 'type': 'success'}
+            return render_template("friend-requests.html", message=message)
+        else:
+            print("get friends")
+            friendDetails = result
+            return render_template("friend-requests.html", friendDetails=friendDetails)
+    else :
+        print("in else")
+        return render_template('friend-requests.html')
+
 
 
 @app.route("/neighbors/approve_block_request", methods=['GET', 'POST'])
@@ -280,17 +292,21 @@ def leave_block():
 
 
 ##add neighbors
-@app.route("/neighbors/add_neighbors", methods=['POST'])
+@app.route("/neighbors/add_neighbors", methods=['GET','POST'])
 def add_neighbors():
     notifications = None
-    result = Neighbors.add_neighbors(db.conn, request.form)
-    if not result:
-        notifications = {'message': 'Neighbors added successfully!', 'type': 'success'}
-        return render_template("show-people.html",notifications=notifications)
-        #return notifications
-    else:
-        message = {'message': 'Failed to send request.Please try again!', 'type': 'error'}
-        #return message
+    if request.method=="GET":
+        neighborid = request.args.get('userid')
+        result = Neighbors.add_neighbors(db.conn, neighborid)
+        if not result:
+            message = {'message': 'Neighbors added successfully!', 'type': 'success'}
+            return render_template("show-people.html",message=message)
+            #return notifications
+        else:
+            message = {'message': 'Failed to send request.Please try again!', 'type': 'error'}
+            #return message
+            return render_template("show-people.html", message=message)
+    else :
         return render_template("show-people.html", message=message)
 
 
@@ -550,10 +566,6 @@ def getBlockApprovalRequests() :
     message={}
     return render_template('approval-requests.html', message=message)
 
-@app.route('/friendrequests')
-def getFriendRequests() :
-    message={}
-    return render_template('friend-requests.html', message=message)
 
 @app.route('/block_details_for_hood',methods=['GET', 'POST'])
 def block_details_for_hood():
