@@ -27,8 +27,41 @@
                 background-repeat: no-repeat;
                 background-size: cover;
             }
-
         </style>
+        <script type="text/javascript">
+            var callAddFriend = function(userid) {
+                alert(userid);
+                $.ajax({
+                    url: '/send_friend_request',
+                    type: 'GET',
+                    data: {userid : userid},
+                    success: function(response){
+                        var message = response.message;
+                        alert("Friend request sent");
+                    },
+                    error : function(response){
+                        var message = response.message;
+                        alert("Error ");
+                    }
+                });
+            }
+            var callAddNeighbor = function(userid) {
+                alert(userid);
+                $.ajax({
+                    url: '/add_neighbors',
+                    type: 'GET',
+                    data: {userid : userid},
+                    success: function(response){
+                        var message = response.message;
+                        alert(message);
+                    },
+                    error : function(response){
+                        var message = response.message;
+                        alert(message);
+                    }
+                });
+            }
+        </script>
 	</head>
   <body class="bg-image">
             <div class="wrapper">
@@ -58,12 +91,12 @@
                                         <small><p class="text-info">{{ info.user_details.user_bio }}</p></small>
                                             {% if info.addFriend == true %}
                                             <div class="btn-group">
-                                                <a href="#" class="btn btn-success">Add friend</a>
+                                                <a onclick="callAddFriend(info.user_details.userid)" class="btn btn-success">Add friend</a>
                                             </div>
                                             {% endif %}
                                             {% if info.addNeighbor == true %}
                                             <div class="btn-group">
-                                                <a href="#" class="btn btn-danger">Add Neighbour</a>
+                                                <a onclick="callAddNeighbor(info.user_details.userid)" class="btn btn-danger">Add Neighbour</a>
                                             </div>
                                             {% else %}
                                             <div></div>
