@@ -70,10 +70,10 @@
                                 <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8" style="background-color: rgba(255, 255, 255, 0.8);">
                                     <h2 class="text-center">Friend Requests</h2>
 
-                                    {% for friend in friendDetails  %}
+                                    {% for friend in friendDetails %}
                                     <div class="media">
                                         <div class="media-body">
-                                            <h4 class="media-heading">{{ friend.firstname }} {{ friend.lastname }}</h4>
+                                            <h4 class="media-heading">{{friend.firstname}} {{friend.lastname}}</h4>
                                             <div class="btn-group btn-group-lg">
                                                 <a onclick="callAddFriend('approve',{{friend.userid}})" class="btn btn-success">Approve</a>
                                             </div>
