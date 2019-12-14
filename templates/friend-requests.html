@@ -29,6 +29,24 @@
                 background-size:inherit;
             }
         </style>
+        <script type="text/javascript">
+            var callAddFriend = function(userid) {
+                alert(userid);
+                $.ajax({
+                    url: '/accept_friend_request',
+                    type: 'GET',
+                    data: {userid : userid},
+                    success: function(response){
+                        var message = response.message;
+                        alert("Friend request accepted");
+                    },
+                    error : function(response){
+                        var message = response.message;
+                        alert("Error");
+                    }
+                });
+            }
+        </script>
     </head>
     <body class="bg-image">
             <div class="wrapper">
@@ -58,10 +76,10 @@
                                         <div class="media-body">
                                             <h4 class="media-heading">John Doe</h4>
                                             <div class="btn-group btn-group-lg">
-                                                <a href="#" class="btn btn-success">Approve</a>
+                                                <a onclick="callAddFriend()" class="btn btn-success">Approve</a>
                                             </div>
                                             <div class="btn-group btn-group-lg">
-                                                <a href="#" class="btn btn-danger">Decline</a>
+                                                <a onclick="callAddFriend()" class="btn btn-danger">Decline</a>
                                             </div>
                                         </div>
                                     </div>
