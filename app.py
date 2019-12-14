@@ -201,7 +201,7 @@ def update_profile():
 		result = Users.update_profile_details(db.conn, request.form)
 		if not result:
 			message = {'message': 'Profile update successful', 'type': 'success'}
-			response = make_response(render_template("show_profile.html", message =message))
+			response = make_response(render_template("edit_profile.html", message =message))
 			response.headers['X-XSS-Protection'] = '1; mode=block'
 			return response
 		else:
