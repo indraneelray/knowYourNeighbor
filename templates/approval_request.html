@@ -30,6 +30,23 @@
 
             }
         </style>
+        <script>
+                var callApproveRequest = function(userid) {
+                    $.ajax({
+                        url: '/neighbors/approve_block_request',
+                        type: 'GET',
+                        data: {userid : userid},
+                        success: function(response){
+                            var message = response.message;
+                            alert("Action successful");
+                        },
+                        error : function(response){
+                            var message = response.message;
+                            alert("Error");
+                        }
+                    });
+                };
+        </script>
     </head>
     <body class="bg-image">
             <div class="wrapper">
@@ -76,7 +93,7 @@
                                         <div class="media-left">
                                             <img src="../static/img/user_icon.png" class="media-object" style="width:60px">
                                         </div>
-                                        <div class="media-body">
+                                        <!-- <div class="media-body">
                                             <h4 class="media-heading">John Doe</h4>
                                             <div class="btn-group btn-group-lg">
                                                 <a href="#" class="btn btn-success">Approve</a>
@@ -84,9 +101,19 @@
                                             <div class="btn-group btn-group-lg">
                                                 <a href="#" class="btn btn-danger">Decline</a>
                                             </div>
-                                        </div>
+                                        </div> -->
+                                        <ul>
+                                            {% for info in details %}
+                                                <li><a href="/show-thread"><p>{{ info.userid }}</p></a><p class="text-info">{{ info.firstname }}</p><p>{{ info.lastname }}</p></li>
+                                                <div class="btn-group btn-group-lg">
+                                                    <a  onclick="callApproveRequest({{info.userid}})" class="btn btn-success">Approve</a>
+                                                </div>
+                                            {% else %}
+                                            <li><em>Unbelievable.  No recent friend requests here so far</em>
+                                            {% endfor %}
+                                        </ul>
                                     </div>
-                                    <div class="media">
+                                    <!-- <div class="media">
                                         <div class="media-left">
                                             <img src="../static/img/user_icon.png" class="media-object" style="width:60px">
                                         </div>
@@ -99,7 +126,7 @@
                                                 <a href="#" class="btn btn-danger">Decline</a>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> -->
                                 </div>
                                 <div class="col-lg-1 col-md-1 col-sm-2 col-xs-2"></div>
                             </div>

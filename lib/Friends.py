@@ -33,13 +33,37 @@ def get_friends_details(conn):
     cursor.execute("select uid,Friendid from friendship where uid = %s or friendId = %s and starttime is not Null and "
                    "endtime is NULL",[userid,userid])
     logging.info("SEarch friends query executed")
-    logging.info(cursor.fetchall)
+    logging.info(cursor.fetchall())
     if cursor.fetchall is not None:
         for row in cursor.fetchall():
             if row[0]!= userid:
                 friendslist.append(row[0])
             if row[1]!=userid :
                 friendslist.append(row[1])
+        return friendslist
+    else :
+        raise ServerError("No friends for this user")
+
+
+def get_friends_requests(conn):
+    userid = session['uid']
+    friendslist=[]
+    status="pending"
+    cursor=conn.cursor()
+    cursor.execute("select fname, lname, uid_requestor,Friendid from friend_request inner join user_info on user_info.uid=friend_request.uid_requestor where friendId = %s \
+         and friend_request.request_status=%s",[userid, status])
+    logging.info("SEarch friends query executed")
+    frnds = cursor.fetchall()
+    logging.info(cursor.fetchall())
+    if cursor.fetchall() is not None:
+        logging.info("fetched friends")
+        for row in frnds:
+            logging.info(row)
+            if row[2]!= userid:
+                friendslist.append((row[0], row[1], row[2]))
+            if row[3]!=userid :
+                friendslist.append((row[0], row[1], row[2]))
+        logging.info(friendslist)
         return friendslist
     else :
         raise ServerError("No friends for this user")
@@ -60,3 +84,38 @@ def send_friend_request(conn,id):
     except ServerError as e:
         error = "Update failed"
         return error
+
+
+def accept_friend_request(conn,id,action):
+    error = None
+    user1 =id
+    user2 =int(session['uid'])
+    status = action
+    #if not user1 or user2 or status:
+       # raise ServerError("Mandatory fields not present in request")
+    cursor = conn.cursor()
+    if status.casefold() == "decline":
+        status="declined"
+        try :
+            cursor.execute("UPDATE friend_request set request_status = %s where uid_requestor = %s and friendid = %s",[status.lower(),user1,user2])
+            conn.commit()
+            return None
+        except:
+            error = "Db error"
+            return error
+    elif status.casefold() == "approve":
+        status="approved"
+        try:
+            cursor.execute("UPDATE friend_request set request_status = %s where uid_requestor = %s and friendid = %s",[status.lower(),user1,user2])
+            cursor.execute("INSERT INTO friendship (`uid`, `friendid`, `starttime`) VALUES (%s,%s,NOW())",[user1, user2])
+            conn.commit()
+            return None
+        except:
+            print("in rollback")
+            conn.rollback()
+            error = "Error"
+            return error
+    else:
+        raise ServerError("status not expected")
+
+    

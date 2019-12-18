@@ -7,6 +7,7 @@ import lib.Block as Block
 import lib.Search as Search
 import lib.Friends as Friends
 import lib.Neighbors as Neighbors
+import lib.Hood as Hood
 from flask_wtf.csrf import CSRFProtect
 import logging
 
@@ -462,20 +463,23 @@ def search_people():
 
 @app.route("/friends/get_friends_details", methods=['GET', 'POST'])
 def get_friends_details():
-    notifications = None
-    if request.method=="GET":
-        print("in get")
-        result = Friends.get_friends_details(db.conn)
-        if not result:
-            message = {'message': 'Error in fetching', 'type': 'success'}
-            return render_template("friend_requests.html", message=message)
-        else:
-            print("get friends")
-            friendDetails = result
-            return render_template("friend_requests.html", friendDetails=friendDetails)
-    else :
-        print("in else")
-        return render_template('friend_requests.html')
+	notifications = None
+	if request.method=="GET":
+		print("in get")
+		result = Friends.get_friends_requests(db.conn)
+		friendDetails = []
+		if not result:
+			message = {'message': 'Error in fetching', 'type': 'success'}
+			return render_template("friend_requests.html", message=message)
+		else:
+			print("get friends")
+			for f in result:
+				friendDetails.append({"firstname":f[0], "lastname":f[1], "userid":f[2]})
+			logging.info(friendDetails)
+			return render_template("friend_requests.html", friendDetails=friendDetails)
+	else :
+		print("in else")
+		return render_template('friend_requests.html')
 
 
 @app.route("/friends/send_friend_request", methods=['GET', 'POST'])
@@ -495,7 +499,6 @@ def send_friend_request():
             # return message
     else:
         return render_template('show_people.html')
-
 
 
 @app.route("/neighbors/add_neighbors", methods=['GET', 'POST'])
@@ -519,20 +522,70 @@ def add_neighbors():
 
 @app.route("/neighbors/get_blockapproval_requests", methods=['GET', 'POST'])
 def get_blockapproval_requests():
-    notifications = None
     if request.method == "GET":
         result = Neighbors.get_requests_for_block(db.conn)
         if not result:
             message = {'message': 'Failed to send request.Please try again!', 'type': 'error'}
             # return notifications
-            return render_template("approval-requests.html", message=message)
+            return render_template("approval_request.html", message=message)
         else:
             details = result
             message = {'message': 'Neighborhood request approved', 'type': 'success'}
-            return render_template("approval-requests.html", details=details)
+            return render_template("approval_request.html", details=details)
     else:
-        return render_template("approval-requests.html")
-		
+        return render_template("approval_request.html")
+
+
+@app.route("/neighbors/approve_block_request", methods=['GET', 'POST'])
+def accept_block_request():
+		if request.method == "GET":
+			id = request.args.get('userid')
+			logging.info("usrid is:")
+			logging.info(id) 
+			result = Neighbors.block_approve(db.conn, id)
+			if not result:
+				message = {'message': 'Failed to send request.Please try again!', 'type': 'error'}
+				# return notifications
+				return render_template("approval_request.html", message=message)
+			else:
+				details = result
+				message = {'message': 'Neighborhood request approved', 'type': 'success'}
+				return render_template("approval_request.html", details=details)
+		else:
+			return render_template("approval_request.html")
+
+
+@app.route("/friends/accept_friend_request", methods=['GET', 'POST'])
+def accept_friend_request():
+	print("in accept friend")
+	logging.info("accept friend info")
+	if request.method == "GET":
+		friendid = request.args.get('userid')
+		logging.info(friendid)
+		action = request.args.get('action')
+		logging
+		result = Friends.accept_friend_request(db.conn, friendid, action)
+		if not result:
+			message = {'message': 'Friend request accepted', 'type': 'success'}
+			return render_template('friend_requests.html', message=message)
+		else:
+			message = {'message': 'Failed to send request.Please try again!', 'type': 'error'}
+			return render_template('friend_requests.html', message=message)
+	else:
+		return render_template('friend_requests.html')
+
+@app.route("/gethoodlist", methods=['GET', 'POST'])
+def gethoodlist():
+	logging.info("in get hoodlist")
+	hoodlist = Hood.gethoodlist(db);
+	return render_template('join_block.html', hoodinfo = hoodlist)
+
+@app.route("/getBlockListForHood", methods=['GET'])
+def getBlockListForHood():
+	hoodid = request.args.get('selectedHoodId');
+	print(hoodid);
+	blocklist = Block.getBlockListForHood(db,hoodid);
+	return blocklist;
 
 #Run app
 if __name__ == '__main__':

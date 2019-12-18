@@ -55,4 +55,16 @@ def getAllBlocksInHood(db, hid):
         logging.error("error getting BID's from hid")
         return None
 
+def gethoodlist(db):
+    hoodlist = []
+    try:
+        cursor = db.query("""select * from neighborood_details""");
+        for row in cursor.fetchall():
+            hoodlist.append({
+                'hoodid' : row[0], 'hoodname' : row[1]
+            })
+        return hoodlist
+    except:
+        error = "Error"
+        return error
     

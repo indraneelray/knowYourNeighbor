@@ -39,3 +39,17 @@ def getBlockNameFromBid(db, bid):
     bname = cur.fetchone()[0]
     logging.info(bname)
     return bname
+
+def getBlockListForHood(db,hoodid):
+    blocklist = []
+    try:
+        cur = db.query("select bid,bname from block_details where nid = %s", [hoodid])
+        for row in cur.fetchall():
+            blocklist.append({
+                'bid' : row[0], 'bname' : row[1]
+            })
+        print(blocklist)
+        return jsonify({'blocklist' : blocklist})
+    except:
+        error="Error"
+        return error

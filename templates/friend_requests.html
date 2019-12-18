@@ -11,9 +11,6 @@
 
         <!-- Latest compiled JavaScript -->
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-        <script src="//cdn.jsdelivr.net/alertifyjs/1.10.0/alertify.min.js"></script>
-        <link rel="stylesheet" href="//cdn.jsdelivr.net/alertifyjs/1.10.0/css/alertify.min.css" />
-        <link rel="stylesheet" href="//cdn.jsdelivr.net/alertifyjs/1.10.0/css/themes/bootstrap.min.css" />
         <script src="app.js"></script>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <style>
@@ -21,10 +18,10 @@
                 background-color:lightblue;
             }
             .bg-image {
-                background-image: url("https://images.unsplash.com/photo-1534430480872-3498386e7856?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1650&q=80");
+                background-image: url("../static/img/background-photo.jpg");
 
                 /* Full height */
-                height: 100vh;
+                height: 100%;
 
                 /* Center and scale the image nicely */
                 background-position: center;
@@ -33,14 +30,15 @@
             }
         </style>
         <script type="text/javascript">
-            var callAddFriend = function(action,userid) {
+            var callAddFriend = function(action, userid) {
+                alert(userid);
                 $.ajax({
                     url: '/friends/accept_friend_request',
                     type: 'GET',
-                    data: {userid : userid, action:action},
+                    data: {userid : userid, action : action},
                     success: function(response){
                         var message = response.message;
-                        alert("Friend request accepted");
+                        alert("Action successful");
                     },
                     error : function(response){
                         var message = response.message;
@@ -53,35 +51,14 @@
     <body class="bg-image">
             <div class="wrapper">
                     <header class="main-header">
-                        <nav class="navbar">
+                        <nav class="navbar navbar-inverse">
                             <div class="container">
                                 <div class="navbar-header">
                                     <a class="navbar-brand" href="/">knowYourNeighborhood</a>
                                 </div>
                                 <ul class="nav navbar-nav navbar-right">
-                                    <li class="dropdown">
-                                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Feed
-                                            <span class="caret"></span></a>
-                                            <ul class="dropdown-menu">
-                                                <li><a href="/block-feed">Block Feed</a></li>
-                                                <li><a href="/hood-feed">Hood Feed</a></li>
-                                                <li><a href="/friend-feed">Friend Feed</a></li>
-                                                <li><a href="/neighbor-feed">Neighbor Feed</a></li>
-                                                <li><a href="/crime-feed">Crime Feed</a></li>
-                                            </ul>
-                                    </li>
-                                    <li class="dropdown">
-                                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Map View
-                                            <span class="caret"></span></a>
-                                            <ul class="dropdown-menu">
-                                                <li><a href="/map_threads">Threads</a></li>
-                                                <li><a href="/map_friends">Friends</a></li>
-                                                <li><a href="/map_neighbors">Neighbors</a></li>
-                                            </ul>
-                                    </li>
-
                                     <li><a href="/profile"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
-                                    <li><a href="/logout" class="btn-danger navbar-right">Logout</a></li>
+                                    <li><a href="/logout"><button id="logoutbtn" class="btn btn-danger navbar-btn"><span class="glyphicon glyphicon-log-out"></span> Logout</button></li>
                                 </ul>
                             </div>
                         </nav>
@@ -92,6 +69,7 @@
                                 <div class="col-lg-1 col-md-1 col-sm-2 col-xs-2"></div>
                                 <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8" style="background-color: rgba(255, 255, 255, 0.8);">
                                     <h2 class="text-center">Friend Requests</h2>
+
                                     {% for friend in friendDetails %}
                                     <div class="media">
                                         <div class="media-body">
