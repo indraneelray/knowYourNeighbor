@@ -1,6 +1,6 @@
 <!DOCTYPE HTML>
 <html ng-app="myApp">
-    <head>
+   <head>
         <meta charset="UTF-8">
         <title>Welcome to Neighbourhood</title>
         <!-- Latest compiled and minified CSS -->
@@ -89,6 +89,7 @@
                                 <div class="col-lg-1 col-md-1 col-sm-2 col-xs-2"></div>
                                 <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8" style="background-color: rgba(255, 255, 255, 0.8);">
                                     <h2 class="text-center">Approval Requests</h2>
+                                    {% for req in details %}
                                     <div class="media">
                                         <div class="media-left">
                                             <img src="../static/img/user_icon.png" class="media-object" style="width:60px">
@@ -118,12 +119,9 @@
                                             <img src="../static/img/user_icon.png" class="media-object" style="width:60px">
                                         </div>
                                         <div class="media-body">
-                                            <h4 class="media-heading">John Doe</h4>
+                                            <h4 class="media-heading">{{req.firstname}} {{req.lastname}}</h4>
                                             <div class="btn-group btn-group-lg">
-                                                <a href="#" class="btn btn-success">Approve</a>
-                                            </div>
-                                            <div class="btn-group btn-group-lg">
-                                                <a href="#" class="btn btn-danger">Decline</a>
+                                                <a onclick="callApproveRequest({{req.userid}})" class="btn btn-success">Approve</a>
                                             </div>
                                         </div>
                                     </div> -->
