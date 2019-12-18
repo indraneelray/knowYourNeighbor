@@ -1,6 +1,6 @@
 <!DOCTYPE HTML>
 <html ng-app="myApp">
-    <head>
+   <head>
         <meta charset="UTF-8">
         <title>Welcome to Neighbourhood</title>
         <!-- Latest compiled and minified CSS -->
@@ -18,15 +18,16 @@
                 background-color:lightblue;
             }
             .bg-image {
-                background-image: url("../static/img/background-photo.jpg");
+                background-image: url("https://images.unsplash.com/photo-1534430480872-3498386e7856?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1650&q=80");
 
                 /* Full height */
-                height: 100%;
+                height:100vh;
 
                 /* Center and scale the image nicely */
                 background-position: center;
                 background-repeat: no-repeat;
                 background-size:inherit;
+
             }
         </style>
         <script type="text/javascript">
@@ -51,14 +52,34 @@
     <body class="bg-image">
             <div class="wrapper">
                     <header class="main-header">
-                        <nav class="navbar navbar-inverse">
+                        <nav class="navbar">
                             <div class="container">
                                 <div class="navbar-header">
                                     <a class="navbar-brand" href="/">knowYourNeighborhood</a>
                                 </div>
                                 <ul class="nav navbar-nav navbar-right">
+                                    <li class="dropdown">
+                                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Feed
+                                            <span class="caret"></span></a>
+                                            <ul class="dropdown-menu">
+                                                <li><a href="/block-feed">Block Feed</a></li>
+                                                <li><a href="/hood-feed">Hood Feed</a></li>
+                                                <li><a href="/friend-feed">Friend Feed</a></li>
+                                                <li><a href="/neighbor-feed">Neighbor Feed</a></li>
+                                            </ul>
+                                    </li>
+                                    <li class="dropdown">
+                                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Map View
+                                            <span class="caret"></span></a>
+                                            <ul class="dropdown-menu">
+                                                <li><a href="/map_threads">Threads</a></li>
+                                                <li><a href="/map_friends">Friends</a></li>
+                                                <li><a href="/map_neighbors">Neighbors</a></li>
+                                            </ul>
+                                    </li>
+
                                     <li><a href="/profile"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
-                                    <li><a href="/logout"><button id="logoutbtn" class="btn btn-danger navbar-btn"><span class="glyphicon glyphicon-log-out"></span> Logout</button></li>
+                                    <li><a href="/logout" class="btn-danger navbar-right">Logout</a></li>
                                 </ul>
                             </div>
                         </nav>
