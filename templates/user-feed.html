@@ -169,7 +169,7 @@
                                         <div class="row-fluid">
                                                 <ul>
                                                 {% for info in friendFeedInfo %}
-                                                    <li><a href="/show-thread"><p>{{ info.Title }}</p></a><p class="text-info">{{ info.Description_Msg }}</p></li>
+                                                <li><div id="div1"><a href="{{url_for('showThread',tid=info.tid)}}"><p>{{ info.Title }}</p></a></div><p class="text-info">{{ info.Description_Msg }}</p></li>
                                                 {% else %}
                                                 <li><em>Unbelievable.  No recent messages here so far</em>
                                                 {% endfor %}
@@ -179,7 +179,7 @@
                                         <div class="row-fluid">
                                         <ul>
                                             {% for info in neighborFeedInfo %}
-                                                <li><a href="/show-thread"><p>{{ info.Title }}</p></a><p class="text-info">{{ info.Description_Msg }}</p></li>
+                                            <li><div id="div1"><a href="{{url_for('showThread',tid=info.tid)}}"><p>{{ info.Title }}</p></a></div><p class="text-info">{{ info.Description_Msg }}</p></li>
                                             {% else %}
                                             <li><em>Unbelievable.  No recent messages here so far</em>
                                             {% endfor %}
@@ -188,7 +188,7 @@
                                         <h2>Recently active Threads in your Neighborhood</h2>
                                         <ul>
                                                 {% for info in hoodFeedInfo %}
-                                                    <li><a href="/show-thread"><p>{{ info.Title }}</p></a><p class="text-info">{{ info.Description_Msg }}</p></li>
+                                                <li><div id="div1"><a href="{{url_for('showThread',tid=info.tid)}}"><p>{{ info.Title }}</p></a></div><p class="text-info">{{ info.Description_Msg }}</p></li>
                                                 {% else %}
                                                 <li><em>Unbelievable.  No recent messages here so far</em>
                                                 {% endfor %}

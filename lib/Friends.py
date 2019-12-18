@@ -9,10 +9,10 @@ def getFriendList(db):
     uid = session['uid']
     logging.info(uid)
     cursor = db.query("""select uid,Friendid from friendship where uid = %s or friendId = %s and starttime is not Null and endtime is NULL""",[uid,uid])
-    logging.info(cursor.fetchall())
-    if cursor.fetchall():
+    frnds = cursor.fetchall()
+    if frnds:
         logging.info("User has friends")
-        for row in cursor.fetchall():
+        for row in frnds:
             if row[0]!= uid:
                 friendslist.append(row[0])
             if row[1]!=uid :

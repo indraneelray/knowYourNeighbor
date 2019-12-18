@@ -106,24 +106,61 @@ def logout(db):
 		error = "Failed"
 		return error
 
-def requestBlock(db, form):
+def requestBlock(conn, form):
 	error = None
-	try:
-		logging.info("Inside request block")
-		uid = session['uid']
-		#bname = form['bname']
-		logging.info(uid)
-		bname = "7600-7698 3rd Ave"
-		logging.info(bname)
-		cur = db.query("""SELECT bid from Block_Details where bname = %s""", [bname])
-		query_result = cur.fetchone()
-		bid=query_result[0]
-		logging.info(bid)
-		cur = db.query("""INSERT INTO Locality_Access_Request (`uid`, `bid`) VALUES (%s, %s)""",[int(uid), int(bid)])
-		logging.info("Successfully Requested")
-	except:
-		logging.error("Failed to request block")
-		error = "error in requesting block"
+	userid = session['uid']
+	blockid = form["baname"]
+	logging.info(blockid)
+	logging.info(userid)
+	status = "pending"
+	activeneighbors=[]
+	cursor = conn.cursor()
+	try :
+		## fetching active neighbors in the block
+		cursor.execute("""select * from user_locality where bid = %s and endtime is NULL""",[int(blockid)])
+		#c = cursor.fetchall()
+		logging.info("neighborhood")
+		for row in cursor.fetchall():
+			print("row:",row)
+			activeneighbors.append({'blockid': row[0], 'userid': row[1], 'joined_at': row[2], 'left_at': row[3]})
+		logging.info(activeneighbors)
+		if len(activeneighbors)<=2:
+			print("in less neighbors")
+			#default insert if no neighbors in that block
+			status = "approved"
+			requestapproved=1
+			print("active neighbors")
+			try:
+				cursor.execute("""INSERT INTO locality_access_request (`uid`, `bid`, `request_status`, `isActive`) VALUES (%s,%s,%s,%s)""",[userid, blockid,status,int(requestapproved)])
+				cursor.execute("""update user_info set block_id = %s where uid = %s""",[blockid,userid])
+				cursor.execute("INSERT INTO user_locality (`bid`, `uid`, `starttime`) VALUES (%s,%s,NOW())",[blockid, userid])
+				conn.commit()
+				return None
+			except :
+				print("in neighbor rollback")
+				conn.rollback()
+				error = "Error"
+				return error
+		else:
+			print("in more neighbors")
+			status = "pending"
+			approval =0
+			try:
+				cursor.execute(
+					"INSERT INTO locality_access_request (`uid`, `bid`, `request_status`, `isActive`) VALUES (%s,%s,%s,%s)",
+					[userid, blockid, status, approval])
+				for  n in activeneighbors:
+					cursor.execute(
+						"INSERT INTO locality_approval (`uid`, `requestor_id`, `bid`, `approval_status`) VALUES (%s,%s,%s,%s)",
+						[n.get("userid"), userid, blockid, status])
+				conn.commit()
+				return None
+			except:
+				conn.rollback()
+				error = "Error"
+				return error
+	except ServerError as e:
+		error = "Update failed"
 		return error
 
 
@@ -184,3 +221,9 @@ def view_profile(conn,form):
 	except ServerError as e:
 		error = str(e)
 		return error
+
+def get_logout_time(db):
+	uid = session['uid']
+	curTime = db.query("""select logout_time from user_info where uid = %s""", [uid])
+	logout_time = curTime.fetchone()[0]
+	return logout_time

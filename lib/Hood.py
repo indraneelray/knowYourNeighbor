@@ -58,7 +58,7 @@ def getAllBlocksInHood(db, hid):
 def gethoodlist(db):
     hoodlist = []
     try:
-        cursor = db.query("""select * from neighborood_details""");
+        cursor = db.query("""select * from neighborood_details""")
         for row in cursor.fetchall():
             hoodlist.append({
                 'hoodid' : row[0], 'hoodname' : row[1]

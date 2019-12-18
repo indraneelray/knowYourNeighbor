@@ -79,12 +79,20 @@
                                             </h2>
                                             <ul>
                                                     {% for info in threadCommentInfo %}
-                                                        <li><p>{{ info.thread_title }} {{info.posted_at}}</p><p class="text-info">{{ info.thread_description }}</p></li>
+                                                        <li><p>{{ info.FName }} {{ info.LName }}</p><p>{{ info.comment }}</p></li>
                                                     {% else %}
                                                     <li><em>Unbelievable.  No recent messages here so far</em>
                                                     {% endfor %}
                                             </ul>
                                             {{tid}}
+
+                                            <ul>
+                                                    {% for info in threadSearchCommentInfo %}
+                                                        <li><p>{{ info.thread_title }} {{ info.thread_description }}</p><p>{{ info.posted_at }}</p></li>
+                                                    {% else %}
+                                                    <li><em>Unbelievable.  No recent messages here so far</em>
+                                                    {% endfor %}
+                                            </ul>
                                             <form action="{{ url_for('showThread',tid=tid) }}" method="POST">
                                                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />                                    
                                                 <div class="form-group">

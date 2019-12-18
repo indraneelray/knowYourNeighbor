@@ -42,14 +42,12 @@ def search_people(conn,form):
             logging.info(final_list)
 
             if len(final_list) == 0:
-                error = "No result found!"
                 return error
             else :
                 return final_list
         else:
             raise ServerError("No result found")
     except ServerError as e:
-        error = "failure"
         return error
 
 def search_thread(conn,form):

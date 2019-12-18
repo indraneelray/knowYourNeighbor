@@ -89,42 +89,21 @@
                                 <div class="col-lg-1 col-md-1 col-sm-2 col-xs-2"></div>
                                 <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8" style="background-color: rgba(255, 255, 255, 0.8);">
                                     <h2 class="text-center">Approval Requests</h2>
-                                    {% for req in details %}
                                     <div class="media">
                                         <div class="media-left">
                                             <img src="../static/img/user_icon.png" class="media-object" style="width:60px">
                                         </div>
-                                        <!-- <div class="media-body">
-                                            <h4 class="media-heading">John Doe</h4>
-                                            <div class="btn-group btn-group-lg">
-                                                <a href="#" class="btn btn-success">Approve</a>
-                                            </div>
-                                            <div class="btn-group btn-group-lg">
-                                                <a href="#" class="btn btn-danger">Decline</a>
-                                            </div>
-                                        </div> -->
                                         <ul>
                                             {% for info in details %}
-                                                <li><a href="/show-thread"><p>{{ info.userid }}</p></a><p class="text-info">{{ info.firstname }}</p><p>{{ info.lastname }}</p></li>
+                                                <li><p class="text-info">{{ info.firstname }}</p><p>{{ info.lastname }}</p></li>
                                                 <div class="btn-group btn-group-lg">
                                                     <a  onclick="callApproveRequest({{info.userid}})" class="btn btn-success">Approve</a>
                                                 </div>
                                             {% else %}
-                                            <li><em>Unbelievable.  No recent friend requests here so far</em>
+                                            <li><em>Unbelievable.  No recent approval requests here so far</em>
                                             {% endfor %}
                                         </ul>
                                     </div>
-                                    <!-- <div class="media">
-                                        <div class="media-left">
-                                            <img src="../static/img/user_icon.png" class="media-object" style="width:60px">
-                                        </div>
-                                        <div class="media-body">
-                                            <h4 class="media-heading">{{req.firstname}} {{req.lastname}}</h4>
-                                            <div class="btn-group btn-group-lg">
-                                                <a onclick="callApproveRequest({{req.userid}})" class="btn btn-success">Approve</a>
-                                            </div>
-                                        </div>
-                                    </div> -->
                                 </div>
                                 <div class="col-lg-1 col-md-1 col-sm-2 col-xs-2"></div>
                             </div>
@@ -132,4 +111,9 @@
                     </div>
             </div>
     </body>
+    {% if message %}
+    <script>
+    alertify.{{message.type}}("{{ message.message }}");
+    </script>
+    {% endif %}
 </html>

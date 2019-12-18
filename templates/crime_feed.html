@@ -120,8 +120,8 @@
                                 <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8" style="background-color: rgba(255, 255, 255, 0.5);">
                                     <p><h2><span class="glyphicon glyphicon-th-list"></span> Crime Feed</h2></p>
                                     <ul>
-                                            {% for info in blockFeedInfo %}
-                                                <li><a href="/show-thread"><p>{{ info.Title }}</p></a><p class="text-info">{{ info.Description_Msg }}</p></li>
+                                            {% for info in crimeInfo %}
+                                                <li><p>{{ info.title }}</p><p class="text-info">{{ info.desc }}</p></li>
                                             {% else %}
                                             <li><em>Unbelievable.  No recent messages here so far</em>
                                             {% endfor %}

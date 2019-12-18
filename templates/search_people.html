@@ -92,4 +92,9 @@
                 </div>
             </div>
     </body>
+    {% if message %}
+    <script>
+    alertify.{{message.type}}("{{ message.message }}");
+    </script>
+    {% endif %}
 </html>

@@ -53,7 +53,7 @@ def get_requests_for_block(conn):
     if cursor.fetchall is not None:
         logging.info("Query executed to add locality approval")
         for row in cursor.fetchall():
-            details.append({'userid': row[3], 'firstname': row[4], 'lastname': row[5]})
+            details.append({'userid': row[1], 'firstname': row[5], 'lastname': row[6]})
             logging.info("in block")
             logging.info(details)
         return details
@@ -71,8 +71,8 @@ def block_approve(conn,id):
         approval=1
         print("updating block request")
         #cursor.execute("update Locality_Access_Request set Approval_Status=1 where uid=%s and requestor_id= %s",[user2,user1])
-        cursor.execute("update locality_approval set Approval_Status='pending' where uid=%s and requestor_id= %s",[user2,user1])
-        cursor.execute("select count(Approval_Status) from Locality_Access_Request where requestor_id= %s and approval=1",[user1])
+        cursor.execute("update locality_approval set approval_Status='pending' where uid=%s and requestor_id= %s",[user2,user1])
+        cursor.execute("select count(request_Status) from Locality_Access_Request where uid= %s and isActive=1",[user1])
         c=cursor.fetchone()
         print("count is:",c[0])
         if c[0] == 3:

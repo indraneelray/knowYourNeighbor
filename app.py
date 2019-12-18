@@ -82,10 +82,8 @@ def login():
 	if 'uid' in session:
 		logging.info(session)
 		return redirect(url_for('show_feed'))
-	print ("Inside login")
 	if request.method == 'POST':
 		result = Users.loginForm(db, request.form)
-		print(result)
 		if not result:
 			notifications = {'message': 'Logged in', 'type': 'success'}
 			#XSS Protection
@@ -134,7 +132,7 @@ def signup():
 		if not result:
 			notifications = {'message': 'Registration successful', 'type': 'success'}
 			#XSS Protection
-			response = make_response(render_template('join_block.html', message =message))
+			response = make_response(redirect('gethoodlist'))
 			response.headers['X-XSS-Protection'] = '1; mode=block'
 			return response
 		else:
@@ -176,6 +174,7 @@ def join_block():
 		#blocks = 
 	return render_template('join_block.html')
 
+
 @app.route('/profile', methods = ['GET'])
 def profile():
 	if 'uid' not in session:
@@ -184,9 +183,12 @@ def profile():
 	if request.method == 'GET':
 		logging.info("Get profile")
 		profile_data = Users.view_profile(db.conn, request.form)
-		block_id = profile_data[10]
-		block_name = Block.getBlockNameFromBid(db, block_id)
-		logging.info(profile_data)
+		if profile_data[10]:
+			block_id = profile_data[10]
+			block_name = Block.getBlockNameFromBid(db, block_id)
+			logging.info(profile_data)
+		else:
+			block_name= "block approval pending"
 		if profile_data:
 			profile.append({"Fname": profile_data[1], "LName": profile_data[2], "email": profile_data[3], "Username": profile_data[5], "apt": profile_data[5],\
 				"street": profile_data[6], "city": profile_data[7], "state": profile_data[8], "zip": profile_data[9],"block_name" : block_name, "email_preference": profile_data[14]})
@@ -226,6 +228,9 @@ def show_feed():
 		logging.info(request)
 		# friend 
 		friendThreads = message_boards.getUserFriendThreads(db, latest=True)
+		logout_time = Users.get_logout_time(db)
+		logging.info(logout_time)
+		#newFriendThreads = message_boards.getLatestThreads(db, logout_time, 'f')
 		logging.info(friendThreads)
 		friendThreadInfo = []
 		if friendThreads:
@@ -234,7 +239,7 @@ def show_feed():
 				threadDeets = message_boards.getThreadDetails(db, ft, 'f')
 				if threadDeets:
 					friendThreadInfo.append({'tid': threadDeets[0], 'CreatedBy': threadDeets[1], 'Title': threadDeets[2], 'Description_Msg': threadDeets[3], 'CreatedAt': threadDeets[4]})
-			logging.info(friendThreadInfo)
+		logging.info(friendThreadInfo)
 
 		# Neighbors
 		neighborThreads = message_boards.getUserNeighborThreads(db, latest=True)
@@ -326,8 +331,10 @@ def showThread():
 		title = message_boards.getThreadTitle(db, tid)
 		for c in comments:
 			if comments:
-				commentInfo.append({'tid':c[0], 'comment': c[1], 'tid': c[2], 'FName': c[3], 'LName': c[4]})
+				logging.info(c[0])
+				commentInfo.append({'tid':c[0], 'comment': c[1], 'cTime': c[2], 'FName': c[3], 'LName': c[4]})
 		logging.info("rendering template")
+		logging.info(commentInfo)
 		#return jsonify({'threadCommentInfo' : commentInfo, 'threadTitle' : title})
 		return render_template('show-threads.html', threadCommentInfo = commentInfo, threadTitle = title, tid = tid)
 	if request.method == 'POST':
@@ -360,7 +367,8 @@ def postThreadComment():
 		return redirect(url_for('login'))
 	if request.method == 'POST':
 		logging.info('post comment on thread ')
-		posted = message_boards.postComment(db, request.form)
+		tid = request.args.get('tid')
+		posted = message_boards.postComment(db, request.form, tid)
 		if posted is None:
 			message = {'message': 'Posted comment successfully', 'type': 'success'}
 			response = make_response(render_template("show-threads.html", message =message))
@@ -421,6 +429,7 @@ def neighborfeed():
 		logging.info(neighborThreadInfo)
 	return render_template('neighbor_feed.html', neighborFeedInfo = neighborThreadInfo)
 
+
 @app.route("/search/thread", methods=['GET', 'POST'])
 def search_threads():
 	logging.info("display search threads")
@@ -428,7 +437,7 @@ def search_threads():
 		logging.info(session)
 		return redirect(url_for('login'))
 	if request.method == 'GET':
-		return render_template('map_threads.html')
+		return render_template('search-threads.html')
 	if request.method == "POST":
 		logging.info("POST search threads")
 		result = Search.search_thread(db.conn, request.form)
@@ -438,7 +447,7 @@ def search_threads():
 			return render_template('show-threads.html', message = message)
 		else:
 			#notifications = result
-			return render_template('show-threads.html',threadCommentInfo=result)
+			return render_template('show-threads.html',threadSearchCommentInfo=result)
 	return render_template('map_threads.html')
 
 
@@ -465,29 +474,24 @@ def search_people():
 def get_friends_details():
 	notifications = None
 	if request.method=="GET":
-		print("in get")
 		result = Friends.get_friends_requests(db.conn)
 		friendDetails = []
 		if not result:
 			message = {'message': 'Error in fetching', 'type': 'success'}
 			return render_template("friend_requests.html", message=message)
 		else:
-			print("get friends")
 			for f in result:
 				friendDetails.append({"firstname":f[0], "lastname":f[1], "userid":f[2]})
 			logging.info(friendDetails)
 			return render_template("friend_requests.html", friendDetails=friendDetails)
 	else :
-		print("in else")
 		return render_template('friend_requests.html')
 
 
 @app.route("/friends/send_friend_request", methods=['GET', 'POST'])
 def send_friend_request():
-    notifications = None
     if request.method == "GET":
         friendid = request.args.get('userid')
-        print("friend id from ui is:", friendid)
         result = Friends.send_friend_request(db.conn, friendid)
         if not result:
             message = {'message': 'Friend Request sent', 'type': 'success'}
@@ -517,7 +521,6 @@ def add_neighbors():
             return render_template("show_people.html", message=message)
     else:
         return render_template("show_people.html", message=message)
-
 
 
 @app.route("/neighbors/get_blockapproval_requests", methods=['GET', 'POST'])
@@ -557,7 +560,6 @@ def accept_block_request():
 
 @app.route("/friends/accept_friend_request", methods=['GET', 'POST'])
 def accept_friend_request():
-	print("in accept friend")
 	logging.info("accept friend info")
 	if request.method == "GET":
 		friendid = request.args.get('userid')
@@ -577,15 +579,54 @@ def accept_friend_request():
 @app.route("/gethoodlist", methods=['GET', 'POST'])
 def gethoodlist():
 	logging.info("in get hoodlist")
-	hoodlist = Hood.gethoodlist(db);
+	hoodlist = Hood.gethoodlist(db)
+	if request.method == 'POST':
+		logging.info("/gethoodlist")
+		result = Users.requestBlock(db.conn, request.form)
+		if not result:
+			message = {'message': 'Registration successful', 'type': 'success'}
+			response = make_response(redirect("/login"))
+			response.headers['X-XSS-Protection'] = '1; mode=block'
+			return response
+		else:
+			message = {'message': 'Something went wrong: '+result, 'type': 'error'}
+			response = make_response(render_template("join_block.html", message =message))
+			response.headers['X-XSS-Protection'] = '1; mode=block'
+			return response
 	return render_template('join_block.html', hoodinfo = hoodlist)
 
 @app.route("/getBlockListForHood", methods=['GET'])
 def getBlockListForHood():
-	hoodid = request.args.get('selectedHoodId');
-	print(hoodid);
-	blocklist = Block.getBlockListForHood(db,hoodid);
-	return blocklist;
+	hoodid = request.args.get('selectedHoodId')
+	blocklist = Block.getBlockListForHood(db,hoodid)
+	return blocklist
+
+@app.route("/map_friends", methods=['GET'])
+def mapFriends():
+	return render_template('map_friends.html')
+
+@app.route("/map_threads", methods=['GET'])
+def map_threads():
+	return render_template('map_threads.html')
+
+
+@app.route("/map_neighbors", methods=['GET'])
+def mapNeighbors():
+	return render_template('map_neighbors.html')
+
+@app.route("/changePassword", methods=['GET'])
+def changePassword():
+	return render_template('change_password.html')
+
+@app.route("/crime-feed", methods=['GET'])
+def crimeFeed():
+	cur = db.query("select * from crime")
+	crimeInfo = []
+	crimeList = cur.fetchall()
+	if crimeList:
+		for c in crimeList:
+			crimeInfo.append({"cid":c[0], "title": c[1], "desc": c[2], "created": c[3]})
+	return render_template('crime_feed.html', crimeInfo = crimeInfo)
 
 #Run app
 if __name__ == '__main__':

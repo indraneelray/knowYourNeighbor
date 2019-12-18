@@ -20,6 +20,7 @@ def getUserFriendThreads(db, latest = False):
 		tids = []
 		for friendId in friends:
 			tids = getCommentTIDs(db, friendId, logout_time, latest)
+			tids.append(getLatestThreads(db, logout_time, friendId, 'f'))
 		logging.info(tids)
 		threads = []
 		for tid in tids:
@@ -48,6 +49,7 @@ def getUserNeighborThreads(db, latest = False):
 		tids = []
 		for neighborId in neighbors:
 			tids = getCommentTIDs(db, neighborId, logout_time, latest)
+			tids.append(getLatestThreads(db, logout_time, neighborId, 'n'))
 			logging.info(tids)
 		threads = []
 		for tid in tids:
@@ -81,6 +83,7 @@ def getUserBlockThreads(db, latest = False):
 			if blockTids:
 				for b in blockTids:
 					tids.append(b)
+			tids.append(getLatestThreads(db, logout_time, user, 'b'))
 		logging.info("tids")
 		logging.info(tids)
 		threads = []
@@ -120,6 +123,7 @@ def getUserHoodThreads(db, latest = False):
 			if hoodTid:
 				for h in hoodTid:
 					tids.append(h)
+			tids.append(getLatestThreads(db, logout_time, user, 'h'))
 		logging.info("tids")
 		logging.info(tids)
 		threads = []
@@ -215,7 +219,7 @@ def showThreadComments(db, tid):
 		logging.error("error getting thread comments")
 		return error
 
-def getThreadTitle(db, tid = 11):
+def getThreadTitle(db, tid):
 	error = None
 	try:
 		logging.info("getting thread title")
@@ -239,3 +243,17 @@ def postComment(db, form, tid):
 		return None
 	except:
 		return "error"
+
+def getLatestThreads(db, logout_time, uid, access_level):
+	error = None
+	try:
+		logging.info("getting message threads")
+		logging.info(tid)
+		cur = db.query("""select * from messagethreads where created_by = %s and access_level = %s and created_time > %s""", [uid, access_level, logout_time])
+		metaThreadContent = cur.fetchall()
+		logging.info(metaThreadContent)
+		return metaThreadContent
+	except:
+		logging.error("error getting thread details")
+		error = "Failed"
+		return error

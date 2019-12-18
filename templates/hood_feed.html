@@ -120,7 +120,7 @@
                                     <p><h2><span class="glyphicon glyphicon-th-list"></span> Hood Feed</h2></p>
                                     <ul>
                                             {% for info in hoodFeedInfo %}
-                                                <li><a href="/show-thread"><p>{{ info.Title }}</p></a><p class="text-info">{{ info.Description_Msg }}</p></li>
+                                            <li><div id="div1"><a href="{{url_for('showThread',tid=info.tid)}}"><p>{{ info.Title }}</p></a></div><p class="text-info">{{ info.Description_Msg }}</p></li>
                                             {% else %}
                                             <li><em>Unbelievable.  No recent messages here so far</em>
                                             {% endfor %}

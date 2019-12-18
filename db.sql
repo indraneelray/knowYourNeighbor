@@ -145,7 +145,7 @@ insert into User_Locality values
 
 Create table Locality_Access_Request
 (
-	uid int NOT NULL,
+    uid int NOT NULL,
     bid int NOT NULL,
     Request_status Enum('Approved','Declined','Pending') DEFAULT 'Pending',
     IsActive boolean DEFAULT 1,
@@ -548,3 +548,28 @@ from MessageThreads t  join ThreadComments c on t.tid = c.tid
  
  select * from t1;
  
+
+SET @Id := 1;
+create temporary table temp (creator_id int,starttime datetime, endtime datetime);
+ SElECT @logouttime = logout_time from User_Info where uid = @Id;
+ 
+insert into temp
+select distinct uid, starttime,endtime from friendship where FriendId = @Id
+union     
+select distinct FriendId, starttime,endtime from friendship where uid = 2;
+
+ select t.tid,t.Title,t.Description_Msg,t.Created_Time,t.Access_Level,c.comment_msg,t2.endtime,
+ case when ( ifnull(t.Created_Time,0) >= ifnull(@logtime,0) or ifnull(c.CommentTime,0) >= ifnull(@logtime,0) ) 
+ then 'New' ELSE 'Old' end as MsgType 
+ from MessageThreads t 
+ join temp t2 on t.Created_By = t2.creator_id 
+ left join ThreadComments c on t.tid = c.tid
+ where t.Access_Level = 'f'
+ and (case when t2.endtime is null then 1 else 
+ (case when (t2.endtime >= t.Created_Time) then 1 else 0 end)
+ end )= 1
+ order by 
+ c.CommentTime desc, 
+ t.Created_Time desc;
+
+ drop table temp;
