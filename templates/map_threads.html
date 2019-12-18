@@ -40,10 +40,31 @@
                 function initMap() {
                   map = new google.maps.Map(document.getElementById('messagesMap'), {
                     center: {lat: 40.633374, lng: -74.024944},
+                    center: {lat: 40.633969, lng: -74.026197},
+                    center: {lat: 40.633360, lng: -74.024575},
+                    center: {lat: 40.633400, lng: -74.024478},
+                    center: {lat: 40.635040, lng: -74.023890},
+                    center: {lat: 40.635993, lng: -74.025403},
                     zoom: 15
                   });
                   var marker=new google.maps.Marker({
                       position : {lat: 40.633374, lng: -74.024944},
+                      map : map
+                  })
+                  var marker=new google.maps.Marker({
+                      position : {lat: 40.633969, lng: -74.026197},
+                      map : map
+                  })
+                  var marker=new google.maps.Marker({
+                      position : {lat: 40.633360, lng: -74.024575},
+                      map : map
+                  })
+                  var marker=new google.maps.Marker({
+                      position : {lat: 40.633400, lng: -74.024478},
+                      map : map
+                  })
+                  var marker=new google.maps.Marker({
+                      position : {lat: 40.635993, lng: -74.025403},
                       map : map
                   })
                 }
