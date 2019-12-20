@@ -13,6 +13,9 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <style>
+            .body-background {
+                background-color:lightblue;
+            }
             .img-class{
                 background-image: url("../static/img/background-photo.jpg");
                 background-position: center;
@@ -39,7 +42,7 @@
             }
         </style>
     </head>
-    <body class="img-class">
+    <body class="body-background">
         <!-- <div class="img-class"> -->
                     <div class="wrapper">
                     <header class="main-header">
@@ -49,6 +52,25 @@
                                     <a class="navbar-brand" href="/">knowYourNeighborhood</a>
                                 </div>
                                 <ul class="nav navbar-nav navbar-right">
+                                    <li class="dropdown">
+                                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Feed
+                                            <span class="caret"></span></a>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="/block-feed">Block Feed</a></li>
+                                            <li><a href="/hood-feed">Hood Feed</a></li>
+                                            <li><a href="/friend-feed">Friend Feed</a></li>
+                                            <li><a href="/neighbor-feed">Neighbor Feed</a></li>
+                                        </ul>
+                                    </li>
+                                    <li class="dropdown">
+                                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Map View
+                                            <span class="caret"></span></a>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="/map-view-threads">Threads</a></li>
+                                            <li><a href="/map-view-friends">Friends</a></li>
+                                            <li><a href="/map-view-neighbors">Neighbors</a></li>
+                                        </ul>
+                                    </li>
                                      <li><a href="/profile"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
                                     <li><a href="/logout"><button id="logoutBtn" class="btn btn-danger navbar-btn"><span class="glyphicon glyphicon-log-out"></span> Logout</button></a></li>
                                 </ul>
@@ -62,53 +84,60 @@
                     <form action="/updateProfilePage" class="form-horizontal">
                         <h1 class="text-center">Your Profile</h1>
                         <div class="form-group">
-                            <label class="control-label col-sm-4" for="fname"><b>First Name</b></label>
+                            <label class="control-label col-sm-4" for="fname"><b>First Name: </b></label>
                             <div class="form-control-static col-sm-8">
                                 <label>{{ profileInfo[0].Fname }}</label>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-sm-4" for="lname"><b>Last Name</b></label>
+                            <label class="control-label col-sm-4" for="lname"><b>Last Name: </b></label>
                             <div class="form-control-static col-sm-8">
                                 <label>{{ profileInfo[0].Lname }}</label>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-sm-4" for="email"><b>Email Address</b></label>
+                            <label class="control-label col-sm-4" for="user_bio"><b>About you: </b></label><br/>
+                            <div class="form-control-static col-sm-8">
+                                <label>{{ profileInfo[0].user_bio }}</label>
+                            </div>
+
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-4" for="email"><b>Email Address: </b></label>
                             <div class="form-control-static col-sm-8">
                                 <label>{{ profileInfo[0].email }}</label>
                             </div>
 
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-sm-4" for="password"><b>Password</b></label>
+                            <label class="control-label col-sm-4" for="password"><b>Password: </b></label>
                             <div class="form-control-static col-sm-8">
                                 <button><a href="/changePasswordPage">Change Password</a></button>
                             </div>                            
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-sm-4" for="gender"><b>Gender</b></label><br/>
+                            <label class="control-label col-sm-4" for="gender"><b>Gender: </b></label><br/>
                             <div class="form-control-static col-sm-8">
                                 <label>{{ profileInfo[0].gender }}</label>
                             </div>
 
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-sm-4" for="addressLine1"><b>Street Address</b></label>
+                            <label class="control-label col-sm-4" for="addressLine1"><b>Street Address: </b></label>
                             <div class="form-control-static col-sm-8">
                                 <label>{{ profileInfo[0].street }}</label>
                             </div>
 
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-sm-4" for="addressLine2"><b>Address Line 2</b></label>
+                            <label class="control-label col-sm-4" for="addressLine2"><b>Address Line 2: </b></label>
                             <div class="form-control-static col-sm-8">
                                 <label>{{ profileInfo[0].apt }}</label>
                             </div>
 
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-sm-4" for="blockID"><b> Block Name </b></label>
+                            <label class="control-label col-sm-4" for="blockID"><b> Block Name: </b></label>
                             <div class="form-control-static col-sm-4">
                                 <label>{{ profileInfo[0].block_name }}</label>
                             </div>
@@ -117,28 +146,28 @@
                             </div>                            
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-sm-4" for="city"><b>City</b></label>
+                            <label class="control-label col-sm-4" for="city"><b>City: </b></label>
                             <div class="form-control-static col-sm-8">
                                 <label>{{ profileInfo[0].city }}</label>
                             </div>
 
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-sm-4" for="state"><b>State</b></label>
+                            <label class="control-label col-sm-4" for="state"><b>State: </b></label>
                             <div class="form-control-static col-sm-8">
                                 <label>{{ profileInfo[0].state }}</label>
                             </div>
 
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-sm-4" for="zipcode"><b>Zip</b></label>
+                            <label class="control-label col-sm-4" for="zipcode"><b>Zip: </b></label>
                             <div class="form-control-static col-sm-8">
                                 <label>{{ profileInfo[0].zip }}</label>
                             </div>
 
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-sm-4" for="email_pref"><b>Notifications on email</b></label><br/>
+                            <label class="control-label col-sm-4" for="email_pref"><b>Notifications on email: </b></label><br/>
                             <div class="form-control-static col-sm-8">
                                 <label>{{ profileInfo[0].email_preference }}</label>
                             </div>

@@ -11,7 +11,9 @@
 
         <!-- Latest compiled JavaScript -->
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-        <script src="app.js"></script>
+        <script src="//cdn.jsdelivr.net/alertifyjs/1.10.0/alertify.min.js"></script>
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/alertifyjs/1.10.0/css/alertify.min.css" />
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/alertifyjs/1.10.0/css/themes/bootstrap.min.css" />
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <style>
             .body-background {
@@ -30,7 +32,7 @@
             }
         </style>
     </head>
-    <body class="bg-image">
+    <body class="body-background">
             <div class="wrapper">
                     <header class="main-header">
                         <nav class="navbar navbar-inverse">
@@ -42,15 +44,24 @@
                                     <li class="dropdown">
                                         <a class="dropdown-toggle" data-toggle="dropdown" href="#">Feed
                                             <span class="caret"></span></a>
-                                            <ul class="dropdown-menu">
-                                                <li><a href="/block-feed">Block Feed</a></li>
-                                                <li><a href="/hood-feed">Hood Feed</a></li>
-                                                <li><a href="/friend-feed">Friend Feed</a></li>
-                                                <li><a href="/neighbor-feed">Neighbor Feed</a></li>
-                                            </ul>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="/block-feed">Block Feed</a></li>
+                                            <li><a href="/hood-feed">Hood Feed</a></li>
+                                            <li><a href="/friend-feed">Friend Feed</a></li>
+                                            <li><a href="/neighbor-feed">Neighbor Feed</a></li>
+                                        </ul>
                                     </li>
-                                    <li><a href="show-profile.html"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
-                                    <li><button id="logoutBtn" class="btn btn-danger navbar-btn"><span class="glyphicon glyphicon-log-out"></span> Logout</button></li>
+                                    <li class="dropdown">
+                                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Map View
+                                            <span class="caret"></span></a>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="/map-view-threads">Threads</a></li>
+                                            <li><a href="/map-view-friends">Friends</a></li>
+                                            <li><a href="/map-view-neighbors">Neighbors</a></li>
+                                        </ul>
+                                    </li>
+                                    <li><a href="/profile"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
+                                    <li><a href="/logout" id="logoutBtn" class="btn btn-danger navbar-btn"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
                                 </ul>
                             </div>
                         </nav>
@@ -64,7 +75,7 @@
                                     <div class="media">
                                             <ul>
                                                     {% for info in blockFeedInfo %}
-                                                        <li><a href="/show-thread"></a><p>{{ info.Title }}</p></a><p class="text-info">{{ info.Description_Msg }}</p></li>
+                                                        <li><a href="{{url_for('showThread',tid=info.tid)}}"></a><p>{{ info.Title }}</p></a><p class="text-info">{{ info.Description_Msg }}</p></li>
                                                     {% else %}
                                                     <li><em>Unbelievable.  No recent messages here so far</em>
                                                     {% endfor %}
@@ -75,9 +86,10 @@
                                 <div class="col-lg-2 col-md-2 col-sm-1 col-xs-1" style="background-color: rgba(255, 255, 255, 0.5);">
                                     <ul class="list-group btn-group-vertical" style="margin-top: 10px;">
                                         <li class="list-group-item"><button class="btn btn-info" data-toggle="modal" data-target="#createThreadModal">Create New Thread</button></li>
-                                        <li class="list-group-item"><button class="btn btn-info">See Approval Requests</button></li>
-                                        <li class="list-group-item"><a href="search-threads.html" class="btn btn-info">Search threads</a></li>
-                                        <li class="list-group-item"><button class="btn btn-info">Search people</button></li>
+                                        <li class="list-group-item"><a href="/neighbors/get_blockapproval_requests"><button class="btn btn-info ">See Approval Requests</button></a></li>
+                                        <li class="list-group-item"><a href="/friends/get_friends_details"><button class="btn btn-info ">See Friend Requests</button></a></li>
+                                        <li class="list-group-item"><a href="/searchMessages"><button class="btn btn-info">Search threads</button></a></li>
+                                        <li class="list-group-item"><a href="/searchPeople"><button class="btn btn-info">Search people</button></a></li>
                                     </ul>
                                     <!--Create thread modal-->
                                     <div class="modal fade" id="createThreadModal" role="dialog">
@@ -120,5 +132,10 @@
                         </div>
                     </div>
             </div>
+    {% if message %}
+        <script>
+        alertify.{{message.type}}("{{ message.message }}");
+        </script>
+        {% endif %}
     </body>
 </html>

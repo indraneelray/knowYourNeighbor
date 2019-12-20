@@ -6,6 +6,7 @@ class ServerError(Exception):pass
 
 
 def block_request(conn,form):
+    print("in block request")
     error = None
     #blockid = 1
     #userid= 5
@@ -26,6 +27,7 @@ def block_request(conn,form):
         for row in cursor.fetchall():
             print("row:",row)
             activeneighbors.append({'blockid': row[0], 'userid': row[1], 'joined_at': row[2], 'left_at': row[3]})
+        print("len of :",len(activeneighbors))
         if len(activeneighbors)<=2:
             print("in less neighbors")
             #default insert if no neighbors in that block

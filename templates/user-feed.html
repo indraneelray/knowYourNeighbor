@@ -11,9 +11,9 @@
 
         <!-- Latest compiled JavaScript -->
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular-route.min.js"></script>
-        <script src="app.js"></script>
+        <script src="//cdn.jsdelivr.net/alertifyjs/1.10.0/alertify.min.js"></script>
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/alertifyjs/1.10.0/css/alertify.min.css" />
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/alertifyjs/1.10.0/css/themes/bootstrap.min.css" />
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <style>
             .body-background {
@@ -29,8 +29,34 @@
                 background-size:inherit;
             }
         </style>
+        <script type="text/javascript">
+
+        $().ready(function(){
+            $('#div1').click(function() {
+                console.log('here');
+                var text = document.getElementById('threadid10').value;
+                console.log(text);
+                $.ajax({
+                  url: "/show-thread",
+                  type: "get",
+                  data: {tid: text},
+                  dataType:"json",
+                  success: function(response) {
+                    window.location.replace(response);
+                    },
+                    //window.location.replace('/redirectToThreadDetails');
+                  error: function(xhr) {
+                    //Do Something to handle error
+                  }
+                });
+            })
+        });
+            var getThreadDetails = function(){
+
+            }
+        </script>
     </head>
-    <body class="bg-image">
+    <body class="body-background">
             <div class="wrapper">
                     <header class="main-header">
                         <nav class="navbar navbar-inverse">
@@ -53,13 +79,13 @@
                                         <a class="dropdown-toggle" data-toggle="dropdown" href="#">Map View
                                             <span class="caret"></span></a>
                                         <ul class="dropdown-menu">
-                                            <li><a href="map_threads.html">Threads</a></li>
-                                            <li><a href="map_friends.html">Friends</a></li>
-                                            <li><a href="map_neighbors.html">Neighbors</a></li>
+                                            <li><a href="/map-view-threads">Threads</a></li>
+                                            <li><a href="/map-view-friends">Friends</a></li>
+                                            <li><a href="/map-view-neighbors">Neighbors</a></li>
                                         </ul>
                                     </li>
                                      <li><a href="/profile"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
-                                    <li><a href="/logout"><button id="logoutBtn" class="btn btn-danger navbar-btn"><span class="glyphicon glyphicon-log-out"></span> Logout</button></a></li>
+                                    <li><a href="/logout" class="btn btn-danger navbar-btn"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
                                 </ul>
                             </div>
                         </nav>
@@ -75,7 +101,7 @@
                                         <div class="row-fluid">
                                                 <ul>
                                                 {% for info in friendFeedInfo %}
-                                                    <li><a href="/show-thread"><p>{{ info.Title }}</p></a><p class="text-info">{{ info.Description_Msg }}</p></li>
+                                                    <li><<a href="{{url_for('showThread',tid=info.tid)}}"><p>{{ info.Title }}</p></a><p class="text-info">{{ info.Description_Msg }}</p></li>
                                                 {% else %}
                                                 <li><em>Unbelievable.  No recent messages here so far</em>
                                                 {% endfor %}
@@ -85,7 +111,7 @@
                                         <div class="row-fluid">
                                         <ul>
                                             {% for info in neighborFeedInfo %}
-                                                <li><a href="/show-thread"><p>{{ info.Title }}</p></a><p class="text-info">{{ info.Description_Msg }}</p></li>
+                                                <li><a href="{{url_for('showThread',tid=info.tid)}}"><p>{{ info.Title }}</p></a><p class="text-info">{{ info.Description_Msg }}</p></li>
                                             {% else %}
                                             <li><em>Unbelievable.  No recent messages here so far</em>
                                             {% endfor %}
@@ -94,7 +120,7 @@
                                         <h2>Recently active Threads in your Neighborhood</h2>
                                         <ul>
                                                 {% for info in hoodFeedInfo %}
-                                                    <li><a href="/show-thread"><p>{{ info.Title }}</p></a><p class="text-info">{{ info.Description_Msg }}</p></li>
+                                                    <li><a href="{{url_for('showThread',tid=info.tid)}}"><p>{{ info.Title }}</p></a><p class="text-info">{{ info.Description_Msg }}</p></li>
                                                 {% else %}
                                                 <li><em>Unbelievable.  No recent messages here so far</em>
                                                 {% endfor %}
@@ -102,7 +128,7 @@
                                         <h2>Recently active Threads in your Block</h2>
                                         <ul>
                                                 {% for info in blockFeedInfo %}
-                                                    <li><div id="div1"><a href="{{url_for('showThread',tid=info.tid)}}"><p>{{ info.Title }}</p></a></div><p class="text-info">{{ info.Description_Msg }}</p></li>
+                                                   <li><a href="{{url_for('showThread',tid=info.tid)}}"><p>{{ info.Title }}</p></a><p class="text-info">{{ info.Description_Msg }}</p></li>
                                                 {% else %}
                                                 <li><em>Unbelievable.  No recent messages here so far</em>
                                                 {% endfor %}
@@ -127,8 +153,8 @@
                                                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                                                     <h4 class="modal-title">Create New Thread</h4>
                                                 </div>
-                                                <div class="modal-body">
-                                                    <form id="createThreadForm">
+                                                <form id="createThreadForm" action="/create-new-thread" method="POST">
+                                                    <div class="modal-body">
                                                         <div class="form-group">
                                                             <label for="title" class="control-label">Thread title</label>
                                                             <input type="text" class="form-control" name="title" required/>
@@ -139,18 +165,18 @@
                                                         </div>
                                                         <div class="form-group">
                                                             <label for="privacy" class="control-label"><span class="glyphicon glyphicon-lock"></span> Sharing with: </label>
-                                                            <select class="form-control" id="privacy">
-                                                                <option value="My Block">My Block</option>
-                                                                <option value="My friends" selected>My Friends</option>
-                                                                <option value="My Neighborhood">My Neighborhood</option>
+                                                            <select class="form-control" name="privacy">
+                                                                <option value="1">My Block</option>
+                                                                <option value="0" selected>My Friends</option>
+                                                                <option value="2">My Neighborhood</option>
                                                             </select>
                                                         </div>
-                                                    </form>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                    <button type="button" class="btn btn-primary">Save changes</button>
-                                                </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal" >Close</button>
+                                                        <button type="submit" class="btn btn-primary" name="submit_btn" value="submit">Save changes</button>
+                                                    </div>
+                                                </form>
                                             </div>
                                         </div>
                                     </div>
@@ -160,5 +186,10 @@
                         </div>
                     </div>
             </div>
+    {% if message %}
+        <script>
+        alertify.{{message.type}}("{{ message.message }}");
+        </script>
+        {% endif %}
     </body>
 </html>

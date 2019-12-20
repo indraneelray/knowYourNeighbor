@@ -21,7 +21,7 @@ def signup(db, conn, form, ROUNDS):
         state = form["state"]
         zipcode = form["xipcode"]
         gender = form["gender"]
-        user_bio = "test"
+        user_bio = form["user_bio"]
         email_preference = form["email_pref"]
         if email_preference == "yes":
             email_preference = 1
@@ -31,8 +31,8 @@ def signup(db, conn, form, ROUNDS):
         if not password or not email:
             raise ServerError('Fill in all fields')
 
-        #new_password = hash_password(password)
-        new_password=password
+        new_password = hash_password(password)
+        #new_password=bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt(ROUNDS))
         print("passord is:",password)
 
 
@@ -45,7 +45,7 @@ def signup(db, conn, form, ROUNDS):
             print("in executing queries")
             try:
                 cursor.execute(
-                    "INSERT INTO user_signup (`email`, `password`, `signup_at`, `updated_at`) VALUES (%s,%s,NOW(),NOW())",
+                    """INSERT INTO user_signup (`email`, `password`, `signup_at`, `updated_at`) VALUES (%s,%s,NOW(),NOW())""",
                     [email, new_password])
                 print("new_password is:",new_password)
                 cursor.execute("Select userid from user_signup where email = %s ", [email])
@@ -55,7 +55,7 @@ def signup(db, conn, form, ROUNDS):
                 #session['uid'] = uid
                 print("uid is:",uid)
                 cur = cursor.execute(
-                    "INSERT INTO user_details (`userid`,`firstname`,`lastname`,`email`, `phone_number`, `gender`, `user_bio`,`email_preference`,`apartment_no`,`street`,`city`,`state`,`zipcode`) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
+                    """INSERT INTO user_details (`userid`,`firstname`,`lastname`,`email`, `phone_number`, `gender`, `user_bio`,`email_preference`,`apartment_no`,`street`,`city`,`state`,`zipcode`) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""",
                     [int(uid), firstname, lastname, email, phone_number, gender, user_bio, email_preference,
                      apartment_no, street, city, state, int(zipcode)])
                 conn.commit()
@@ -89,25 +89,24 @@ def getUser(db, form):
         if not password or not email:
             raise ServerError('Fill in all fields')
 
-        cur = db.query("SELECT COUNT(1) FROM user_signup where email = %s", [email])
+        cur = db.query("""SELECT COUNT(1) FROM user_signup where email = %s""", [email])
         print("fetch email in login:",cur)
         if not cur.fetchone()[0] == 1:
             print("in check")
             raise ServerError('Incorrect username / password')
 
-        cur2 = db.query("SELECT * from user_details WHERE email = %s", [email])
+        cur2 = db.query("""SELECT * from user_details WHERE email = %s""", [email])
         print("fetch email in login:", cur2)
         query_row = cur2.fetchall()[0]
         userid = query_row[0]
         print("userid:",userid)
-        cur = db.query("SELECT password FROM user_signup WHERE email = %s;", [email])
+        cur = db.query("""SELECT password FROM user_signup WHERE email = %s;""", [email])
         # print(cur.fetchall())
         for row in cur.fetchall():
             print("password:",row[0])
             #new_password = hash_password(password)
-            new_password = password
-            print("incoming password:",new_password)
-            if  new_password == row[0]:
+            #new_password = password
+            if verify_password(row[0],password):
                 session['uid'] = str(userid)
                 print("password match:")
                 return None
@@ -120,22 +119,27 @@ def getUser(db, form):
 
 def update_password(conn, form):
     error = None
+    print("update password")
     try:
-        password = ""
-        userid = ""
-        if not password:
+        old_password= form["old_password"]
+        new_password= form["new_password"]
+        userid = session['uid']
+        print(old_password)
+        print(new_password)
+        if not old_password or not new_password:
             raise ServerError('Fill in all fields')
         cursor = conn.cursor()
-        cursor.execute("SELECT COUNT(*) FROM user_signup WHERE userid = %s", [userid])
+        cursor.execute("""SELECT password FROM user_signup WHERE userid = %s""", [userid])
         c = cursor.fetchone()
-        if c[0] == 1:
+        print(c[0])
+        if c[0] == old_password:
             cursor.execute(
-                "UPDATE user_signup set password = %s and updated_at = NOW() where userid = %s",
-                [password, userid])
+                """UPDATE user_signup set password = %s and updated_at = NOW() where userid = %s""",
+                [new_password, userid])
             conn.commit()
             return None
         else:
-            raise ServerError("User doesnt exist'")
+            raise ServerError("Existing password entered doesn't match our records")
     except ServerError as e:
         error = str(e)
         return error
@@ -148,13 +152,13 @@ def update_block_details(conn, form):
         if not blockid:
             raise ServerError('Fill in all fields')
         cursor = conn.cursor()
-        cursor.execute("SELECT COUNT(*) FROM user_signup WHERE userid = %s", [userid])
+        cursor.execute("""SELECT COUNT(*) FROM user_signup WHERE userid = %s""", [userid])
         c = cursor.fetchone()
         if c[0] == 1:
-            cursor.execute("SELECT blockid from user_details where userid= %s", [userid])
+            cursor.execute("""SELECT blockid from user_details where userid= %s""", [userid])
             d = cursor.fetchone()
             if d[0] != "NULL":
-                cursor.execute("UPDATE user_details set blockid = %s where userid = %s", [blockid, userid])
+                cursor.execute("""UPDATE user_details set blockid = %s where userid = %s""", [blockid, userid])
                 conn.commit()
                 return None
             else:
@@ -174,7 +178,7 @@ def view_profile(conn, form):
     userid = session['uid']
 
     try:
-        cursor.execute("select * from user_details where userid = %s", [userid])
+        cursor.execute("""select * from user_details where userid = %s""", [userid])
         c = cursor.fetchone()
         if c is not None:
             print("c is:", c)
@@ -238,7 +242,7 @@ def logout(conn):
         userid = session['uid']
         print("userid:",userid)
         cursor=conn.cursor()
-        cursor.execute("UPDATE user_details set logout_at = NOW() where userid = %s", [userid])
+        cursor.execute("""UPDATE user_details set logout_at = NOW() where userid = %s""", [userid])
         conn.commit()
         return None
     except:
@@ -254,3 +258,15 @@ def hash_password(password):
                                 salt, 100000)
     pwdhash = binascii.hexlify(pwdhash)
     return (salt + pwdhash).decode('ascii')
+
+
+def verify_password(stored_password, provided_password):
+    """Verify a stored password against one provided by user"""
+    salt = stored_password[:64]
+    stored_password = stored_password[64:]
+    pwdhash = hashlib.pbkdf2_hmac('sha512',
+                                  provided_password.encode('utf-8'),
+                                  salt.encode('ascii'),
+                                  100000)
+    pwdhash = binascii.hexlify(pwdhash).decode('ascii')
+    return pwdhash == stored_password

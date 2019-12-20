@@ -6,6 +6,7 @@ import lib.Neighbors as Neighbors
 import lib.Search as Search
 import lib.Block as Block
 import lib.message_boards as message_boards
+import lib.Threads as Threads
 # from flask.ext.session import Session
 from lib import Hood
 
@@ -124,7 +125,8 @@ def signup():
         if not result:
             print("in signup success result")
             notifications = {'message': 'Registration successful', 'type': 'success'}
-            return render_template('join_block.html', notifications=notifications)
+            result = Hood.getHooddetails(db.conn)
+            return render_template('join_block.html', hoodinfo=result, notifications=notifications)
         else:
             print("in signup error")
             message = {'message': 'Something went wrong: ' + result, 'type': 'error'}
@@ -137,13 +139,16 @@ def signup():
 @app.route("/users/update_password", methods=['POST'])
 def update_password():
     notifications = None
+    message = None
+    print ("in app.py update password");
     result = Users.update_password(db.conn, request.form)
     if not result:
         notifications = {'message': 'Password updated', 'type': 'success'}
-        return notifications
+        print("in app.py update password successful")
+        return render_template('edit_profile.html', message=message)
     else:
         notifications = {'message': 'Something went wrong: ' + result, 'type': 'error'}
-        return notifications
+        return render_template('edit_profile.html',notifications=notifications)
 
 
 @app.route("/users/update_block_details", methods=['POST'])
@@ -316,6 +321,7 @@ def leave_block():
 @app.route("/neighbors/add_neighbors", methods=['GET', 'POST'])
 def add_neighbors():
     notifications = None
+    message=None
     if request.method == "GET":
         neighborid = request.args.get('userid')
         result = Neighbors.add_neighbors(db.conn, neighborid)
@@ -436,9 +442,9 @@ def show_feed():
                                blockFeedInfo=blockThreadInfo, hoodFeedInfo=hoodThreadInfo)
 
     if request.method == 'POST':
-        # logging.info("POST feed")
-        if request.form['submit_btn'] == 'Submit':
-            # logging.info("POSTED from create thread")
+        print("in post feed")
+        if request.form['submit_btn'] == 'submit':
+            print(" flow")
             result = message_boards.postNewThread(db, request.form)
         # logging.info(result)
     return render_template('user-feed.html')
@@ -486,13 +492,14 @@ def showThread():
                 commentInfo.append({'tid': c[0], 'comment': c[1], 'tid': c[2], 'FName': c[3], 'LName': c[4]})
         #logging.info("rendering template")
         # return jsonify({'threadCommentInfo' : commentInfo, 'threadTitle' : title})
-        return render_template('show-threads.html', threadCommentInfo=commentInfo, threadTitle=title, tid=tid)
+        return render_template('thread-details.html', threadCommentInfo=commentInfo, threadTitle=title, tid=tid)
     if request.method == 'POST':
         #logging.info(request)
-        #logging.info('post comment on thread ')
+        print('post comment on thread ')
         tid = request.args.get('tid')
         posted = message_boards.postComment(db, request.form, tid)
         if posted is None:
+            print('Posted comment successfully')
             message = {'message': 'Posted comment successfully', 'type': 'success'}
             # get thread title
             title = message_boards.getThreadTitle(db, tid)
@@ -502,13 +509,13 @@ def showThread():
                     commentInfo.append(
                         {'tid': c[0], 'comment': c[1], 'commentTime': c[2], 'FName': c[3], 'LName': c[4]})
             response = make_response(
-                render_template('show-threads.html', threadCommentInfo=commentInfo, threadTitle=title, message=message,
+                render_template('thread-details.html', threadCommentInfo=commentInfo, threadTitle=title, message=message,
                                 tid=tid))
             response.headers['X-XSS-Protection'] = '1; mode=block'
             return response
         else:
             message = {'message': 'Error in posting comment', 'type': 'error'}
-            response = make_response(render_template("show-threads.html", message=message))
+            response = make_response(render_template("thread-details.html", message=message))
             response.headers['X-XSS-Protection'] = '1; mode=block'
             return response
 
@@ -576,11 +583,13 @@ def show_message():
 def profile():
     if 'uid' not in session:
         return redirect(url_for('login'))
+    block_name="approval_pending"
     profile = []
     if request.method == 'GET':
         profile_data = Users.view_profile(db.conn, request.form)
         block_id = profile_data[14]
-        block_name = Block.getBlockNameFromBid(db, block_id)
+        if block_id is not None:
+            block_name = Block.getBlockNameFromBid(db, block_id)
         if profile_data:
             profile.append({"Fname": profile_data[1], "LName": profile_data[2], "email": profile_data[3],
                             "apt": profile_data[5],
@@ -602,9 +611,9 @@ def get_block_details():
 @app.route('/neighborhood_details')
 def get_neighborhood_details():
     # if request.method == "POST":
+    notifications = {}
     result = Hood.getHooddetails(db.conn)
-    print(result);
-    return render_template('join_block.html', hoodinfo=result)
+    return render_template('join_block.html', hoodinfo=result, notifications = notifications)
 
 
 # else:
@@ -634,8 +643,10 @@ def getBlockApprovalRequests():
 def block_details_for_hood():
     if request.method == "GET":
         hoodid = request.args.get('selectedHoodid');
-        result = Block.get_block_details_for_hood(db.conn, hoodid)
-        return jsonify(blockList=result);
+        blockList = Block.get_block_details_for_hood(db.conn, hoodid)
+        return jsonify(blockList=blockList);
+        #print("block list returned:",blockList)
+        #return blockList
     else:
         message = {'message': 'Failed to send request.Please try again!', 'type': 'error'}
         return render_template('join_block.html', message=message)
@@ -660,7 +671,7 @@ def postThreadComment():
         return redirect(url_for('login'))
     if request.method == 'POST':
         # logging.info('post comment on thread ')
-        posted = message_boards.postComment(db, request.form)
+        posted = message_boards.postComment(db.conn, request.form)
         if posted is None:
             message = {'message': 'Posted comment successfully', 'type': 'success'}
             response = make_response(render_template("show-threads.html", message=message))
@@ -672,6 +683,36 @@ def postThreadComment():
             response.headers['X-XSS-Protection'] = '1; mode=block'
             return response
 
+
+@app.route('/create-new-thread', methods=['POST'])
+def createNewThread():
+    if 'uid' not in session:
+        return redirect(url_for('login'))
+    if request.method == 'POST':
+        print("app.py create thread");
+        print(request.form["privacy"])
+        thread = message_boards.postNewThread(db.conn, request.form)
+        if thread is None:
+            message = {'message' : 'Thread created successfully', 'type' : 'success'}
+            return message
+        else:
+            message = {'message': 'Error in creating thread', 'type': 'error'}
+            return message
+
+@app.route('/map-view-friends')
+def getMapViewForFriends():
+    message = {}
+    return render_template('map_friends.html', message = message);
+
+@app.route('/map-view-threads')
+def getMapViewForThreads():
+    message = {}
+    return render_template('map_threads.html', message = message);
+
+@app.route('/map-view-neighbors')
+def getMapViewForNeighbors():
+    message = {}
+    return render_template('map_neighbors.html', message = message);
 
 if __name__ == "__main__":
     app.run()

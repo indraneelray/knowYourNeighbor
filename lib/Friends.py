@@ -86,7 +86,7 @@ def get_friend_requests(conn):
             print("details:",details)
         return details
     else:
-        raise ServerError("No friends for this user")
+        raise ServerError("No friends requests for this user")
 
 
 def getFriendList(db):

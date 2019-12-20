@@ -33,33 +33,33 @@
             }
         </style>
     </head>
-  <body class="bg-image">
+  <body class="body-background">
             <div class="wrapper">
                     <header class="main-header">
                         <nav class="navbar navbar-inverse">
                             <div class="container">
                                 <div class="navbar-header">
-                                    <a class="navbar-brand" href="user-feed.html">knowYourNeighborhood</a>
+                                    <a class="navbar-brand" href="/">knowYourNeighborhood</a>
                                 </div>
                                 <ul class="nav navbar-nav navbar-right">
                                     <li class="dropdown">
                                         <a class="dropdown-toggle" data-toggle="dropdown" href="#">Feed
                                             <span class="caret"></span></a>
-                                            <ul class="dropdown-menu">
-                                                <li><a href="block_feed.html">Block Feed</a></li>
-                                                <li><a href="hood_feed.html">Hood Feed</a></li>
-                                                <li><a href="friend_feed.html">Friend Feed</a></li>
-                                                <li><a href="neighbor_feed.html">Neighbor Feed</a></li>
-                                            </ul>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="/block-feed">Block Feed</a></li>
+                                            <li><a href="/hood-feed">Hood Feed</a></li>
+                                            <li><a href="/friend-feed">Friend Feed</a></li>
+                                            <li><a href="/neighbor-feed">Neighbor Feed</a></li>
+                                        </ul>
                                     </li>
                                     <li class="dropdown">
                                         <a class="dropdown-toggle" data-toggle="dropdown" href="#">Map View
                                             <span class="caret"></span></a>
-                                            <ul class="dropdown-menu">
-                                                <li><a href="map_threads.html">Threads</a></li>
-                                                <li><a href="map_friends.html">Friends</a></li>
-                                                <li><a href="map_neighbors.html">Neighbors</a></li>
-                                            </ul>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="/map-view-threads">Threads</a></li>
+                                            <li><a href="/map-view-friends">Friends</a></li>
+                                            <li><a href="/map-view-neighbors">Neighbors</a></li>
+                                        </ul>
                                     </li>
 
                                     <li><a href="/profile"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
@@ -84,7 +84,7 @@
                                                     <li><em>Unbelievable.  No recent messages here so far</em>
                                                     {% endfor %}
                                             </ul>
-                                            <form action="" method="">
+                                            <form action="/show-thread" method="POST">
                                                 <div class="form-group">
                                                     <label for="commentText" class="control-label">Comment: </label>
                                                     <textarea name="commentText" class="form-control" placeholder="Enter a comment..."></textarea>

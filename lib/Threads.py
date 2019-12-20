@@ -6,3 +6,4 @@ def getMessagesFromTID(db,tid):
     if cur.fetchall():
         comments.append(cur.fetchall()[0])
     return comments
+

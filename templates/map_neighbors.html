@@ -39,10 +39,7 @@
                 function initMap() {
                     var locations = [
                     ['Bayridge Ave', 40.6362296, -74.0276796, 1],
-                    ['77th Street', 40.6214669, -74.0146725, 5],
-                    ['59th Street', 40.6296031, -74.0004099, 3],
                     ['86th Street', 40.6093466, -74.0082806, 2],
-                    ['53rd Street', 40.6364379, -74.0026667, 1]
                 ];
                 var map = new google.maps.Map(document.getElementById('messagesMap'), {
                     zoom: 10,
@@ -71,7 +68,7 @@
                 }
         </script>
     </head>
-    <body class="bg-image">
+    <body class="body-background">
             <div class="wrapper">
                 <header class="main-header">
                         <nav class="navbar navbar-inverse">
@@ -83,21 +80,21 @@
                                     <li class="dropdown">
                                         <a class="dropdown-toggle" data-toggle="dropdown" href="#">Feed
                                             <span class="caret"></span></a>
-                                            <ul class="dropdown-menu">
-                                                <li><a href="block_feed.html">Block Feed</a></li>
-                                                <li><a href="hood_feed.html">Hood Feed</a></li>
-                                                <li><a href="friend_feed.html">Friend Feed</a></li>
-                                                <li><a href="neighbor_feed.html">Neighbor Feed</a></li>
-                                            </ul>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="/block-feed">Block Feed</a></li>
+                                            <li><a href="/hood-feed">Hood Feed</a></li>
+                                            <li><a href="/friend-feed">Friend Feed</a></li>
+                                            <li><a href="/neighbor-feed">Neighbor Feed</a></li>
+                                        </ul>
                                     </li>
                                     <li class="dropdown">
                                         <a class="dropdown-toggle" data-toggle="dropdown" href="#">Map View
                                             <span class="caret"></span></a>
-                                            <ul class="dropdown-menu">
-                                                <li><a href="map_threads.html">Threads</a></li>
-                                                <li><a href="map_friends.html">Friends</a></li>
-                                                <li><a href="map_neighbors.html">Neighbors</a></li>
-                                            </ul>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="/map-view-threads">Threads</a></li>
+                                            <li><a href="/map-view-friends">Friends</a></li>
+                                            <li><a href="/map-view-neighbors">Neighbors</a></li>
+                                        </ul>
                                     </li>
 
                                     <li><a href="/profile"><span class="glyphicon glyphicon-user"></span> Profile</a></li>

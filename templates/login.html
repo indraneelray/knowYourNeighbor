@@ -18,8 +18,11 @@
         <link rel="stylesheet" href="//cdn.jsdelivr.net/alertifyjs/1.10.0/css/themes/bootstrap.min.css" />
 
         <style>
+        .body-background {
+                background-color:lightblue;
+            }
              .img-class{
-                background-image: url("https://images.unsplash.com/photo-1534430480872-3498386e7856?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1650&q=80");
+                background-image: url("../static/img/background-photo.jpg");
                 background-position: center;
                 background-repeat: no-repeat;
                 background-size: cover;
@@ -31,18 +34,14 @@
         </style>
         <script src="loginController.js"></script>
     </head>
-    <body class="img-class">
+    <body class="body-background">
             <div class="wrapper">
                 <header class="main-header">
                     <nav class="navbar navbar-inverse">
                         <div class="container">
                             <div class="navbar-header">
-                                <a class="navbar-brand" href="/">knowYourNeighborhood</a>
+                                <a class="navbar-brand" href="">knowYourNeighborhood</a>
                             </div>
-                            <ul class="nav navbar-nav navbar-right">
-                                <li><a href="show-profile.html"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
-                                <li><a href="" id="logoutBtn" class="btn btn-danger navbar-btn"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
-                            </ul>
                         </div>
                     </nav>
                 </header>
@@ -59,7 +58,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label class="control-label" for="pwd">Password</label>
-                                        <input type="password" name="password" class="form-control" minlength="8" required/>
+                                        <input type="password" name="password" class="form-control" required/>
                                     </div>
                                     <div class="form-group">
                                         <button type="submit" class="btn btn-success btn-lg btn-block sign_up">Log In</button>
